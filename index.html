@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Degustação Meditativa · Alegria · Simplicitude</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --gold:    #D4A843;
+      --amber:   #E8793A;
+      --cream:   #F5EDD8;
+      --dark:    #1A0F05;
+      --muted:   rgba(245,237,216,0.55);
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--dark);
+      overflow: hidden;
+      font-family: 'Jost', sans-serif;
+      color: var(--cream);
+    }
+
+    /* ── CAMERA ── */
+    #camera {
+      position: fixed; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1); /* espelho */
+      z-index: 0;
+    }
+
+    /* ── CANVAS OVERLAY ── */
+    #canvas {
+      position: fixed; inset: 0;
+      width: 100%; height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* ── UI OVERLAY ── */
+    #ui {
+      position: fixed; inset: 0;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 48px;
+    }
+
+    /* ── WELCOME SCREEN ── */
+    #welcome {
+      position: fixed; inset: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--dark);
+      padding: 48px 32px;
+      text-align: center;
+      transition: opacity 1.2s ease;
+    }
+
+    #welcome.hidden { opacity: 0; pointer-events: none; }
+
+    .logo-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 48px;
+      opacity: 0.8;
+    }
+
+    .welcome-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(38px, 10vw, 52px);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--cream);
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .welcome-subtitle {
+      font-family: 'Jost', sans-serif;
+      font-size: 11px;
+      font-weight: 200;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 40px;
+    }
+
+    .welcome-desc {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 300px;
+      margin-bottom: 56px;
+    }
+
+    .btn-start {
+      font-family: 'Jost', sans-serif;
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--dark);
+      background: var(--gold);
+      border: none;
+      padding: 16px 40px;
+      cursor: pointer;
+      border-radius: 0;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .btn-start:hover { background: var(--amber); transform: scale(1.03); }
+
+    .welcome-note {
+      font-family: 'Jost', sans-serif;
+      font-size: 10px;
+      font-weight: 200;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      margin-top: 24px;
+      opacity: 0.6;
+    }
+
+    /* ── BREATHING CIRCLE ── */
+    #breath-ring {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1.5s ease;
+    }
+
+    #breath-ring.visible { opacity: 1; }
+
+    .ring-svg circle {
+      transform-origin: center;
+      transform-box: fill-box;
+    }
+
+    /* ── PHASE LABEL ── */
+    #phase-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--cream);
+      text-align: center;
+      letter-spacing: 0.05em;
+      opacity: 0;
+      transition: opacity 1.5s ease;
+      max-width: 260px;
+      line-height: 1.6;
+      text-shadow: 0 2px 16px rgba(0,0,0,0.6);
+      margin-bottom: 16px;
+    }
+
+    #phase-label.visible { opacity: 1; }
+
+    /* ── AUDIO PROGRESS ── */
+    #audio-bar {
+      width: 180px;
+      height: 1px;
+      background: rgba(245,237,216,0.2);
+      border-radius: 2px;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 1s;
+    }
+
+    #audio-bar.visible { opacity: 1; }
+
+    #audio-progress {
+      height: 100%;
+      width: 0%;
+      background: var(--gold);
+      transition: width 0.5s linear;
+    }
+
+    /* ── GLOW OVERLAY ── */
+    #glow {
+      position: fixed; inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 2s ease;
+      background: radial-gradient(ellipse at center, rgba(212,168,67,0.18) 0%, transparent 70%);
+    }
+
+    /* ── SUN BURST ── */
+    #sunburst {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 2s ease, transform 2s ease;
+      width: 140vw; height: 140vw;
+      background: radial-gradient(ellipse at center,
+        rgba(232,121,58,0.22) 0%,
+        rgba(212,168,67,0.12) 35%,
+        transparent 70%
+      );
+      border-radius: 50%;
+    }
+
+    /* ── END SCREEN ── */
+    #end-screen {
+      position: fixed; inset: 0;
+      z-index: 9;
+      background: rgba(26,15,5,0.88);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 48px 32px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 2s ease;
+    }
+
+    #end-screen.visible { opacity: 1; pointer-events: all; }
+
+    .end-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(32px, 9vw, 46px);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--cream);
+      margin-bottom: 16px;
+    }
+
+    .end-sub {
+      font-family: 'Jost', sans-serif;
+      font-size: 10px;
+      font-weight: 200;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 32px;
+    }
+
+    .end-msg {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--muted);
+      max-width: 280px;
+      line-height: 1.75;
+    }
+
+    .btn-restart {
+      font-family: 'Jost', sans-serif;
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--dark);
+      background: var(--gold);
+      border: none;
+      padding: 14px 36px;
+      cursor: pointer;
+      margin-top: 48px;
+      transition: background 0.3s;
+    }
+    .btn-restart:hover { background: var(--amber); }
+  </style>
+</head>
+<body>
+
+<!-- Camera feed -->
+<video id="camera" autoplay playsinline muted></video>
+
+<!-- Particle canvas -->
+<canvas id="canvas"></canvas>
+
+<!-- Glow overlay -->
+<div id="glow"></div>
+
+<!-- Sunburst -->
+<div id="sunburst"></div>
+
+<!-- Breathing ring -->
+<div id="breath-ring">
+  <svg class="ring-svg" width="220" height="220" viewBox="0 0 220 220">
+    <defs>
+      <filter id="blur-ring">
+        <feGaussianBlur stdDeviation="3" />
+      </filter>
+    </defs>
+    <!-- outer glow -->
+    <circle cx="110" cy="110" r="90" fill="none" stroke="rgba(212,168,67,0.15)" stroke-width="28" filter="url(#blur-ring)" id="ring-glow" />
+    <!-- main ring -->
+    <circle cx="110" cy="110" r="90" fill="none" stroke="rgba(212,168,67,0.5)" stroke-width="1.5" id="ring-main" />
+    <!-- inner dot -->
+    <circle cx="110" cy="110" r="4" fill="rgba(212,168,67,0.8)" id="ring-dot" />
+    <!-- breath text -->
+    <text x="110" y="114" text-anchor="middle"
+      font-family="Cormorant Garamond, serif"
+      font-size="11" font-style="italic"
+      fill="rgba(245,237,216,0.7)" id="breath-text">inspire</text>
+  </svg>
+</div>
+
+<!-- UI overlay -->
+<div id="ui">
+  <p id="phase-label"></p>
+  <div id="audio-bar"><div id="audio-progress"></div></div>
+</div>
+
+<!-- Welcome screen -->
+<div id="welcome">
+  <p class="logo-text">Simplicitude · Forest to Factory</p>
+  <h1 class="welcome-title">Alegria</h1>
+  <p class="welcome-subtitle">Degustação Meditativa</p>
+  <p class="welcome-desc">
+    Uma experiência sensorial e emocional.<br/>
+    Tenha ao seu alcance um pedaço do chocolate Alegria.
+  </p>
+  <button class="btn-start" id="btn-start">Iniciar experiência</button>
+  <p class="welcome-note">Ative o som · Permita o uso da câmera</p>
+</div>
+
+<!-- End screen -->
+<div id="end-screen">
+  <p class="end-sub">Simplicitude · Alegria</p>
+  <h2 class="end-title">Gratidão</h2>
+  <p class="end-msg">
+    Leve consigo essa alegria e vitalidade para o resto do seu dia.
+  </p>
+  <button class="btn-restart" onclick="location.reload()">Repetir experiência</button>
+</div>
+
+<!-- Audio -->
+<audio id="audio" src="audio/alegria.mp3" preload="auto"></audio>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────
+const PHASES = [
+  { start:  0,   end:  10,  label: '',                           breath: false, particles: 'idle',    glow: false, sun: false },
+  { start:  10,  end:  43,  label: 'Encontre um local confortável\ne esteja presente.',  breath: false, particles: 'gentle', glow: true,  sun: false },
+  { start:  43,  end:  108, label: 'Inspire profundamente…\nExale lentamente…',          breath: true,  particles: 'gentle', glow: true,  sun: false },
+  { start:  108, end:  161, label: 'Sinta a textura.\nO aroma que ele exhala.',          breath: false, particles: 'medium', glow: true,  sun: false },
+  { start:  161, end:  233, label: 'Laranja · Cardamomo · Cacau\nEnergia e vitalidade.', breath: false, particles: 'warm',   glow: true,  sun: false },
+  { start:  233, end:  266, label: 'Seco ao sol, absorvendo\na energia divina.',          breath: false, particles: 'warm',   glow: true,  sun: true  },
+  { start:  266, end:  322, label: 'Sinta a alegria crescendo,\nirradiando ao seu redor.',breath: false, particles: 'burst',  glow: true,  sun: true  },
+];
+
+// ── PARTICLE SYSTEM ──────────────────────────────────────
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+
+function resize() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const PALETTE = {
+  gentle: ['rgba(212,168,67,0.35)', 'rgba(245,237,216,0.25)', 'rgba(212,168,67,0.2)'],
+  medium: ['rgba(212,168,67,0.55)', 'rgba(232,121,58,0.35)', 'rgba(245,237,216,0.3)'],
+  warm:   ['rgba(232,121,58,0.6)',  'rgba(212,168,67,0.6)',  'rgba(245,200,100,0.4)'],
+  burst:  ['rgba(255,220,80,0.7)',  'rgba(232,121,58,0.65)', 'rgba(212,168,67,0.8)'],
+  idle:   ['rgba(212,168,67,0.1)'],
+};
+
+let particleMode = 'idle';
+let particleCount = { idle: 18, gentle: 35, medium: 55, warm: 75, burst: 120 };
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * W;
+    this.y = H + Math.random() * 40;
+    const colors = PALETTE[particleMode] || PALETTE.idle;
+    this.color = colors[Math.floor(Math.random() * colors.length)];
+    this.r  = Math.random() * 3.5 + 0.8;
+    this.vy = -(Math.random() * 0.6 + 0.15);
+    this.vx = (Math.random() - 0.5) * 0.4;
+    this.life = 1;
+    this.decay = Math.random() * 0.003 + 0.001;
+    this.wobble = Math.random() * Math.PI * 2;
+    this.wobbleSpeed = Math.random() * 0.015 + 0.005;
+  }
+  update() {
+    this.wobble += this.wobbleSpeed;
+    this.x += this.vx + Math.sin(this.wobble) * 0.3;
+    this.y += this.vy;
+    this.life -= this.decay;
+    if (this.life <= 0 || this.y < -20) this.reset();
+  }
+  draw() {
+    ctx.save();
+    ctx.globalAlpha = this.life * 0.85;
+    ctx.fillStyle = this.color;
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = this.color;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+function setParticleMode(mode) {
+  particleMode = mode;
+  const target = particleCount[mode] || 20;
+  while (particles.length < target) particles.push(new Particle());
+  while (particles.length > target) particles.pop();
+  particles.forEach(p => { const c = PALETTE[mode]; if(c) p.color = c[Math.floor(Math.random()*c.length)]; });
+}
+
+function animateParticles() {
+  ctx.clearRect(0, 0, W, H);
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animateParticles);
+}
+
+// ── BREATHING ANIMATION ──────────────────────────────────
+const breathRing   = document.getElementById('breath-ring');
+const ringMain     = document.getElementById('ring-main');
+const ringGlow     = document.getElementById('ring-glow');
+const ringDot      = document.getElementById('ring-dot');
+const breathText   = document.getElementById('breath-text');
+
+let breathInterval = null;
+let breathScale    = 1;
+let breathDir      = 1;
+let breathActive   = false;
+
+function startBreath() {
+  breathRing.classList.add('visible');
+  breathActive = true;
+  breathInterval && clearInterval(breathInterval);
+
+  function cycleBreath() {
+    // Inspire: 4s expand
+    breathText.textContent = 'inspire';
+    let t = 0;
+    const expand = setInterval(() => {
+      t += 50;
+      breathScale = 1 + 0.28 * (t / 4000);
+      applyBreathScale();
+      if (t >= 4000) {
+        clearInterval(expand);
+        // Hold: 1s
+        breathText.textContent = '· · ·';
+        setTimeout(() => {
+          // Expire: 6s contract
+          breathText.textContent = 'expire';
+          let t2 = 0;
+          const contract = setInterval(() => {
+            t2 += 50;
+            breathScale = 1.28 - 0.28 * (t2 / 6000);
+            applyBreathScale();
+            if (t2 >= 6000) {
+              clearInterval(contract);
+              breathScale = 1;
+              if (breathActive) cycleBreath();
+            }
+          }, 50);
+        }, 1000);
+      }
+    }, 50);
+  }
+  cycleBreath();
+}
+
+function applyBreathScale() {
+  const s = breathScale;
+  breathRing.style.transform = `translate(-50%,-50%) scale(${s})`;
+  ringMain.setAttribute('stroke-opacity', 0.3 + 0.5 * (s - 1) / 0.28);
+}
+
+function stopBreath() {
+  breathActive = false;
+  breathRing.classList.remove('visible');
+}
+
+// ── PHASE ENGINE ──────────────────────────────────────────
+const phaseLabel = document.getElementById('phase-label');
+const audioBar   = document.getElementById('audio-bar');
+const audioProgress = document.getElementById('audio-progress');
+const glow       = document.getElementById('glow');
+const sunburst   = document.getElementById('sunburst');
+
+let currentPhase = -1;
+
+function applyPhase(phase) {
+  setParticleMode(phase.particles);
+
+  // Label
+  if (phase.label) {
+    phaseLabel.innerHTML = phase.label.replace(/\n/g, '<br/>');
+    phaseLabel.classList.add('visible');
+  } else {
+    phaseLabel.classList.remove('visible');
+  }
+
+  // Breath
+  if (phase.breath) startBreath(); else stopBreath();
+
+  // Glow
+  glow.style.opacity = phase.glow ? '1' : '0';
+
+  // Sunburst
+  if (phase.sun) {
+    sunburst.style.opacity = '1';
+    sunburst.style.transform = 'translate(-50%,-50%) scale(1)';
+  } else {
+    sunburst.style.opacity = '0';
+    sunburst.style.transform = 'translate(-50%,-50%) scale(0)';
+  }
+}
+
+function checkPhase(t) {
+  for (let i = 0; i < PHASES.length; i++) {
+    const p = PHASES[i];
+    if (t >= p.start && t < p.end) {
+      if (i !== currentPhase) { currentPhase = i; applyPhase(p); }
+      return;
+    }
+  }
+}
+
+// ── CAMERA ───────────────────────────────────────────────
+async function startCamera() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width: { ideal: 1280 } },
+      audio: false,
+    });
+    document.getElementById('camera').srcObject = stream;
+  } catch {
+    // Silently continue without camera — graceful degradation
+  }
+}
+
+// ── START ─────────────────────────────────────────────────
+document.getElementById('btn-start').addEventListener('click', async () => {
+  await startCamera();
+  setParticleMode('idle');
+  animateParticles();
+
+  const welcome = document.getElementById('welcome');
+  welcome.classList.add('hidden');
+  setTimeout(() => welcome.style.display = 'none', 1400);
+
+  audioBar.classList.add('visible');
+
+  const audio = document.getElementById('audio');
+  audio.play();
+
+  audio.addEventListener('timeupdate', () => {
+    const t = audio.currentTime;
+    const pct = (t / audio.duration) * 100;
+    audioProgress.style.width = pct + '%';
+    checkPhase(t);
+  });
+
+  audio.addEventListener('ended', () => {
+    stopBreath();
+    glow.style.opacity = '0';
+    sunburst.style.opacity = '0';
+    phaseLabel.classList.remove('visible');
+    audioBar.classList.remove('visible');
+    setTimeout(() => {
+      document.getElementById('end-screen').classList.add('visible');
+    }, 1200);
+  });
+});
+</script>
+</body>
+</html>
