@@ -4,84 +4,11 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
   <title>Degustação Meditativa · Alegria · Simplicitude</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600&family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <style>
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-    :root {
-      --gold:  #D4A843;
-      --amber: #E8793A;
-      --cream: #F5EDD8;
-      --dark:  #1A0F05;
-      --muted: rgba(245,237,216,0.55);
-    }
-    html, body { width:100%; height:100%; background:#000; overflow:hidden; font-family:'Jost',sans-serif; color:var(--cream); }
-
-    #camera {
-      position:fixed; inset:0; width:100%; height:100%;
-      object-fit:cover; z-index:0;
-    }
-    #three-canvas {
-      position:fixed; inset:0; width:100%; height:100%;
-      z-index:1; pointer-events:none;
-    }
-    #ui {
-      position:fixed; inset:0; z-index:3; pointer-events:none;
-      display:flex; flex-direction:column; align-items:center;
-      justify-content:flex-end; padding-bottom:52px;
-    }
-    #phase-label {
-      font-family:'Cormorant Garamond',serif; font-size:17px;
-      font-style:italic; font-weight:300; color:var(--cream);
-      text-align:center; line-height:1.7; max-width:270px;
-      margin-bottom:20px; opacity:0; transform:translateY(8px);
-      transition:opacity 1.8s ease, transform 1.8s ease;
-      text-shadow:0 0 30px rgba(0,0,0,0.9), 0 2px 12px rgba(0,0,0,0.7);
-    }
-    #phase-label.visible { opacity:1; transform:translateY(0); }
-    #audio-bar {
-      width:160px; height:1px; background:rgba(245,237,216,0.15);
-      overflow:hidden; opacity:0; transition:opacity 1s;
-    }
-    #audio-bar.visible { opacity:1; }
-    #audio-progress { height:100%; width:0%; background:var(--gold); transition:width 0.5s linear; }
-
-    /* WELCOME */
-    #welcome {
-      position:fixed; inset:0; z-index:10; display:flex; flex-direction:column;
-      align-items:center; justify-content:center; background:var(--dark);
-      padding:48px 36px; text-align:center; transition:opacity 1.4s ease;
-    }
-    #welcome.hidden { opacity:0; pointer-events:none; }
-    .logo { font-size:10px; font-weight:200; letter-spacing:0.38em; text-transform:uppercase; color:var(--gold); opacity:0.7; margin-bottom:48px; }
-    .w-title { font-family:'Cormorant Garamond',serif; font-size:clamp(42px,11vw,58px); font-weight:300; font-style:italic; color:var(--cream); line-height:1.05; margin-bottom:6px; }
-    .w-sub   { font-size:10px; font-weight:200; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold); margin-bottom:44px; }
-    .w-desc  { font-family:'Cormorant Garamond',serif; font-size:17px; font-weight:300; font-style:italic; color:var(--muted); line-height:1.8; max-width:290px; margin-bottom:52px; }
-    .btn-start {
-      font-size:10px; font-weight:300; letter-spacing:0.38em; text-transform:uppercase;
-      color:var(--dark); background:var(--gold); border:none; padding:17px 44px;
-      cursor:pointer; transition:background 0.3s, transform 0.2s;
-    }
-    .btn-start:active { background:var(--amber); transform:scale(0.97); }
-    .w-note { font-size:9px; font-weight:200; letter-spacing:0.15em; color:var(--muted); margin-top:22px; opacity:0.5; }
-
-    /* END */
-    #end-screen {
-      position:fixed; inset:0; z-index:9; background:rgba(26,15,5,0.88);
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      text-align:center; padding:48px 36px; opacity:0; pointer-events:none; transition:opacity 2s ease;
-    }
-    #end-screen.visible { opacity:1; pointer-events:all; }
-    .e-sub   { font-size:10px; font-weight:200; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold); margin-bottom:12px; }
-    .e-title { font-family:'Cormorant Garamond',serif; font-size:clamp(36px,10vw,50px); font-weight:300; font-style:italic; color:var(--cream); margin-bottom:24px; }
-    .e-msg   { font-family:'Cormorant Garamond',serif; font-size:17px; font-style:italic; color:var(--muted); max-width:280px; line-height:1.8; }
-    .btn-restart {
-      font-size:10px; font-weight:300; letter-spacing:0.38em; text-transform:uppercase;
-      color:var(--dark); background:var(--gold); border:none; padding:15px 38px;
-      cursor:pointer; margin-top:44px; transition:background 0.3s;
-    }
-  </style>
 </head>
 <body>
 
@@ -93,15 +20,94 @@
   <div id="audio-bar"><div id="audio-progress"></div></div>
 </div>
 
+<!-- ══ WELCOME ══ -->
 <div id="welcome">
-  <p class="logo">Simplicitude · Forest to Factory</p>
-  <h1 class="w-title">Alegria</h1>
-  <p class="w-sub">Degustação Meditativa</p>
-  <p class="w-desc">Uma experiência sensorial e emocional.<br/>Tenha ao seu alcance um pedaço do chocolate Alegria.</p>
-  <button class="btn-start" id="btn-start">Iniciar experiência</button>
-  <p class="w-note">Ative o som · Permita o uso da câmera</p>
-</div>
 
+  <!-- NAV -->
+  <nav class="nav">
+    <img class="nav-logo"
+         srcset="
+          images/2ec42bebd051805b87bfa72370ec673b.png  452w,
+          images/ec5a0857c5cf3b17a7171b7cc32beb40.png  677w
+        "
+        sizes="
+          (max-width: 375px)                           30.6921538vw,
+          (min-width: 375.05px) and (max-width: 480px) 30.6921538vw,
+          (min-width: 480.05px) and (max-width: 768px) 30.6921538vw,
+          (min-width: 768.05px) and (max-width: 1024px) 30.6921538vw,
+          (min-width: 1024.05px)                       30.6921538vw
+        "
+         alt="Simplicitude"/>
+    <div class="nav-links">
+      <a href="http://www.simplicitude.com.br">Quem Somos</a>
+      <a href="#">Meditação</a>
+      <a href="http://www.simplicitude.com.br">Produtos</a>
+      <a href="http://www.simplicitude.com.br">Contatos</a>
+    </div>
+  </nav>
+
+  <!-- HERO — landscape image of 3 chocolates -->
+  <div class="hero">
+    <img src="images/images/imgi_2_8910c54d86569a04fd1d967feb17f5c7.png"
+         alt="Coleção Inspirar"/>
+  </div>
+
+  <!-- DEGUSTAÇÃO MEDITATIVA -->
+  <h1 class="section-title-hero">Degustação Meditativa</h1>
+
+  <!-- INTRO -->
+  <div class="intro">
+    <p><strong>Viva uma experiência única com chocolates que te conduzem numa jornada sensorial e emocional.</strong></p>
+    <p>A Coleção Inspirar é uma linha exclusiva da Simplicitude, criada para harmonizar os benefícios nutricionais e sensoriais dos chocolates com práticas de meditação e atenção plena. Cada chocolate desta coleção é feito com ervas e especiarias especialmente selecionadas para inspirar diferentes sentimentos.</p>
+    <p>Além de deliciar o paladar, estes chocolates conectam corpo e mente de forma holística, através de meditações guiadas pela voz serena de Bruna Santos.</p>
+  </div>
+
+  <!-- CHOCOLATES PARA MEDITAÇÃO -->
+  <h2 class="section-title">Chocolates para Meditação</h2>
+
+  <!-- ALEGRIA BLOCK -->
+  <div class="choco-block">
+
+    <!-- Photos (left) -->
+    <div class="choco-photos">
+      <img class="choco-photo-main"
+           src="images/9966de9cef7901f026c3969b0ea7613d.jpg"
+           alt="Chocolate Alegria"/>
+      <div class="choco-photo-thumbs">
+        <img class="choco-photo-thumb"
+             src="images/cff5fce3bb8ce88fb67433248b76c59f.jpg"
+             alt="Alegria detalhe"/>
+        <img class="choco-photo-thumb"
+             src="images/4e73c0fe89e6b70d8c64146992ac784d.jpg"
+             alt="Alegria embalagem"/>
+      </div>
+    </div>
+
+    <!-- Text (right) -->
+    <div class="choco-text">
+      <span class="choco-label-script">Chocolate</span>
+      <h2 class="choco-name-display">Alegria</h2>
+      <p class="choco-tags">intenso &nbsp;|&nbsp; 62% cacau &nbsp;|&nbsp; laranja &amp; cardamomo</p>
+      <p class="choco-desc">Intenso e vibrante, o chocolate Alegria cria uma explosão de sabor no céu da boca. Com alto teor de cacau, este chocolate explora as notas terrosas do Cacau Forasteiro, contrastando com as notas vibrantes da Laranja e do Cardamomo. Um chocolate autêntico, que emana energia e vitalidade em cada pedaço.</p>
+
+      <p class="choco-cta-label">
+        Deguste ouvindo a<br/>
+        Meditação Guiada<br/>
+        na voz de Bruna Santos
+      </p>
+
+      <button class="btn-start" id="btn-start">
+        ✦ &nbsp; Iniciar Experiência AR &nbsp; ✦
+      </button>
+    </div>
+
+  </div><!-- /choco-block -->
+
+  <p class="w-note">Ative o som &nbsp;·&nbsp; Permita o uso da câmera &nbsp;·&nbsp; Melhor em modo retrato</p>
+
+</div><!-- /welcome -->
+
+<!-- ══ END ══ -->
 <div id="end-screen">
   <p class="e-sub">Simplicitude · Alegria</p>
   <h2 class="e-title">Gratidão</h2>
@@ -112,313 +118,122 @@
 <audio id="audio" src="audio/alegria.mp3" preload="auto"></audio>
 
 <script>
-// ── PHASES ──────────────────────────────────────────────
 const PHASES = [
-  { start:0,   end:10,  label:'',                                              mode:'idle'   },
-  { start:10,  end:43,  label:'Encontre um local confortável\ne esteja presente.', mode:'gentle' },
-  { start:43,  end:108, label:'Inspire profundamente…\nExale lentamente…',         mode:'breath' },
-  { start:108, end:161, label:'Sinta a textura.\nO aroma que ele exhala.',          mode:'aroma'  },
-  { start:161, end:233, label:'Laranja · Cardamomo · Cacau\nEnergia e vitalidade.', mode:'warm'   },
-  { start:233, end:266, label:'Seco ao sol,\nabsorvendo a energia divina.',          mode:'solar'  },
-  { start:266, end:322, label:'Sinta a alegria crescendo,\nirradiando ao seu redor.',mode:'burst'  },
+  {start:0,  end:10, label:'',                                               mode:'idle'  },
+  {start:10, end:43, label:'Encontre um local confortável\ne esteja presente.', mode:'gentle'},
+  {start:43, end:108,label:'Inspire profundamente…\nExale lentamente…',         mode:'breath'},
+  {start:108,end:161,label:'Sinta a textura.\nO aroma que ele exhala.',          mode:'aroma' },
+  {start:161,end:233,label:'Laranja · Cardamomo · Cacau\nEnergia e vitalidade.', mode:'warm'  },
+  {start:233,end:266,label:'Seco ao sol,\nabsorvendo a energia divina.',          mode:'solar' },
+  {start:266,end:322,label:'Sinta a alegria crescendo,\nirradiando ao seu redor.',mode:'burst' },
 ];
 
-// ── THREE.JS ────────────────────────────────────────────
-const canvas3d = document.getElementById('three-canvas');
-const renderer = new THREE.WebGLRenderer({ canvas:canvas3d, alpha:true, antialias:true });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setClearColor(0x000000, 0);
+// ── THREE ──
+const c3=document.getElementById('three-canvas');
+const renderer=new THREE.WebGLRenderer({canvas:c3,alpha:true,antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setClearColor(0,0);
+const scene=new THREE.Scene();
+const cam=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,0.1,200);
+function onR(){renderer.setSize(innerWidth,innerHeight);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();}
+onR();window.addEventListener('resize',onR);
 
-const scene = new THREE.Scene();
-const cam   = new THREE.PerspectiveCamera(65, innerWidth/innerHeight, 0.1, 200);
+// ── GYRO / CAMERA ORIENTATION ──
+const _euler=new THREE.Euler();
+const _q1=new THREE.Quaternion(-Math.sqrt(.5),0,0,Math.sqrt(.5)); // -90° X: device screen → world
+const _q0=new THREE.Quaternion();
+const _qDev=new THREE.Quaternion();
+let _qInitInv=null;
+let _rawA=0,_rawB=0,_rawG=0,_rawO=0,_devActive=false;
 
-function onResize() {
-  renderer.setSize(innerWidth, innerHeight);
-  cam.aspect = innerWidth/innerHeight;
-  cam.updateProjectionMatrix();
-}
-onResize();
-window.addEventListener('resize', onResize);
-
-// ── GYROSCOPE ───────────────────────────────────────────
-let gyroX=0, gyroY=0, tGyroX=0, tGyroY=0;
-
-function initGyro() {
-  const listen = () => window.addEventListener('deviceorientation', e => {
-    tGyroX =  (e.gamma||0) / 35;
-    tGyroY = ((e.beta ||0) - 45) / 55;
-  });
-  if (typeof DeviceOrientationEvent!=='undefined' &&
-      typeof DeviceOrientationEvent.requestPermission==='function') {
-    DeviceOrientationEvent.requestPermission().then(r=>{ if(r==='granted') listen(); }).catch(()=>{});
-  } else { listen(); }
+function onDevOri(e){
+  _rawA=THREE.MathUtils.degToRad(e.alpha||0);
+  _rawB=THREE.MathUtils.degToRad(e.beta||0);
+  _rawG=THREE.MathUtils.degToRad(e.gamma||0);
+  _rawO=window.screen?.orientation?.angle?THREE.MathUtils.degToRad(window.screen.orientation.angle):0;
+  _devActive=true;
 }
 
-// ── PARTICLES ───────────────────────────────────────────
-const N = 900;
-const pGeo  = new THREE.BufferGeometry();
-const pPos  = new Float32Array(N*3);
-const pCol  = new Float32Array(N*3);
-const pSz   = new Float32Array(N);
-const pVel  = new Float32Array(N*3);
-const pPh   = new Float32Array(N);
-
-const palette = [
-  [0.831,0.659,0.263], // gold
-  [0.910,0.475,0.227], // amber
-  [0.961,0.929,0.847], // cream
-  [1.000,0.820,0.376], // yellow
-  [0.784,0.475,0.255], // bronze
-];
-
-for(let i=0;i<N;i++){
-  const th = Math.random()*Math.PI*2;
-  const ph = Math.acos(2*Math.random()-1);
-  const r  = 4 + Math.random()*13;
-  pPos[i*3]   = r*Math.sin(ph)*Math.cos(th);
-  pPos[i*3+1] = r*Math.sin(ph)*Math.sin(th);
-  pPos[i*3+2] = -(2 + Math.random()*11);
-  const c = palette[Math.floor(Math.random()*palette.length)];
-  pCol[i*3]=c[0]; pCol[i*3+1]=c[1]; pCol[i*3+2]=c[2];
-  pSz[i] = 4 + Math.random()*20;
-  pVel[i*3]   = (Math.random()-0.5)*0.004;
-  pVel[i*3+1] = 0.003 + Math.random()*0.006;
-  pVel[i*3+2] = (Math.random()-0.5)*0.002;
-  pPh[i] = Math.random()*Math.PI*2;
+function updateCamOri(){
+  if(!_devActive)return;
+  _euler.set(_rawB,_rawA,-_rawG,'YXZ');
+  _qDev.setFromEuler(_euler);
+  _qDev.multiply(_q1);
+  _q0.setFromAxisAngle(new THREE.Vector3(0,0,1),-_rawO);
+  _qDev.multiply(_q0);
+  if(!_qInitInv){_qInitInv=_qDev.clone().invert();}
+  cam.quaternion.multiplyQuaternions(_qInitInv,_qDev);
 }
 
-pGeo.setAttribute('position', new THREE.BufferAttribute(pPos,3));
-pGeo.setAttribute('color',    new THREE.BufferAttribute(pCol,3));
-pGeo.setAttribute('size',     new THREE.BufferAttribute(pSz,1));
-
-const pMat = new THREE.ShaderMaterial({
-  uniforms:{ opacity:{value:0.0} },
-  vertexShader:`
-    attribute float size; attribute vec3 color; varying vec3 vCol; varying float vFade;
-    void main(){
-      vCol=color;
-      vec4 mv=modelViewMatrix*vec4(position,1.0);
-      gl_PointSize=size*(260.0/-mv.z);
-      gl_Position=projectionMatrix*mv;
-      vFade=clamp(1.0-length(mv.xyz)/22.0,0.0,1.0);
-    }`,
-  fragmentShader:`
-    uniform float opacity; varying vec3 vCol; varying float vFade;
-    void main(){
-      float d=length(gl_PointCoord-vec2(0.5));
-      if(d>0.5) discard;
-      float a=pow(1.0-d*2.0,2.0);
-      gl_FragColor=vec4(vCol, a*opacity*vFade);
-    }`,
-  transparent:true, depthWrite:false,
-  blending:THREE.AdditiveBlending, vertexColors:true,
-});
-
-const pMesh = new THREE.Points(pGeo, pMat);
-scene.add(pMesh);
-
-// ── RINGS ────────────────────────────────────────────────
-const ringGrp = new THREE.Group();
-ringGrp.position.z = -6;
-scene.add(ringGrp);
-
-function makeRing(r, tube, col, opacity=0){
-  const m = new THREE.MeshBasicMaterial({color:col,transparent:true,opacity});
-  const mesh = new THREE.Mesh(new THREE.TorusGeometry(r,tube,16,120),m);
-  ringGrp.add(mesh); return m;
-}
-const rMat1 = makeRing(1.6, 0.009, 0xD4A843);
-const rMat2 = makeRing(1.0, 0.006, 0xFFD060);
-const rMat3 = makeRing(2.3, 0.004, 0xE8793A);
-
-// ── ORBS ─────────────────────────────────────────────────
-const orbGrp = new THREE.Group();
-scene.add(orbGrp);
-const orbData = [];
-for(let i=0;i<14;i++){
-  const ang = (i/14)*Math.PI*2;
-  const rad = 1.3 + Math.random()*2.8;
-  const dep = -(3 + Math.random()*9);
-  const c = palette[Math.floor(Math.random()*palette.length)];
-  const mat = new THREE.MeshBasicMaterial({color:new THREE.Color(c[0],c[1],c[2]),transparent:true,opacity:0});
-  const mesh = new THREE.Mesh(new THREE.SphereGeometry(0.05+Math.random()*0.13,8,8),mat);
-  mesh.position.set(Math.cos(ang)*rad, Math.sin(ang)*rad+(Math.random()-0.5)*1.5, dep);
-  orbGrp.add(mesh);
-  orbData.push({mesh,mat,ang,rad,dep,spd:0.001+Math.random()*0.003,ph:Math.random()*Math.PI*2});
+function initGyro(){
+  const fn=()=>window.addEventListener('deviceorientation',onDevOri);
+  typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'
+    ?DeviceOrientationEvent.requestPermission().then(r=>{if(r==='granted')fn();}).catch(()=>{})
+    :fn();
 }
 
-// ── SUN ──────────────────────────────────────────────────
-const sunGrp = new THREE.Group();
-sunGrp.position.set(0,0.3,-7);
-scene.add(sunGrp);
+// ── PARTICLES ──
+const N=900,pGeo=new THREE.BufferGeometry(),pPos=new Float32Array(N*3),pCol=new Float32Array(N*3),pSz=new Float32Array(N),pVel=new Float32Array(N*3),pPh=new Float32Array(N);
+const pal=[[.831,.659,.263],[.910,.475,.227],[.961,.929,.847],[1,.82,.376],[.784,.475,.255]];
+for(let i=0;i<N;i++){const th=Math.random()*Math.PI*2,ph=Math.acos(2*Math.random()-1),r=4+Math.random()*13;pPos[i*3]=r*Math.sin(ph)*Math.cos(th);pPos[i*3+1]=r*Math.sin(ph)*Math.sin(th);pPos[i*3+2]=-(2+Math.random()*11);const c=pal[~~(Math.random()*pal.length)];pCol[i*3]=c[0];pCol[i*3+1]=c[1];pCol[i*3+2]=c[2];pSz[i]=4+Math.random()*20;pVel[i*3]=(Math.random()-.5)*.004;pVel[i*3+1]=.003+Math.random()*.006;pVel[i*3+2]=(Math.random()-.5)*.002;pPh[i]=Math.random()*Math.PI*2;}
+pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));pGeo.setAttribute('color',new THREE.BufferAttribute(pCol,3));pGeo.setAttribute('size',new THREE.BufferAttribute(pSz,1));
+const pMat=new THREE.ShaderMaterial({uniforms:{op:{value:0}},vertexShader:`attribute float size;attribute vec3 color;varying vec3 vC;varying float vF;void main(){vC=color;vec4 mv=modelViewMatrix*vec4(position,1.);gl_PointSize=size*(260./-mv.z);gl_Position=projectionMatrix*mv;vF=clamp(1.-length(mv.xyz)/22.,0.,1.);}`,fragmentShader:`uniform float op;varying vec3 vC;varying float vF;void main(){float d=length(gl_PointCoord-vec2(.5));if(d>.5)discard;float a=pow(1.-d*2.,2.);gl_FragColor=vec4(vC,a*op*vF);}`,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,vertexColors:true});
+const pM=new THREE.Points(pGeo,pMat);scene.add(pM);
 
-function addSunSphere(r, col, side=THREE.FrontSide){
-  const m = new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0,side});
-  sunGrp.add(new THREE.Mesh(new THREE.SphereGeometry(r,16,16),m));
-  return m;
-}
-const sMat1 = addSunSphere(0.20, 0xFFE880);
-const sMat2 = addSunSphere(0.60, 0xD4A843, THREE.BackSide);
-const sMat3 = addSunSphere(1.20, 0xE8793A, THREE.BackSide);
+// ── RINGS ──
+const rG=new THREE.Group();rG.position.z=-6;scene.add(rG);
+const mkR=(r,t,c)=>{const m=new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0});rG.add(new THREE.Mesh(new THREE.TorusGeometry(r,t,16,120),m));return m;};
+const rm1=mkR(1.6,.009,0xD4A843),rm2=mkR(1,.006,0xFFD060),rm3=mkR(2.3,.004,0xE8793A);
 
-// Rays
-const rayMats = [];
-for(let i=0;i<18;i++){
-  const a = (i/18)*Math.PI*2;
-  const pts = [
-    new THREE.Vector3(Math.cos(a)*0.65,Math.sin(a)*0.65,0),
-    new THREE.Vector3(Math.cos(a)*2.2, Math.sin(a)*2.2, 0),
-  ];
-  const m = new THREE.LineBasicMaterial({color:0xFFD060,transparent:true,opacity:0});
-  sunGrp.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),m));
-  rayMats.push(m);
-}
+// ── ORBS ──
+const oG=new THREE.Group();scene.add(oG);const oD=[];
+for(let i=0;i<14;i++){const a=(i/14)*Math.PI*2,r=1.3+Math.random()*2.8,d=-(3+Math.random()*9),c=pal[~~(Math.random()*pal.length)];const m=new THREE.MeshBasicMaterial({color:new THREE.Color(c[0],c[1],c[2]),transparent:true,opacity:0});const mesh=new THREE.Mesh(new THREE.SphereGeometry(.05+Math.random()*.13,8,8),m);mesh.position.set(Math.cos(a)*r,Math.sin(a)*r+(Math.random()-.5)*1.5,d);oG.add(mesh);oD.push({mesh,m,a,r,d,s:.001+Math.random()*.003,p:Math.random()*Math.PI*2});}
 
-// ── MODE CONFIG ──────────────────────────────────────────
-const modes = {
-  idle:   {p:0.00, o:0.00, r:0.00, sun:false},
-  gentle: {p:0.22, o:0.12, r:0.00, sun:false},
-  breath: {p:0.28, o:0.28, r:0.70, sun:false},
-  aroma:  {p:0.42, o:0.40, r:0.00, sun:false},
-  warm:   {p:0.58, o:0.55, r:0.00, sun:false},
-  solar:  {p:0.55, o:0.50, r:0.25, sun:true },
-  burst:  {p:0.85, o:0.85, r:0.45, sun:true },
-};
+// ── SUN ──
+const sG=new THREE.Group();sG.position.set(0,.3,-7);scene.add(sG);
+const mkS=(r,c,side=THREE.FrontSide)=>{const m=new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0,side});sG.add(new THREE.Mesh(new THREE.SphereGeometry(r,16,16),m));return m;};
+const sm1=mkS(.2,0xFFE880),sm2=mkS(.6,0xD4A843,THREE.BackSide),sm3=mkS(1.2,0xE8793A,THREE.BackSide);
+const rayMs=[];for(let i=0;i<18;i++){const a=(i/18)*Math.PI*2,m=new THREE.LineBasicMaterial({color:0xFFD060,transparent:true,opacity:0});sG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(Math.cos(a)*.65,Math.sin(a)*.65,0),new THREE.Vector3(Math.cos(a)*2.2,Math.sin(a)*2.2,0)]),m));rayMs.push(m);}
 
-let mode = 'idle';
-let breathT = 0;
-const clock = new THREE.Clock();
-let t = 0;
+const modes={idle:{p:0,o:0,r:0,sun:false},gentle:{p:.22,o:.12,r:0,sun:false},breath:{p:.28,o:.28,r:.7,sun:false},aroma:{p:.42,o:.4,r:0,sun:false},warm:{p:.58,o:.55,r:0,sun:false},solar:{p:.55,o:.5,r:.25,sun:true},burst:{p:.85,o:.85,r:.45,sun:true}};
+let mode='idle',bT=0;const clk=new THREE.Clock();let t=0;
+const L=(a,b,s)=>a+(b-a)*s;
 
-function lerp(a,b,s){ return a+(b-a)*s; }
-
-// ── RENDER LOOP ──────────────────────────────────────────
 function animate(){
-  requestAnimationFrame(animate);
-  const dt = clock.getDelta(); t += dt;
-  const cfg = modes[mode]||modes.idle;
-
-  // Gyro smoothing + camera tilt
-  gyroX = lerp(gyroX, tGyroX, 0.04);
-  gyroY = lerp(gyroY, tGyroY, 0.04);
-  cam.rotation.y = gyroX * 0.20;
-  cam.rotation.x = gyroY * 0.14;
-
-  // Particle opacity
-  pMat.uniforms.opacity.value = lerp(pMat.uniforms.opacity.value, cfg.p, 0.012);
-
-  // Drift particles
-  for(let i=0;i<N;i++){
-    pPos[i*3]   += pVel[i*3]   + Math.sin(t*0.4+pPh[i])*0.001;
-    pPos[i*3+1] += pVel[i*3+1];
-    pPos[i*3+2] += pVel[i*3+2];
-    if(pPos[i*3+1]>13) pPos[i*3+1]=-13;
-  }
-  pGeo.attributes.position.needsUpdate=true;
-  pMesh.rotation.y += 0.0006 + gyroX*0.0015;
-  pMesh.rotation.x  = gyroY*0.08;
-
-  // Breathing ring scale
-  if(cfg.r > 0){
-    breathT += dt;
-    const cy = breathT % 11;
-    let bs = cy<4 ? 1+0.38*(cy/4) : cy<5 ? 1.38 : 1.38-0.38*((cy-5)/6);
-    ringGrp.scale.setScalar(lerp(ringGrp.scale.x, bs, 0.04));
-  } else {
-    ringGrp.scale.setScalar(lerp(ringGrp.scale.x, 1.0, 0.03));
-  }
-
-  ringGrp.rotation.z += 0.002;
-  ringGrp.rotation.x = gyroY*0.16;
-  ringGrp.rotation.y = gyroX*0.16;
-  rMat1.opacity = lerp(rMat1.opacity, cfg.r*0.9, 0.018);
-  rMat2.opacity = lerp(rMat2.opacity, cfg.r*0.55, 0.018);
-  rMat3.opacity = lerp(rMat3.opacity, cfg.r*0.35, 0.018);
-
-  // Orbs
-  orbData.forEach(d=>{
-    const a = d.ang + t*d.spd;
-    d.mesh.position.x = Math.cos(a)*d.rad + gyroX*0.35;
-    d.mesh.position.y = Math.sin(a)*d.rad + Math.sin(t*0.5+d.ph)*0.25 - gyroY*0.25;
-    d.mat.opacity = lerp(d.mat.opacity, cfg.o*(0.4+0.6*Math.abs(Math.sin(t*0.7+d.ph))), 0.012);
-  });
-
-  // Sun
-  const sv = cfg.sun ? 1:0;
-  const sp = cfg.sun ? 0.85+0.15*Math.sin(t*1.8) : 0;
-  sMat1.opacity = lerp(sMat1.opacity, sv*0.95, 0.012);
-  sMat2.opacity = lerp(sMat2.opacity, sp*0.22, 0.012);
-  sMat3.opacity = lerp(sMat3.opacity, sp*0.07, 0.012);
-  sunGrp.rotation.z += 0.005;
-  sunGrp.position.x  = gyroX*0.35;
-  sunGrp.position.y  = 0.3 - gyroY*0.25;
-  const rOp = sv*(0.28+0.14*Math.sin(t*1.3));
-  rayMats.forEach(m=>{ m.opacity = lerp(m.opacity, rOp, 0.012); });
-
-  if(mode==='burst'){
-    sunGrp.scale.setScalar(1+0.09*Math.sin(t*2.6));
-  }
-
+  requestAnimationFrame(animate);const dt=clk.getDelta();t+=dt;
+  const cfg=modes[mode]||modes.idle;
+  updateCamOri();
+  pMat.uniforms.op.value=L(pMat.uniforms.op.value,cfg.p,.012);
+  for(let i=0;i<N;i++){pPos[i*3]+=pVel[i*3]+Math.sin(t*.4+pPh[i])*.001;pPos[i*3+1]+=pVel[i*3+1];pPos[i*3+2]+=pVel[i*3+2];if(pPos[i*3+1]>13)pPos[i*3+1]=-13;}
+  pGeo.attributes.position.needsUpdate=true;pM.rotation.y+=.0006;
+  cfg.r>0?(bT+=dt,((cy=bT%11)<4)?rG.scale.setScalar(L(rG.scale.x,1+.38*(cy/4),.04)):cy<5?rG.scale.setScalar(L(rG.scale.x,1.38,.04)):rG.scale.setScalar(L(rG.scale.x,1.38-.38*((cy-5)/6),.04))):rG.scale.setScalar(L(rG.scale.x,1,.03));
+  rG.rotation.z+=.002;
+  rm1.opacity=L(rm1.opacity,cfg.r*.9,.018);rm2.opacity=L(rm2.opacity,cfg.r*.55,.018);rm3.opacity=L(rm3.opacity,cfg.r*.35,.018);
+  oD.forEach(d=>{const a=d.a+t*d.s;d.mesh.position.x=Math.cos(a)*d.r;d.mesh.position.y=Math.sin(a)*d.r+Math.sin(t*.5+d.p)*.25;d.m.opacity=L(d.m.opacity,cfg.o*(.4+.6*Math.abs(Math.sin(t*.7+d.p))),.012);});
+  const sv=cfg.sun?1:0,sp=cfg.sun?.85+.15*Math.sin(t*1.8):0;
+  sm1.opacity=L(sm1.opacity,sv*.95,.012);sm2.opacity=L(sm2.opacity,sp*.22,.012);sm3.opacity=L(sm3.opacity,sp*.07,.012);
+  sG.rotation.z+=.005;
+  const rOp=sv*(.28+.14*Math.sin(t*1.3));rayMs.forEach(m=>{m.opacity=L(m.opacity,rOp,.012);});
+  if(mode==='burst')sG.scale.setScalar(1+.09*Math.sin(t*2.6));
   renderer.render(scene,cam);
 }
 
-// ── PHASE ENGINE ─────────────────────────────────────────
-let curPhase = -1;
-const pLabel  = document.getElementById('phase-label');
-const aBar    = document.getElementById('audio-bar');
-const aProgress = document.getElementById('audio-progress');
+let curP=-1;
+const pLbl=document.getElementById('phase-label'),aBar=document.getElementById('audio-bar'),aPrg=document.getElementById('audio-progress');
+function applyPhase(p){mode=p.mode;p.label?(pLbl.innerHTML=p.label.replace(/\n/g,'<br/>'),pLbl.classList.add('visible')):pLbl.classList.remove('visible');}
+function checkPhase(s){for(let i=0;i<PHASES.length;i++){const p=PHASES[i];if(s>=p.start&&s<p.end){if(i!==curP){curP=i;applyPhase(p);}return;}}}
 
-function applyPhase(p){
-  mode = p.mode;
-  if(p.label){ pLabel.innerHTML=p.label.replace(/\n/g,'<br/>'); pLabel.classList.add('visible'); }
-  else         pLabel.classList.remove('visible');
-}
-
-function checkPhase(sec){
-  for(let i=0;i<PHASES.length;i++){
-    const p=PHASES[i];
-    if(sec>=p.start && sec<p.end){ if(i!==curPhase){curPhase=i;applyPhase(p);} return; }
-  }
-}
-
-// ── CAMERA ───────────────────────────────────────────────
 async function startCamera(){
-  try{
-    const s=await navigator.mediaDevices.getUserMedia({
-      video:{facingMode:{ideal:'environment'},width:{ideal:1280}}, audio:false
-    });
-    const v=document.getElementById('camera');
-    v.srcObject=s; await v.play();
-  } catch(e){ console.warn('Camera:', e); }
+  try{const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280}},audio:false});const v=document.getElementById('camera');v.srcObject=s;await v.play();}catch(e){console.warn(e);}
 }
 
-// ── BOOT ─────────────────────────────────────────────────
-document.getElementById('btn-start').addEventListener('click', async()=>{
-  await startCamera();
-  initGyro();
-
-  const w=document.getElementById('welcome');
-  w.classList.add('hidden');
-  setTimeout(()=>w.style.display='none',1500);
-
-  aBar.classList.add('visible');
-  animate();
-
-  const audio=document.getElementById('audio');
-  audio.play().catch(()=>audio.play());
-
-  audio.addEventListener('timeupdate',()=>{
-    const sec=audio.currentTime;
-    aProgress.style.width=((sec/audio.duration)*100)+'%';
-    checkPhase(sec);
-  });
-
-  audio.addEventListener('ended',()=>{
-    mode='idle';
-    pLabel.classList.remove('visible');
-    aBar.classList.remove('visible');
-    setTimeout(()=>document.getElementById('end-screen').classList.add('visible'),1500);
-  });
+document.getElementById('btn-start').addEventListener('click',async()=>{
+  await startCamera();initGyro();
+  const w=document.getElementById('welcome');w.classList.add('hidden');setTimeout(()=>w.style.display='none',1500);
+  aBar.classList.add('visible');animate();
+  const audio=document.getElementById('audio');audio.play().catch(()=>audio.play());
+  audio.addEventListener('timeupdate',()=>{const s=audio.currentTime;aPrg.style.width=((s/audio.duration)*100)+'%';checkPhase(s);});
+  audio.addEventListener('ended',()=>{mode='idle';pLbl.classList.remove('visible');aBar.classList.remove('visible');setTimeout(()=>document.getElementById('end-screen').classList.add('visible'),1500);});
 });
 </script>
 </body>
