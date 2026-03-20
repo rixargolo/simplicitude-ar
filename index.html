@@ -137,6 +137,8 @@ renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 renderer.setClearColor(0,0);
 const scene=new THREE.Scene();
 const cam=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,0.1,200);
+const _aLight=new THREE.AmbientLight(0xffffff,0.7);scene.add(_aLight);
+const _dLight=new THREE.DirectionalLight(0xFFE8C0,1.4);_dLight.position.set(0,3,-3);scene.add(_dLight);
 function onR(){renderer.setSize(innerWidth,innerHeight);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();}
 onR();window.addEventListener('resize',onR);
 
@@ -230,9 +232,14 @@ function buildMos(font){
   MDEFS.forEach(d=>{
     const mo={d,op:0};
     if(d.tp==='breath'){
-      mo.mi=mkTxt(font,'INSPIRE',0xFFEECC,.28);mo.mi.position.z=TZ;
-      mo.me=mkTxt(font,'EXPIRE', 0xCCDDFF,.28);mo.me.position.z=TZ;
-      scene.add(mo.mi);scene.add(mo.me);
+      const mk3D=(word)=>{
+        const g=new THREE.TextGeometry(word,{font,size:.50,height:.22,curveSegments:6,bevelEnabled:true,bevelThickness:.018,bevelSize:.010,bevelSegments:3});
+        g.computeBoundingBox();const bb=g.boundingBox;
+        g.translate(-(bb.max.x+bb.min.x)/2,-(bb.max.y+bb.min.y)/2,-(bb.max.z+bb.min.z)/2);
+        const mat=new THREE.MeshStandardMaterial({color:0xFFF6E8,emissive:0x774422,emissiveIntensity:.45,metalness:.08,roughness:.55,transparent:true,opacity:0});
+        const m=new THREE.Mesh(g,mat);m.position.set(0,0,TZ);m.scale.setScalar(0);scene.add(m);return m;
+      };
+      mo.mi=mk3D('INSPIRE');mo.me=mk3D('EXPIRE');
     } else if(d.tp==='rise2'){
       mo.m1=mkTxt(font,d.w[0],d.col[0],d.sz);
       mo.m2=mkTxt(font,d.w[1],d.col[1],d.sz);
@@ -287,12 +294,15 @@ function updMos(dt,gt,s){
     const op=mo.op,lT=Math.max(0,Math.min(dur,s-d.st));
     switch(d.tp){
       case 'breath':{
-        const cy=lT%10,inI=cy<5,cT=inI?cy:cy-5,hf=Math.sin(cT/5*Math.PI);
-        const iop=inI?hf*op:0,eop=inI?0:hf*op;
-        mo.mi.material.opacity+=(iop-mo.mi.material.opacity)*.07;
-        mo.me.material.opacity+=(eop-mo.me.material.opacity)*.07;
-        mo.mi.scale.setScalar(1+.15*(inI?hf:0));
-        mo.me.scale.setScalar(1-.10*(!inI?hf:0));
+        const cy=lT%10,inI=cy<5,cT=inI?cy:cy-5;
+        const hf=Math.sin(cT/5*Math.PI);
+        const tgtIS=inI?hf:0, tgtES=inI?0:hf;
+        const tgtIO=inI?hf*op:0, tgtEO=inI?0:hf*op;
+        const curIS=mo.mi.scale.x, curES=mo.me.scale.x;
+        mo.mi.scale.setScalar(curIS+(tgtIS-curIS)*.07);
+        mo.me.scale.setScalar(curES+(tgtES-curES)*.07);
+        mo.mi.material.opacity+=(tgtIO-mo.mi.material.opacity)*.07;
+        mo.me.material.opacity+=(tgtEO-mo.me.material.opacity)*.07;
         break;
       }
       case 'shimmer':{
@@ -355,7 +365,7 @@ function updMos(dt,gt,s){
 }
 
 // Load font immediately — buildMos fires when ready
-new THREE.FontLoader().load('https://unpkg.com/three@0.128.0/examples/fonts/helvetiker_regular.typeface.json',buildMos);
+new THREE.FontLoader().load('https://unpkg.com/three@0.128.0/examples/fonts/helvetiker_bold.typeface.json',buildMos);
 
 const modes={idle:{p:0,o:0,r:0,sun:false},gentle:{p:.22,o:.12,r:0,sun:false},breath:{p:.28,o:.28,r:.7,sun:false},aroma:{p:.42,o:.4,r:0,sun:false},warm:{p:.58,o:.55,r:0,sun:false},solar:{p:.55,o:.5,r:.25,sun:true},burst:{p:.85,o:.85,r:.45,sun:true}};
 let mode='idle',bT=0;const clk=new THREE.Clock();let t=0;
