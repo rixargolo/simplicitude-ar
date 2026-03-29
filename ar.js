@@ -925,15 +925,18 @@ async function startCamera() {
   }
 }
 
-document.getElementById('btn-ar').addEventListener('click', async () => {
+document.getElementById('ar-launch-play').addEventListener('click', async () => {
   // Inicia câmera e giroscópio em paralelo
   await startCamera();
   initGyroscope();
 
-  // Esconde a tela de boas-vindas com fade
-  const welcome = document.getElementById('welcome');
-  welcome.classList.add('hidden');
-  setTimeout(() => welcome.style.display = 'none', 1500);
+  // Esconde a tela de lançamento AR com fade
+  const arLaunch = document.getElementById('ar-launch');
+  arLaunch.classList.remove('visible');
+  setTimeout(() => { arLaunch.style.display = 'none'; }, 1300);
+
+  // Mostra o botão de voltar no HUD
+  document.getElementById('ar-back').classList.add('visible');
 
   // Mostra a barra de progresso do áudio
   audioBar.classList.add('visible');

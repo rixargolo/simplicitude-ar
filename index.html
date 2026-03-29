@@ -27,6 +27,7 @@
   <!-- ══ HUD (interface durante a experiência AR) ══ -->
   <!-- Texto da fase atual + barra de progresso do áudio -->
   <div id="ui">
+    <button id="ar-back" aria-label="Voltar">←</button>
     <p id="phase-label"></p>
     <div id="audio-bar"><div id="audio-progress"></div></div>
   </div>
@@ -122,6 +123,33 @@
 
   </div><!-- /welcome -->
 
+  <!-- ══ TELA DE LANÇAMENTO AR ══ -->
+  <div id="ar-launch">
+    <button id="ar-launch-back" aria-label="Voltar">←</button>
+
+    <img class="ap-logo"
+         srcset="
+           images/2ec42bebd051805b87bfa72370ec673b.png 452w,
+           images/ec5a0857c5cf3b17a7171b7cc32beb40.png 677w
+         "
+         sizes="(max-width: 480px) 38vw, 180px"
+         alt="Simplicitude"/>
+
+    <div class="ap-info">
+      <span class="choco-label-script">Chocolate</span>
+      <p class="ap-name">Alegria</p>
+      <p class="ap-sub">Experiência AR · Meditação Guiada</p>
+    </div>
+
+    <button id="ar-launch-play" aria-label="Iniciar experiência AR">
+      <svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32">
+        <polygon points="7,4 21,12 7,20"/>
+      </svg>
+    </button>
+
+    <p class="ar-launch-note">Ative o som &nbsp;·&nbsp; Permita o uso da câmera &nbsp;·&nbsp; Melhor em modo retrato</p>
+  </div>
+
   <!-- ══ TELA DE ÁUDIO ══ -->
   <div id="audio-screen">
     <button id="ap-back" aria-label="Voltar">←</button>
@@ -172,6 +200,30 @@
 
   <!-- ══ LÓGICA AR ══ -->
   <script src="ar.js"></script>
+
+  <!-- ══ NAVEGAÇÃO DA TELA DE LANÇAMENTO AR ══ -->
+  <script>
+  (function () {
+    const welcome  = document.getElementById('welcome');
+    const arLaunch = document.getElementById('ar-launch');
+
+    document.getElementById('btn-ar').addEventListener('click', () => {
+      welcome.classList.add('hidden');
+      setTimeout(() => { welcome.style.display = 'none'; }, 1400);
+      arLaunch.classList.add('visible');
+    });
+
+    document.getElementById('ar-launch-back').addEventListener('click', () => {
+      arLaunch.classList.remove('visible');
+      welcome.style.display = '';
+      requestAnimationFrame(() => welcome.classList.remove('hidden'));
+    });
+
+    document.getElementById('ar-back').addEventListener('click', () => {
+      location.reload();
+    });
+  })();
+  </script>
 
   <!-- ══ LÓGICA DO PLAYER DE ÁUDIO ══ -->
   <script>

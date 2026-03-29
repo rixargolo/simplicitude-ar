@@ -481,13 +481,13 @@ html, body {
 }
 
 /* ══════════════════════════════════════
-   AUDIO PLAYER SCREEN
+   TELAS ESCURAS (AR launch + Audio player)
    ══════════════════════════════════════ */
 
+#ar-launch,
 #audio-screen {
   position: fixed;
   inset: 0;
-  z-index: 11;
   background: var(--dark);
   display: flex;
   flex-direction: column;
@@ -499,11 +499,22 @@ html, body {
   transition: opacity 1.2s ease;
 }
 
+#ar-launch {
+  z-index: 11;
+}
+
+#audio-screen {
+  z-index: 11;
+}
+
+#ar-launch.visible,
 #audio-screen.visible {
   opacity: 1;
   pointer-events: all;
 }
 
+/* Botão voltar — compartilhado entre as duas telas */
+#ar-launch-back,
 #ap-back {
   position: absolute;
   top: 24px;
@@ -519,6 +530,7 @@ html, body {
   line-height: 1;
 }
 
+#ar-launch-back:hover,
 #ap-back:hover {
   color: rgba(245, 237, 216, 0.75);
 }
@@ -538,6 +550,7 @@ html, body {
 }
 
 /* "Chocolate" acima do nome — mesmo estilo da welcome screen */
+#ar-launch .choco-label-script,
 #audio-screen .choco-label-script {
   display: block;
   margin-bottom: -4px;
@@ -563,6 +576,7 @@ html, body {
   letter-spacing: 0.04em;
 }
 
+#ar-launch-play,
 #ap-play {
   width: 80px;
   height: 80px;
@@ -579,9 +593,48 @@ html, body {
   flex-shrink: 0;
 }
 
+#ar-launch-play:active,
 #ap-play:active {
   background: rgba(212, 168, 67, 0.12);
   transform: scale(0.94);
+}
+
+/* Nota de instrução na tela de lançamento AR */
+.ar-launch-note {
+  font-family: 'EB Garamond', serif;
+  font-size: 13px;
+  font-style: italic;
+  color: rgba(245, 237, 216, 0.35);
+  text-align: center;
+  line-height: 1.8;
+  position: absolute;
+  bottom: 36px;
+  left: 0;
+  right: 0;
+  padding: 0 24px;
+}
+
+/* Botão voltar no HUD da experiência AR */
+#ar-back {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  color: rgba(245, 237, 216, 0.5);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  line-height: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease, color 0.2s;
+}
+
+#ar-back.visible {
+  opacity: 1;
+  pointer-events: all;
 }
 
 .ap-time-row {
