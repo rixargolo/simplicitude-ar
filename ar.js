@@ -90,7 +90,7 @@ for (let i = 0; i < PARTICLE_COUNT; i++) {
   const r     = 2 + Math.random() * 6;
 
   pPositions[i * 3]     = r * Math.sin(phi) * Math.cos(theta);
-  pPositions[i * 3 + 1] = (r * Math.cos(phi)) * 0.5 + 1.4; // comprimido verticalmente, centrado na altura dos olhos
+  pPositions[i * 3 + 1] = 0.5 + Math.random() * 2.5; // entre 0.5m e 3m do chão (local-floor)
   pPositions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
 
   // Cor aleatória da paleta
@@ -129,7 +129,7 @@ const particleMat = new THREE.ShaderMaterial({
       // Fade gradual baseado na distância
       vFade = clamp(1.0 - length(mv.xyz) / 18.0, 0.0, 1.0);
       // Tamanho com perspectiva
-      gl_PointSize = size * (30.0 / -mv.z);
+      gl_PointSize = size * (200.0 / -mv.z);
       gl_Position  = projectionMatrix * mv;
     }
   `,
@@ -154,6 +154,15 @@ const particleMat = new THREE.ShaderMaterial({
 
 const particles = new THREE.Points(particleGeo, particleMat);
 scene.add(particles);
+
+// ── DIAGNÓSTICO — esfera vermelha a 2m à frente, altura dos olhos ──
+// Remover após confirmar que a cena está renderizando corretamente
+const diagMesh = new THREE.Mesh(
+  new THREE.SphereGeometry(0.15, 8, 8),
+  new THREE.MeshBasicMaterial({ color: 0xff0000 })
+);
+diagMesh.position.set(0, 1.4, -2);
+scene.add(diagMesh);
 
 // ══ SISTEMA DE PALAVRAS 3D ══
 

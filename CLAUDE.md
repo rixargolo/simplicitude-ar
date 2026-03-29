@@ -2,9 +2,13 @@
 
 ## O projeto
 
-Experiência de realidade aumentada para a **Simplicitude**, marca brasileira de chocolate artesanal com filosofia "Da Floresta à Fábrica". O projeto é um MVP focado no chocolate **Alegria**, parte da coleção **Inspirar** — três chocolates com meditações guiadas em áudio, narradas por Bruna Santos.
+Experiência de realidade aumentada para a **Simplicitude**, marca brasileira
+de chocolate artesanal com filosofia "Da Floresta à Fábrica". O projeto é um
+MVP focado no chocolate **Alegria**, parte da coleção **Inspirar** — três
+chocolates com meditações guiadas em áudio, narradas por Bruna Santos.
 
-O objetivo é impressionar a dona da fábrica com uma demo que ela possa abrir sozinha no celular, sem instalar nenhum app — apenas um link.
+O objetivo é impressionar a dona da fábrica com uma demo que ela possa abrir
+sozinha no celular, sem instalar nenhum app — apenas um link.
 
 Site em produção: **https://simplicitude-ar.netlify.app**
 Repositório: GitHub pessoal (rixargolo) + deploy via Netlify
@@ -13,91 +17,123 @@ Repositório: GitHub pessoal (rixargolo) + deploy via Netlify
 
 ## Stack
 
-- **Three.js** — cena 3D completa
-- **DeviceOrientation API** — câmera livre orientada pelo giroscópio (360°)
-- **Web Audio API** — sincronização de animações com fases do áudio
+- **Three.js r128** via CDN clássico (não ES modules)
+- **WebXR** (`immersive-ar` + `local-floor`) — AR real com rastreamento ARCore
+- **Web Audio API** — sincronização de visuais com fases do áudio
 - Sem frameworks. Sem app. HTML/JS puro deployado via Netlify.
 
 ---
+
 ## Modos de experiência
 
-A tela de boas-vindas oferece duas opções ao usuário, apresentadas como escolha emocional (não técnica):
+A tela de boas-vindas detecta suporte a WebXR e adapta os botões:
 
-- **Experiência AR** — câmera + visuais Three.js + áudio sincronizado (fluxo original)
-- **Apenas Meditação** — player de áudio estilizado, sem câmera
+- **Android Chrome (WebXR disponível)** → exibe dois botões: "Experiência AR"
+  e "Apenas Meditação"
+- **iOS Safari / Desktop / sem WebXR** → exibe apenas "Apenas Meditação" com
+  nota discreta: *"Experiência AR disponível no Chrome para Android"*
+
+A detecção usa `navigator.xr?.isSessionSupported('immersive-ar')` após o
+carregamento da página. Os dois botões existem no HTML — o botão AR é
+ocultado via JS quando WebXR não está disponível.
 
 ### Player de áudio (modo só-meditação)
 
-Player HTML5 customizado, sem bibliotecas externas. Usa o mesmo `<audio>` element do modo AR.
-Design on-brand: fundo escuro translúcido, tipografia Cinzel, barra de progresso dourada (mesma cor `--gold: #D4A843` do CSS).
-Controles: play/pause, barra de progresso clicável, tempo decorrido/total.
-O player ocupa a tela toda (fullscreen) durante a meditação — mesma filosofia imersiva do modo AR.
+Player HTML5 customizado, sem bibliotecas externas. Usa o mesmo elemento
+`<audio>` do modo AR. Design on-brand: fundo escuro, tipografia Cinzel, barra
+de progresso dourada (`--gold: #D4A843`). Controles: play/pause, barra de
+progresso clicável, tempo decorrido/total. Fullscreen — mesma filosofia
+imersiva do modo AR.
 
-## Arquitetura da cena
+---
 
-### Câmera e giroscópio
+## Arquitetura da cena AR
 
-A câmera é orientada pelo `deviceorientation` do celular — movimento livre em 360°. O usuário segura o celular como uma janela para o ambiente.
+### Sessão WebXR
 
-- Todos os elementos são **ancorados no espaço do mundo** (world space), não na câmera
-- O centro da cena (frente inicial) é definido no momento em que o usuário abre a experiência
-- O texto principal é posicionado nesse ponto frontal
+A sessão é iniciada com `navigator.xr.requestSession('immersive-ar', {
+requiredFeatures: ['local-floor'] })`. O renderer Three.js tem `xr.enabled =
+true`. A câmera é controlada inteiramente pelo WebXR — sem giroscópio manual,
+sem DeviceOrientation.
 
 ### Elementos da cena
 
-Todos fixos no world space, visíveis conforme o usuário orienta o celular:
-
-- **Sol** com efeito sunburst
-- **Partículas** com blending aditivo
-- **Anéis torus** em rotação
-- **Esferas** em órbita
+- **Partículas** — 2000 pontos dourados/âmbar fixos no world space (ancorados
+  no mundo real, não seguem o usuário). Espalhadas em esfera de raio 2–8m ao
+  redor da origem da sessão. Shader customizado com AdditiveBlending e fade
+  por distância. Opacidade global controlada por fase (`MODES.p`).
 
 ### Texto 3D
 
-**"INSPIRE"** aparece em 3D, ancorado à frente inicial da cena.
+Palavras renderizadas como `TextGeometry` (sem bevel, `curveSegments: 12`),
+ancoradas na direção frontal do usuário no momento em que a sessão inicia.
+Fonte: `helvetiker_bold` via CDN do Three.js.
 
-Comportamento na fase `breath`:
-- Pulsa em escala e opacidade sincronizado com o ritmo de inspirar/expirar
-- Fade in suave ao entrar na fase, fade out ao sair
-- Tamanho grande — protagonismo visual, não elemento secundário
-
-Direções futuras de texto (não implementar agora):
-- Palavras emergindo de profundidade (vêm até o usuário)
-- Texto formado por partículas
-- Palavras em posições diferentes da cena (descoberta ao girar)
+Controladas pelo array `WORDS` no topo de `ar.js` — editável manualmente:
+```js
+const WORDS = [
+  {
+    text:    'INSPIRE',
+    start:   43,      // segundo do áudio — início do fade in
+    end:     108,     // segundo do áudio — fim do fade out
+    fadeIn:  1.5,     // duração do fade in (segundos)
+    fadeOut: 2.0,     // duração do fade out (segundos)
+    size:    0.18,    // tamanho da fonte em metros
+    color:   0xF5EDD8,
+    y:       0.0,     // offset vertical em metros (0 = altura dos olhos)
+    z:       -3.0,    // distância à frente em metros
+  },
+];
+```
 
 ---
 
 ## Fases do áudio
 
-A experiência é dividida em 7 fases, identificadas por timestamps:
+A experiência é dividida em 7 fases por timestamps do áudio:
 
 `idle` → `gentle` → `breath` → `aroma` → `warm` → `solar` → `burst`
 
-Cada fase tem comportamento visual distinto. O texto "INSPIRE" é exclusivo da fase `breath`.
+Cada fase define a opacidade alvo das partículas (`MODES.p`) e o texto do
+HUD (`PHASES.label`).
+
+---
+
+## Estrutura de arquivos
+
+- `index.html` — markup, tela de boas-vindas, player de áudio, HUD
+- `ar.js` — toda a lógica WebXR, partículas, palavras 3D, fases
+- `style.css` — estilos globais, tokens de cor da marca, player, telas
+- `audio/alegria.mp3` — áudio da meditação
+- `images/` — assets de imagem da tela de boas-vindas
 
 ---
 
 ## Princípios do projeto
 
-- **Imersão primeiro** — uma implementação tecnicamente funcional mas visualmente plana já foi rejeitada em favor de uma experiência mais impactante
-- **Nenhum rastreamento por imagem** — a embalagem foi considerada genérica demais para ser âncora
-- **Nenhuma integração com o QR code existente** — para preservar o elemento surpresa
-- **Zero instalação** — funciona direto no browser do celular (iOS e Android)
+- **Imersão primeiro** — a experiência deve parecer uma janela para outro
+  mundo, não um app
+- **Zero instalação** — funciona direto no browser móvel, apenas um link
+- **Nenhum rastreamento por imagem** — embalagem não é âncora
+- **Nenhuma integração com QR code existente** — preservar o elemento surpresa
 
 ---
 
 ## O que NÃO fazer
 
-- Não usar `OrbitControls` ou qualquer controle de câmera baseado em toque/mouse — a orientação é exclusivamente por giroscópio
-- Não ancorar elementos à câmera (exceto se explicitamente indicado no futuro)
-- Não adicionar UI desnecessária — a experiência deve parecer uma janela para outro mundo, não um app
-- Não usar SoundCloud embed nem nenhum player externo — o MP3 está no projeto
-- Não fazer o player de áudio parecer um "fallback" — é uma experiência própria
+- Não usar giroscópio/DeviceOrientation — a câmera é controlada pelo WebXR
+- Não ancorar elementos à câmera (exceto se explicitamente indicado)
+- Não adicionar UI desnecessária
+- Não usar SoundCloud embed nem player externo — o MP3 está no projeto
+- Não fazer o player de áudio parecer um fallback — é uma experiência própria
+- Não usar ES modules ou importmap — o projeto usa CDN clássico do Three.js
+
 ---
 
 ## Próximos passos planejados (não implementar ainda)
 
-- Indicador sutil na borda da tela quando o conteúdo principal sair do campo de visão
-- Mais elementos distribuídos no espaço 360° à medida que a experiência evolui
+- Indicador sutil na borda da tela quando o conteúdo principal sair do campo
+  de visão
+- Mais elementos visuais distribuídos no espaço 360° ao longo da experiência
+- Evolução do texto 3D: animações mais ricas, modelos mais complexos
 - Expansão para os outros dois chocolates: Esperança e Serenidade
