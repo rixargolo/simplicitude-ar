@@ -80,7 +80,6 @@ const PARTICLE_PALETTE = [
 
 const pPositions = new Float32Array(PARTICLE_COUNT * 3);
 const pColors    = new Float32Array(PARTICLE_COUNT * 3);
-const pSizes     = new Float32Array(PARTICLE_COUNT);
 const pVelocity  = new Float32Array(PARTICLE_COUNT * 3);
 
 for (let i = 0; i < PARTICLE_COUNT; i++) {
@@ -99,9 +98,6 @@ for (let i = 0; i < PARTICLE_COUNT; i++) {
   pColors[i * 3 + 1] = col.g;
   pColors[i * 3 + 2] = col.b;
 
-  // Tamanho
-  pSizes[i] = 4 + Math.random() * 18;
-
   // Velocidade: ascensão suave com deriva lateral aleatória
   pVelocity[i * 3]     = (Math.random() - 0.5) * 0.002;
   pVelocity[i * 3 + 1] = 0.001 + Math.random() * 0.003;
@@ -111,45 +107,15 @@ for (let i = 0; i < PARTICLE_COUNT; i++) {
 const particleGeo = new THREE.BufferGeometry();
 particleGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
 particleGeo.setAttribute('color',    new THREE.BufferAttribute(pColors,    3));
-particleGeo.setAttribute('size',     new THREE.BufferAttribute(pSizes,     1));
 
-const particleMat = new THREE.ShaderMaterial({
-  uniforms: {
-    op: { value: 0.0 },
-  },
-  vertexShader: /* glsl */`
-    attribute float size;
-    attribute vec3 color;
-    varying vec3 vC;
-    varying float vFade;
-
-    void main() {
-      vC = color;
-      vec4 mv = modelViewMatrix * vec4(position, 1.0);
-      // Fade gradual baseado na distância
-      vFade = clamp(1.0 - length(mv.xyz) / 18.0, 0.0, 1.0);
-      // Tamanho com perspectiva
-      gl_PointSize = size * (200.0 / -mv.z);
-      gl_Position  = projectionMatrix * mv;
-    }
-  `,
-  fragmentShader: /* glsl */`
-    uniform float op;
-    varying vec3 vC;
-    varying float vFade;
-
-    void main() {
-      // Círculo suave — descarta os cantos do quad
-      float d = length(gl_PointCoord - 0.5);
-      if (d > 0.5) discard;
-      float alpha = pow(1.0 - d * 2.0, 2.0);
-      gl_FragColor = vec4(vC, alpha * op * vFade);
-    }
-  `,
-  transparent:  true,
-  depthWrite:   false,
-  blending:     THREE.NormalBlending,
-  vertexColors: true,
+// ── DIAGNÓSTICO: PointsMaterial simples para testar se THREE.Points funciona no WebXR
+const particleMat = new THREE.PointsMaterial({
+  size:            0.25,   // 25cm de diâmetro no espaço world
+  sizeAttenuation: true,
+  vertexColors:    true,
+  transparent:     true,
+  opacity:         0.85,
+  depthWrite:      false,
 });
 
 const particles = new THREE.Points(particleGeo, particleMat);
@@ -290,7 +256,7 @@ function animate(time) {
 
   // Interpola a opacidade das partículas suavemente conforme a fase
   currentOp = (MODES[currentMode] ?? MODES.idle).p;
-  particleMat.uniforms.op.value = currentOp;
+  particleMat.opacity = currentOp;
 
   // Move partículas — ascensão suave, reposiciona ao ultrapassar o teto
   const pos = particleGeo.attributes.position;
