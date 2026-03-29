@@ -681,6 +681,18 @@ html, body {
   transition: background 0.3s;
 }
 
+/* Nota de disponibilidade AR (aparece quando WebXR não é suportado) */
+.ar-unavailable-note {
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  font-size: 11px;
+  color: var(--caramel);
+  opacity: 0.6;
+  text-align: center;
+  margin-top: 10px;
+  letter-spacing: 0.02em;
+}
+
 /* ══════════════════════════════════════
    MOBILE — ≤ 480px
    ══════════════════════════════════════ */

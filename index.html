@@ -114,6 +114,9 @@
             ♪ &nbsp; Apenas Meditação
             <span class="btn-sub">áudio guiado · sem câmera</span>
           </button>
+          <p id="ar-unavailable" class="ar-unavailable-note" style="display:none">
+            Experiência AR disponível no Chrome para Android
+          </p>
         </div>
       </div>
 
@@ -309,6 +312,26 @@
       const ratio = (e.clientX - rect.left) / rect.width;
       if (audio.duration) audio.currentTime = ratio * audio.duration;
     });
+  })();
+  </script>
+
+  <!-- ══ DETECÇÃO DE SUPORTE WEBXR ══ -->
+  <script>
+  (function () {
+    function showArUnavailable() {
+      var btn = document.getElementById('btn-ar');
+      var note = document.getElementById('ar-unavailable');
+      if (btn)  btn.style.display  = 'none';
+      if (note) note.style.display = 'block';
+    }
+
+    if (!navigator.xr || !navigator.xr.isSessionSupported) {
+      showArUnavailable();
+      return;
+    }
+    navigator.xr.isSessionSupported('immersive-ar')
+      .then(function (supported) { if (!supported) showArUnavailable(); })
+      .catch(showArUnavailable);
   })();
   </script>
 
