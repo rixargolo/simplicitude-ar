@@ -35,7 +35,7 @@ const WORDS = [
     size:    0.18,
     color:   0xF5EDD8,
     y:       0.0,
-    z:       -3.0,
+    z:       -1.5,
   },
 ];
 
@@ -148,7 +148,7 @@ const particleMat = new THREE.ShaderMaterial({
   `,
   transparent:  true,
   depthWrite:   false,
-  blending:     THREE.AdditiveBlending,
+  blending:     THREE.NormalBlending,
   vertexColors: true,
 });
 
@@ -289,8 +289,7 @@ function animate(time) {
   lastTime = time;
 
   // Interpola a opacidade das partículas suavemente conforme a fase
-  targetOp   = (MODES[currentMode] ?? MODES.idle).p;
-  currentOp += (targetOp - currentOp) * Math.min(dt * 1.2, 1);
+  currentOp = (MODES[currentMode] ?? MODES.idle).p;
   particleMat.uniforms.op.value = currentOp;
 
   // Move partículas — ascensão suave, reposiciona ao ultrapassar o teto
