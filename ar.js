@@ -349,6 +349,10 @@ if (arLaunchBtn) {
     }
 
     await renderer.xr.setSession(session);
+
+    // Força modo visível imediatamente — checkPhase vai sobrescrever assim que o áudio começar
+    currentMode = 'burst';
+
     renderer.setAnimationLoop(animate);
 
     // Oculta a tela de lançamento com transição suave
