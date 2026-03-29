@@ -126,7 +126,16 @@
   <div id="audio-screen">
     <button id="ap-back" aria-label="Voltar">←</button>
 
+    <img class="ap-logo"
+         srcset="
+           images/2ec42bebd051805b87bfa72370ec673b.png 452w,
+           images/ec5a0857c5cf3b17a7171b7cc32beb40.png 677w
+         "
+         sizes="(max-width: 480px) 38vw, 180px"
+         alt="Simplicitude"/>
+
     <div class="ap-info">
+      <span class="choco-label-script">Chocolate</span>
       <p class="ap-name">Alegria</p>
       <p class="ap-sub">Meditação Guiada · Bruna Santos</p>
     </div>
@@ -186,10 +195,24 @@
       return m + ':' + s;
     }
 
+    function updateTotal() {
+      if (audio.duration && !isNaN(audio.duration)) {
+        totalEl.textContent = fmt(audio.duration);
+      }
+    }
+
+    // Tenta imediatamente (caso metadata já tenha carregado)
+    updateTotal();
+    // Fallbacks para iOS Safari, que não pré-carrega até interação
+    audio.addEventListener('loadedmetadata', updateTotal);
+    audio.addEventListener('durationchange',  updateTotal);
+
     btnAudio.addEventListener('click', () => {
       welcome.classList.add('hidden');
       setTimeout(() => { welcome.style.display = 'none'; }, 1400);
       screen.classList.add('visible');
+      // Tenta novamente ao abrir o player
+      updateTotal();
     });
 
     btnBack.addEventListener('click', () => {
@@ -213,15 +236,15 @@
       }
     });
 
-    audio.addEventListener('loadedmetadata', () => {
-      totalEl.textContent = fmt(audio.duration);
-    });
-
     audio.addEventListener('timeupdate', () => {
       const t = audio.currentTime;
       const d = audio.duration || 0;
       currentEl.textContent = fmt(t);
-      if (d) barFill.style.width = ((t / d) * 100) + '%';
+      if (d) {
+        barFill.style.width = ((t / d) * 100) + '%';
+        // Último fallback: atualiza total caso ainda não tenha sido preenchido
+        if (totalEl.textContent === '0:00') totalEl.textContent = fmt(d);
+      }
     });
 
     audio.addEventListener('ended', () => {

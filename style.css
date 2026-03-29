@@ -523,18 +523,36 @@ html, body {
   color: rgba(245, 237, 216, 0.75);
 }
 
+.ap-logo {
+  display: block;
+  height: 32px;
+  margin-bottom: 40px;
+  /* Converte para branco — logo escura sobre fundo escuro */
+  filter: brightness(0) invert(1);
+  opacity: 0.75;
+}
+
 .ap-info {
   text-align: center;
   margin-bottom: 52px;
 }
 
+/* "Chocolate" acima do nome — mesmo estilo da welcome screen */
+#audio-screen .choco-label-script {
+  display: block;
+  margin-bottom: -4px;
+}
+
+/* "Alegria" — alinhado com choco-name-display da welcome screen */
 .ap-name {
   font-family: 'Cinzel', serif;
-  font-size: clamp(36px, 10vw, 56px);
-  font-weight: 400;
-  letter-spacing: 0.12em;
+  font-size: clamp(40px, 10vw, 64px);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--cream-name);
-  margin-bottom: 10px;
+  line-height: 1.0;
+  margin-bottom: 14px;
 }
 
 .ap-sub {
