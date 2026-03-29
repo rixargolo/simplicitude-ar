@@ -19,6 +19,19 @@ Repositório: GitHub pessoal (rixargolo) + deploy via Netlify
 - Sem frameworks. Sem app. HTML/JS puro deployado via Netlify.
 
 ---
+## Modos de experiência
+
+A tela de boas-vindas oferece duas opções ao usuário, apresentadas como escolha emocional (não técnica):
+
+- **Experiência AR** — câmera + visuais Three.js + áudio sincronizado (fluxo original)
+- **Apenas Meditação** — player de áudio estilizado, sem câmera
+
+### Player de áudio (modo só-meditação)
+
+Player HTML5 customizado, sem bibliotecas externas. Usa o mesmo `<audio>` element do modo AR.
+Design on-brand: fundo escuro translúcido, tipografia Cinzel, barra de progresso dourada (mesma cor `--gold: #D4A843` do CSS).
+Controles: play/pause, barra de progresso clicável, tempo decorrido/total.
+O player ocupa a tela toda (fullscreen) durante a meditação — mesma filosofia imersiva do modo AR.
 
 ## Arquitetura da cena
 
@@ -79,7 +92,8 @@ Cada fase tem comportamento visual distinto. O texto "INSPIRE" é exclusivo da f
 - Não usar `OrbitControls` ou qualquer controle de câmera baseado em toque/mouse — a orientação é exclusivamente por giroscópio
 - Não ancorar elementos à câmera (exceto se explicitamente indicado no futuro)
 - Não adicionar UI desnecessária — a experiência deve parecer uma janela para outro mundo, não um app
-
+- Não usar SoundCloud embed nem nenhum player externo — o MP3 está no projeto
+- Não fazer o player de áudio parecer um "fallback" — é uma experiência própria
 ---
 
 ## Próximos passos planejados (não implementar ainda)

@@ -433,6 +433,166 @@ html, body {
   line-height: 1.8;
 }
 
+/* ══════════════════════════════════════
+   CHOICE BUTTONS
+   ══════════════════════════════════════ */
+
+.btn-choice-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.btn-sub {
+  display: block;
+  font-family: 'EB Garamond', serif;
+  font-size: 9px;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 0.1em;
+  text-transform: none;
+  opacity: 0.55;
+  margin-top: 5px;
+}
+
+.btn-audio {
+  display: block;
+  width: 100%;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--green);
+  background: transparent;
+  border: 1px solid rgba(19, 52, 41, 0.45);
+  padding: 14px 24px;
+  cursor: pointer;
+  transition: border-color 0.25s, transform 0.15s;
+  opacity: 0.75;
+}
+
+.btn-audio:active {
+  border-color: var(--green);
+  transform: scale(0.98);
+}
+
+/* ══════════════════════════════════════
+   AUDIO PLAYER SCREEN
+   ══════════════════════════════════════ */
+
+#audio-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 11;
+  background: var(--dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 36px 64px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.2s ease;
+}
+
+#audio-screen.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+#ap-back {
+  position: absolute;
+  top: 24px;
+  left: 20px;
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  color: rgba(245, 237, 216, 0.35);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  transition: color 0.2s;
+  line-height: 1;
+}
+
+#ap-back:hover {
+  color: rgba(245, 237, 216, 0.75);
+}
+
+.ap-info {
+  text-align: center;
+  margin-bottom: 52px;
+}
+
+.ap-name {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(36px, 10vw, 56px);
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  color: var(--cream-name);
+  margin-bottom: 10px;
+}
+
+.ap-sub {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(13px, 2.2vw, 16px);
+  font-style: italic;
+  color: var(--caramel);
+  letter-spacing: 0.04em;
+}
+
+#ap-play {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gold);
+  background: transparent;
+  color: var(--gold);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 44px;
+  transition: background 0.2s, transform 0.15s;
+  flex-shrink: 0;
+}
+
+#ap-play:active {
+  background: rgba(212, 168, 67, 0.12);
+  transform: scale(0.94);
+}
+
+.ap-time-row {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: rgba(245, 237, 216, 0.3);
+  text-align: center;
+}
+
+#ap-bar-wrap {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 22px;
+  background: linear-gradient(to top, rgba(255,255,255,0.1) 2px, transparent 2px);
+  cursor: pointer;
+}
+
+#ap-bar-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background: var(--gold);
+  transition: width 0.5s linear;
+  pointer-events: none;
+}
+
 .btn-restart {
   font-family: 'Cinzel', serif;
   font-size: 10px;
