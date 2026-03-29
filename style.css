@@ -221,7 +221,7 @@ html, body {
 
 .intro p {
   font-family: 'EB Garamond', serif;
-  font-size: clamp(13px, 2vw, 16px);
+  font-size: clamp(15px, 2vw, 17px);
   font-weight: 400;
   line-height: 1.8;
   color: var(--brown);
@@ -257,7 +257,7 @@ html, body {
 .choco-photos {
   display: grid;
   grid-template-rows: auto auto;
-  gap: 0;
+  gap: 8px;
 }
 
 .choco-photo-main {
@@ -271,7 +271,7 @@ html, body {
 .choco-photo-thumbs {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0;
+  gap: 8px;
 }
 
 .choco-photo-thumb {
@@ -317,9 +317,9 @@ html, body {
 
 .choco-tags {
   font-family: 'Cinzel', serif;
-  font-size: clamp(7px, 1.1vw, 10px);
+  font-size: clamp(11px, 1.4vw, 12px);
   font-weight: 400;
-  letter-spacing: 0.35em;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--brown);
   margin-bottom: 22px;
@@ -328,7 +328,7 @@ html, body {
 
 .choco-desc {
   font-family: 'EB Garamond', serif;
-  font-size: clamp(13px, 1.8vw, 15px);
+  font-size: clamp(16px, 2vw, 17px);
   font-weight: 400;
   line-height: 1.85;
   color: var(--brown);
@@ -338,9 +338,9 @@ html, body {
 
 .choco-cta-label {
   font-family: 'Cinzel', serif;
-  font-size: clamp(8px, 1.2vw, 11px);
+  font-size: clamp(12px, 1.5vw, 13px);
   font-weight: 400;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--green);
   line-height: 1.9;
@@ -352,17 +352,18 @@ html, body {
   display: block;
   width: 100%;
   font-family: 'Cinzel', serif;
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 600;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: #fff;
   background: var(--green);
   border: none;
-  padding: 16px 24px;
+  padding: 20px 24px;
   cursor: pointer;
   transition: background 0.25s, transform 0.15s;
   margin-top: 4px;
+  line-height: 1.4;
 }
 
 .btn-start:active {
@@ -372,7 +373,7 @@ html, body {
 
 .w-note {
   font-family: 'EB Garamond', serif;
-  font-size: 11px;
+  font-size: 13px;
   font-style: italic;
   color: var(--caramel);
   opacity: 0.65;
@@ -447,30 +448,31 @@ html, body {
 .btn-sub {
   display: block;
   font-family: 'EB Garamond', serif;
-  font-size: 9px;
+  font-size: 13px;
   font-weight: 400;
   font-style: italic;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.05em;
   text-transform: none;
-  opacity: 0.55;
-  margin-top: 5px;
+  opacity: 0.65;
+  margin-top: 6px;
 }
 
 .btn-audio {
   display: block;
   width: 100%;
   font-family: 'Cinzel', serif;
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 600;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--green);
   background: transparent;
   border: 1px solid rgba(19, 52, 41, 0.45);
-  padding: 14px 24px;
+  padding: 18px 24px;
   cursor: pointer;
   transition: border-color 0.25s, transform 0.15s;
   opacity: 0.75;
+  line-height: 1.4;
 }
 
 .btn-audio:active {
@@ -537,7 +539,7 @@ html, body {
 
 .ap-sub {
   font-family: 'EB Garamond', serif;
-  font-size: clamp(13px, 2.2vw, 16px);
+  font-size: clamp(15px, 2.2vw, 18px);
   font-style: italic;
   color: var(--caramel);
   letter-spacing: 0.04em;
@@ -566,9 +568,9 @@ html, body {
 
 .ap-time-row {
   font-family: 'Cinzel', serif;
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.18em;
-  color: rgba(245, 237, 216, 0.3);
+  color: rgba(245, 237, 216, 0.35);
   text-align: center;
 }
 
@@ -606,4 +608,72 @@ html, body {
   cursor: pointer;
   margin-top: 44px;
   transition: background 0.3s;
+}
+
+/* ══════════════════════════════════════
+   MOBILE — ≤ 480px
+   ══════════════════════════════════════ */
+
+@media (max-width: 480px) {
+
+  /* Nav: esconde links para não quebrar linha */
+  .nav {
+    padding: 14px 20px;
+  }
+  .nav-links {
+    display: none;
+  }
+
+  /* Títulos */
+  .section-title-hero {
+    padding: 32px 20px 0;
+  }
+  .section-title {
+    padding: 8px 20px 24px;
+  }
+
+  /* Intro */
+  .intro {
+    padding: 16px 20px 28px;
+  }
+
+  /* Fotos: gap um toque menor para caber bem em tela estreita */
+  .choco-photos,
+  .choco-photo-thumbs {
+    gap: 6px;
+  }
+
+  /* Texto do chocolate */
+  .choco-text {
+    padding: 20px 20px 12px;
+  }
+
+  /* Botões */
+  .btn-start,
+  .btn-audio {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    padding: 18px 20px;
+  }
+
+  .btn-sub {
+    font-size: 13px;
+  }
+
+  /* Nota inferior */
+  .w-note {
+    font-size: 13px;
+    padding: 12px 20px 40px;
+  }
+
+  /* Player de áudio */
+  .ap-info {
+    margin-bottom: 40px;
+  }
+
+  #ap-play {
+    width: 72px;
+    height: 72px;
+    margin-bottom: 36px;
+  }
 }
