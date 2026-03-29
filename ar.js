@@ -12,9 +12,8 @@ const PHASES = [
 
 // ══ MODOS VISUAIS ══
 
-// Apenas a opacidade das partículas varia por fase
 const MODES = {
-  idle:   { p: 0.00 },
+  idle:   { p: 0.10 },
   gentle: { p: 0.22 },
   breath: { p: 0.28 },
   aroma:  { p: 0.42 },
@@ -23,21 +22,15 @@ const MODES = {
   burst:  { p: 0.85 },
 };
 
-// ══ PALAVRAS 3D ══
+// ══ CONFIGURAÇÃO DAS PALAVRAS 3D ══
 
-const WORDS = [
-  {
-    text:    'INSPIRE',
-    start:   43,
-    end:     108,
-    fadeIn:  1.5,
-    fadeOut: 2.0,
-    size:    0.18,
-    color:   0xF5EDD8,
-    y:       0.0,
-    z:       -1.5,
-  },
-];
+const WORD_SIZE  = 0.18;  // metros
+const WORD_COLOR = 0xF5EDD8;
+const WORD_Z     = -1.5;  // distância à frente (espaço local da câmera)
+
+// Duração de cada fase do ciclo de respiração (segundos)
+// 0=inspire-in  1=inspire-hold  2=inspire-out  3=expire-in  4=expire-shrink  5=gap
+const CYCLE_DUR = [3.5, 2.0, 0.8, 0.8, 4.0, 0.4];
 
 // ══ RENDERER E CENA ══
 
@@ -51,13 +44,11 @@ renderer.setSize(innerWidth, innerHeight);
 const scene  = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.01, 200);
 
-// Iluminação ambiente e direcional
 scene.add(new THREE.AmbientLight(0xffffff, 0.8));
 const dirLight = new THREE.DirectionalLight(0xFFE8C0, 1.2);
 dirLight.position.set(0, 3, -3);
 scene.add(dirLight);
 
-// Redimensionamento — ignora quando XR está ativo
 window.addEventListener('resize', () => {
   if (renderer.xr.isPresenting) return;
   camera.aspect = innerWidth / innerHeight;
@@ -69,7 +60,6 @@ window.addEventListener('resize', () => {
 
 const PARTICLE_COUNT = 2000;
 
-// Paleta de cores: dourado, âmbar, creme, dourado claro, terracota
 const PARTICLE_PALETTE = [
   new THREE.Color(0xD4A843),
   new THREE.Color(0xE8922A),
@@ -83,22 +73,19 @@ const pColors    = new Float32Array(PARTICLE_COUNT * 3);
 const pVelocity  = new Float32Array(PARTICLE_COUNT * 3);
 
 for (let i = 0; i < PARTICLE_COUNT; i++) {
-  // Posição esférica aleatória
   const theta = Math.random() * Math.PI * 2;
   const phi   = Math.acos(2 * Math.random() - 1);
   const r     = 2 + Math.random() * 6;
 
   pPositions[i * 3]     = r * Math.sin(phi) * Math.cos(theta);
-  pPositions[i * 3 + 1] = 0.5 + Math.random() * 2.5; // entre 0.5m e 3m do chão (local-floor)
+  pPositions[i * 3 + 1] = 0.5 + Math.random() * 2.5;
   pPositions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
 
-  // Cor aleatória da paleta
   const col = PARTICLE_PALETTE[Math.floor(Math.random() * PARTICLE_PALETTE.length)];
   pColors[i * 3]     = col.r;
   pColors[i * 3 + 1] = col.g;
   pColors[i * 3 + 2] = col.b;
 
-  // Velocidade: ascensão suave com deriva lateral aleatória
   pVelocity[i * 3]     = (Math.random() - 0.5) * 0.002;
   pVelocity[i * 3 + 1] = 0.001 + Math.random() * 0.003;
   pVelocity[i * 3 + 2] = (Math.random() - 0.5) * 0.002;
@@ -108,124 +95,115 @@ const particleGeo = new THREE.BufferGeometry();
 particleGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
 particleGeo.setAttribute('color',    new THREE.BufferAttribute(pColors,    3));
 
-// ── DIAGNÓSTICO: PointsMaterial simples para testar se THREE.Points funciona no WebXR
+// Textura circular com soft glow — partículas redondas, não quadradas
+function makeCircleTex() {
+  const c = document.createElement('canvas');
+  c.width = c.height = 64;
+  const ctx = c.getContext('2d');
+  const g = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+  g.addColorStop(0,   'rgba(255,255,255,1.0)');
+  g.addColorStop(0.35,'rgba(255,255,255,0.7)');
+  g.addColorStop(1,   'rgba(255,255,255,0.0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 64, 64);
+  return new THREE.CanvasTexture(c);
+}
+
 const particleMat = new THREE.PointsMaterial({
-  size:            0.25,   // 25cm de diâmetro no espaço world
+  size:            0.10,
   sizeAttenuation: true,
   vertexColors:    true,
   transparent:     true,
   opacity:         0.85,
   depthWrite:      false,
+  blending:        THREE.AdditiveBlending,
+  map:             makeCircleTex(),
 });
 
 const particles = new THREE.Points(particleGeo, particleMat);
 scene.add(particles);
 
-// ── DIAGNÓSTICO — esfera vermelha a 2m à frente, altura dos olhos ──
-// Remover após confirmar que a cena está renderizando corretamente
-const diagMesh = new THREE.Mesh(
-  new THREE.SphereGeometry(0.15, 8, 8),
-  new THREE.MeshBasicMaterial({ color: 0xff0000 })
-);
-diagMesh.position.set(0, 1.4, -2);
-scene.add(diagMesh);
+// ══ SISTEMA DE PALAVRAS 3D (segue o olhar — câmera) ══
 
-// ══ SISTEMA DE PALAVRAS 3D ══
+let font        = null;
+let wordAnchor  = null; // Group que segue a câmera a cada frame
+let breathMeshes = null; // { inspire: { group, mat }, expire: { group, mat } }
+let fontReady    = false;
+let sessionReady = false;
 
-let font             = null;
-let wordMeshes       = []; // array de { mat, def, opacity }
-let wordAnchorDone   = false;
-let pendingAnchorPos = null;
-let pendingAnchorQ   = null;
+// Vetores pré-alocados para o loop de animação (sem GC)
+const _camFwd = new THREE.Vector3();
 
-// Pré-carrega a fonte ao abrir a página
+// Carrega a fonte ao abrir a página
 new THREE.FontLoader().load(
   'https://threejs.org/examples/fonts/helvetiker_bold.typeface.json',
   loaded => {
     font = loaded;
-    // Se a âncora já foi capturada antes da fonte carregar, constrói agora
-    if (pendingAnchorPos) buildWords(pendingAnchorPos, pendingAnchorQ);
+    fontReady = true;
+    if (sessionReady && !breathMeshes) buildWords();
   }
 );
 
+function easeInOut(t) {
+  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+}
+
 /**
- * Constrói as malhas de texto 3D ancoradas na posição frontal inicial.
- * @param {THREE.Vector3} anchorPos - posição da câmera no momento da captura
- * @param {THREE.Quaternion} anchorQ - rotação de yaw da câmera
+ * Constrói as malhas INSPIRE e EXPIRE.
+ * Não depende de posição — o wordAnchor segue a câmera a cada frame.
  */
-function buildWords(anchorPos, anchorQ) {
-  pendingAnchorPos = null;
+function buildWords() {
+  wordAnchor = new THREE.Group();
+  scene.add(wordAnchor);
 
-  // Grupo âncora posicionado na direção frontal do usuário no início da sessão
-  const anchor = new THREE.Group();
-  anchor.position.set(anchorPos.x, 0, anchorPos.z);
-  anchor.quaternion.copy(anchorQ);
-  scene.add(anchor);
-
-  for (const def of WORDS) {
-    const geo = new THREE.TextGeometry(def.text, {
-      font:          font,
-      size:          def.size,
-      height:        def.size * 0.05,
+  function makeWordMesh(text) {
+    const geo = new THREE.TextGeometry(text, {
+      font,
+      size:          WORD_SIZE,
+      height:        WORD_SIZE * 0.05,
       bevelEnabled:  false,
       curveSegments: 12,
     });
-
     geo.computeBoundingBox();
-    const bb = geo.boundingBox;
-    const cx = -(bb.max.x + bb.min.x) / 2; // centraliza horizontalmente
+    const cx = -(geo.boundingBox.max.x + geo.boundingBox.min.x) / 2;
 
     const mat = new THREE.MeshStandardMaterial({
-      color:       def.color,
+      color:       WORD_COLOR,
       transparent: true,
       opacity:     0,
     });
 
     const mesh = new THREE.Mesh(geo, mat);
-    mesh.position.set(cx, 1.4 + def.y, def.z);
-    anchor.add(mesh);
+    mesh.position.set(cx, 0, 0); // centralizado dentro do grupo-pivot
 
-    wordMeshes.push({ mat, def, opacity: 0 });
+    // Grupo-pivot: permite escalar ao redor do centro do texto
+    const group = new THREE.Group();
+    group.add(mesh);
+    wordAnchor.add(group);
+
+    return { group, mat };
   }
-}
 
-/**
- * Captura a orientação frontal da câmera XR para ancorar os textos.
- * Chamada uma única vez, após o frame XR atualizar a pose da câmera.
- */
-function captureWordAnchor() {
-  if (wordAnchorDone) return;
-  wordAnchorDone = true;
-
-  // Extrai apenas o yaw (rotação horizontal) para manter o texto vertical
-  const euler = new THREE.Euler().setFromQuaternion(camera.quaternion, 'YXZ');
-  const yawQ  = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, euler.y, 0));
-
-  if (font) {
-    buildWords(camera.position, yawQ);
-  } else {
-    // Fonte ainda não carregou — guarda para construir assim que chegar
-    pendingAnchorPos = camera.position.clone();
-    pendingAnchorQ   = yawQ.clone();
-  }
+  breathMeshes = {
+    inspire: makeWordMesh('INSPIRE'),
+    expire:  makeWordMesh('EXPIRE'),
+  };
 }
 
 // ══ CONTROLE DE FASES ══
 
-let currentMode = 'idle';
-let targetOp    = 0;
-let currentOp   = 0;
-let _audioTime  = 0;
+let currentMode  = 'idle';
+let currentOp    = 0;
+let _audioTime   = 0;
 
-// Referências DOM
+let cyclePhase   = 0;
+let cycleElapsed = 0;
+let cycleActive  = false;
+
 const phaseLabel    = document.getElementById('phase-label');
 const audioBar      = document.getElementById('audio-bar');
 const audioProgress = document.getElementById('audio-progress');
 
-/**
- * Verifica em qual fase o áudio está e atualiza o modo visual e o texto da fase.
- * @param {number} t - tempo atual do áudio em segundos
- */
 function checkPhase(t) {
   for (const phase of PHASES) {
     if (t >= phase.start && t < phase.end) {
@@ -247,18 +225,17 @@ function checkPhase(t) {
 
 // ══ LOOP DE ANIMAÇÃO ══
 
-let lastTime     = 0;
-let xrFrameCount = 0;
+let lastTime = 0;
 
 function animate(time) {
   const dt = Math.min((time - lastTime) / 1000, 0.05);
   lastTime = time;
 
-  // Interpola a opacidade das partículas suavemente conforme a fase
+  // Opacidade das partículas conforme a fase
   currentOp = (MODES[currentMode] ?? MODES.idle).p;
   particleMat.opacity = currentOp;
 
-  // Move partículas — ascensão suave, reposiciona ao ultrapassar o teto
+  // Movimento suave das partículas
   const pos = particleGeo.attributes.position;
   for (let i = 0; i < PARTICLE_COUNT; i++) {
     pos.array[i * 3]     += pVelocity[i * 3];
@@ -268,29 +245,69 @@ function animate(time) {
   }
   pos.needsUpdate = true;
 
-  // Renderiza — isso atualiza a pose da câmera via XR
+  // Renderiza — XR atualiza a pose da câmera durante o render
   renderer.render(scene, camera);
 
-  // Captura a âncora frontal após a câmera ser atualizada pelo XR
-  if (renderer.xr.isPresenting) {
-    xrFrameCount++;
-    if (xrFrameCount === 4) captureWordAnchor();
+  // ── Âncora das palavras segue o olhar da câmera ──
+  // (após renderer.render para usar a pose XR do frame atual)
+  if (wordAnchor) {
+    _camFwd.set(0, 0, WORD_Z).applyQuaternion(camera.quaternion);
+    wordAnchor.position.copy(camera.position).add(_camFwd);
+    wordAnchor.quaternion.copy(camera.quaternion);
   }
 
-  // Atualiza opacidade de cada palavra com fade in/out baseado no tempo do áudio
-  const t = _audioTime;
-  for (const w of wordMeshes) {
-    const { def, mat } = w;
-    let target = 0;
+  // ── Ciclo INSPIRE / EXPIRE ──
+  if (breathMeshes) {
+    const { inspire, expire } = breathMeshes;
 
-    if (t >= def.start && t < def.end) {
-      const fi = Math.min((t - def.start) / def.fadeIn,  1);
-      const fo = Math.min((def.end - t)   / def.fadeOut, 1);
-      target = Math.min(fi, fo);
+    if (!cycleActive && _audioTime >= 43) {
+      cycleActive  = true;
+      cyclePhase   = 0;
+      cycleElapsed = 0;
     }
 
-    w.opacity += (target - w.opacity) * Math.min(dt * 3, 1);
-    mat.opacity = w.opacity;
+    if (cycleActive) {
+      cycleElapsed += dt;
+
+      // Avança fase(s) se o tempo esgotou
+      while (cycleElapsed >= CYCLE_DUR[cyclePhase]) {
+        cycleElapsed -= CYCLE_DUR[cyclePhase];
+        cyclePhase    = (cyclePhase + 1) % CYCLE_DUR.length;
+      }
+
+      const p = easeInOut(cycleElapsed / CYCLE_DUR[cyclePhase]);
+
+      // Limpa defaults
+      inspire.mat.opacity = 0;
+      expire.mat.opacity  = 0;
+      inspire.group.scale.setScalar(1);
+      expire.group.scale.setScalar(1);
+
+      switch (cyclePhase) {
+        case 0: // INSPIRE aparece crescendo (inhale)
+          inspire.mat.opacity = p;
+          inspire.group.scale.setScalar(0.5 + 0.5 * p);
+          break;
+        case 1: // INSPIRE segura
+          inspire.mat.opacity = 1;
+          break;
+        case 2: // INSPIRE some em fade
+          inspire.mat.opacity = 1 - p;
+          break;
+        case 3: // EXPIRE aparece no tamanho pleno
+          expire.mat.opacity = p;
+          break;
+        case 4: // EXPIRE diminui e some (exhale)
+          expire.mat.opacity = 1 - p;
+          expire.group.scale.setScalar(Math.max(0.01, 1 - p));
+          break;
+        case 5: // pausa breve
+          break;
+      }
+    } else {
+      inspire.mat.opacity = 0;
+      expire.mat.opacity  = 0;
+    }
   }
 }
 
@@ -301,9 +318,38 @@ const arBack      = document.getElementById('ar-back');
 
 if (arLaunchBtn) {
   arLaunchBtn.addEventListener('click', async () => {
-    let session;
+    const audio = document.getElementById('audio');
 
-    // Solicita sessão WebXR imersiva com âncora no piso
+    // Registra listeners antes de qualquer await
+    if (audio) {
+      audio.addEventListener('timeupdate', () => {
+        _audioTime = audio.currentTime;
+        if (audioProgress && audio.duration) {
+          audioProgress.style.width = ((audio.currentTime / audio.duration) * 100) + '%';
+        }
+        checkPhase(audio.currentTime);
+      });
+
+      audio.addEventListener('ended', () => {
+        currentMode = 'idle';
+        cycleActive = false;
+        if (phaseLabel) phaseLabel.classList.remove('visible');
+        if (audioBar)   audioBar.classList.remove('visible');
+        renderer.setAnimationLoop(null);
+        session.end().catch(() => {});
+        setTimeout(() => {
+          const endScreen = document.getElementById('end-screen');
+          if (endScreen) endScreen.classList.add('visible');
+        }, 1500);
+      });
+
+      // Inicia o áudio imediatamente no gesto do usuário,
+      // antes de aguardar a inicialização da sessão XR
+      audio.play().catch(e => console.warn('Audio play failed:', e));
+    }
+
+    // Solicita a sessão XR (também precisa do gesto do usuário)
+    let session;
     try {
       session = await navigator.xr.requestSession('immersive-ar', {
         requiredFeatures: ['local-floor'],
@@ -313,56 +359,22 @@ if (arLaunchBtn) {
       return;
     }
 
+    // Sinaliza que a sessão está pronta — constrói palavras se a fonte já carregou
+    sessionReady = true;
+    if (fontReady && !breathMeshes) buildWords();
+
     await renderer.xr.setSession(session);
 
-    // Força modo visível imediatamente — checkPhase vai sobrescrever assim que o áudio começar
-    currentMode = 'burst';
-
+    currentMode = 'gentle';
     renderer.setAnimationLoop(animate);
 
-    // Oculta a tela de lançamento com transição suave
     const arLaunch = document.getElementById('ar-launch');
     arLaunch.classList.remove('visible');
     setTimeout(() => { arLaunch.style.display = 'none'; }, 1300);
 
-    // Exibe botão de voltar e barra de progresso do áudio
     if (arBack)   arBack.classList.add('visible');
     if (audioBar) audioBar.classList.add('visible');
 
-    // Inicia o áudio da meditação
-    const audio = document.getElementById('audio');
-    if (audio) {
-      audio.play().catch(() => audio.play());
-
-      // Atualiza tempo, barra de progresso e fase a cada tick do áudio
-      audio.addEventListener('timeupdate', () => {
-        _audioTime = audio.currentTime;
-
-        if (audioProgress && audio.duration) {
-          audioProgress.style.width = ((audio.currentTime / audio.duration) * 100) + '%';
-        }
-
-        checkPhase(audio.currentTime);
-      });
-
-      // Ao terminar o áudio — encerra a experiência e exibe tela final
-      audio.addEventListener('ended', () => {
-        currentMode = 'idle';
-
-        if (phaseLabel) phaseLabel.classList.remove('visible');
-        if (audioBar)   audioBar.classList.remove('visible');
-
-        renderer.setAnimationLoop(null);
-        session.end().catch(() => {});
-
-        setTimeout(() => {
-          const endScreen = document.getElementById('end-screen');
-          if (endScreen) endScreen.classList.add('visible');
-        }, 1500);
-      });
-    }
-
-    // Ao encerrar a sessão XR (pelo sistema ou pelo fim do áudio)
     session.addEventListener('end', () => {
       renderer.setAnimationLoop(null);
     });
