@@ -1,0 +1,143 @@
+.section {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 72px 24px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.imgWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.img {
+  object-fit: cover;
+}
+
+.imgPlaceholder {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cream);
+  color: var(--caramel);
+  font-family: var(--font-cinzel), serif;
+  font-weight: 600;
+  font-size: 4rem;
+  text-transform: uppercase;
+  border-radius: 4px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.colecao {
+  font-family: var(--font-eb-garamond), serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--brown);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-cinzel), serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--green-nav);
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+}
+
+.descricao {
+  font-family: var(--font-eb-garamond), serif;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--brown);
+}
+
+.meta {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+}
+
+.peso {
+  font-family: var(--font-eb-garamond), serif;
+  font-size: 1rem;
+  color: var(--brown);
+}
+
+.preco {
+  font-family: var(--font-cinzel), serif;
+  font-weight: 600;
+  font-size: 1.5rem;
+  color: var(--green-nav);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.cta {
+  font-family: var(--font-cinzel), serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.95rem;
+  background: var(--green);
+  color: var(--bg);
+  padding: 14px 28px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.cta:hover {
+  background: var(--green-nav);
+}
+
+.meditacaoLink {
+  font-family: var(--font-cinzel), serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.85rem;
+  color: var(--caramel);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.meditacaoLink:hover {
+  border-color: var(--caramel);
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: 48px 20px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}

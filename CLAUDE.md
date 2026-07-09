@@ -8,10 +8,9 @@ institucional e a experiência de meditação guiada da coleção **Inspirar**
 (três chocolates com meditações em áudio narradas por Bruna Santos).
 
 A experiência de realidade aumentada/meditação em Three.js, que era o
-projeto inteiro na fase anterior, agora é uma **sub-experiência isolada**
-dentro do site — veja a seção [Experiência AR (legado, isolado)](#experiência-ar-legado-isolado)
-mais abaixo. Ela continua funcionando exatamente como antes, sem nenhuma
-integração com React.
+projeto inteiro na fase anterior, foi **arquivada** e não é mais servida
+pelo site por enquanto (pode retornar futuramente via app nativo) — veja a
+seção [Experiência AR (arquivada)](#experiência-ar-arquivada) mais abaixo.
 
 Site em produção: **https://simplicitude-ar.netlify.app**
 Repositório: GitHub pessoal (rixargolo) + deploy via Netlify
@@ -26,9 +25,9 @@ Repositório: GitHub pessoal (rixargolo) + deploy via Netlify
 - **API routes do Next.js** — integração de pagamento com **InfinitePay**
   via Checkout Integrado (planejado, ainda não implementado)
 - Deploy via **Netlify**
-- A sub-experiência AR/meditação continua em **Three.js r128 via CDN
-  clássico** (não ES modules), servida como HTML estático — ver seção
-  dedicada abaixo
+- A sub-experiência AR/meditação (Three.js r128 via CDN clássico, HTML
+  estático) está **arquivada** e fora do build ativo — ver seção dedicada
+  abaixo
 
 ---
 
@@ -41,8 +40,8 @@ vêm em etapas futuras.
 - **Home** (`app/page.js`)
 - **Quem Somos** (`app/quem-somos/page.js`)
 - **Meditação** (`app/meditacao/page.js`) — ponto de entrada institucional
-  para a experiência de meditação guiada; a experiência em si roda isolada
-  em `public/experiencias/` (ver abaixo)
+  para a experiência de meditação guiada; a experiência AR original está
+  arquivada (ver abaixo) e ainda não foi recriada para o site novo
 - **Loja** (`app/loja/page.js`) — catálogo de produtos (planejado: dados via
   Supabase)
 - **Produto** (`app/loja/[slug]/page.js`) — página individual de produto
@@ -54,27 +53,32 @@ vêm em etapas futuras.
 ## Estrutura de arquivos (novo escopo)
 
 - `app/` — rotas e layouts do App Router (Next.js)
-- `public/` — estáticos servidos diretamente, incluindo:
-  - `public/experiencias/alegria/` — sub-experiência AR/meditação do
-    chocolate Alegria (HTML/JS/CSS puro, ver seção dedicada)
+- `public/` — estáticos servidos diretamente
+- `__ARCHIVE/experiencias/alegria-ar/` — sub-experiência AR/meditação do
+  chocolate Alegria, arquivada e fora do build ativo (ignorada pelo git,
+  ver seção dedicada)
 - `CLAUDE.md` — este arquivo
 
 ---
 
-## Experiência AR (legado, isolado)
+## Experiência AR (arquivada)
 
 Esta seção documenta a sub-experiência de realidade aumentada/meditação do
 chocolate **Alegria**, que era o projeto original antes da transformação em
-e-commerce. Ela é servida como **HTML estático dentro de `public/`**, sem
-build step, sem React e sem nenhuma integração com o restante do site
-Next.js.
+e-commerce. Ela **não é mais servida pelo site** — foi arquivada em 2026-07-09
+e pode ser retomada futuramente via app nativo. Os arquivos foram movidos
+de `public/experiencias/alegria/` para fora da pasta `public/`, então não
+fazem mais parte do build ativo do Next.js nem do deploy no Netlify.
 
-**Caminho:** `public/experiencias/alegria/`
-**Acesso:** `/experiencias/alegria/index.html`
+**Caminho atual:** `__ARCHIVE/experiencias/alegria-ar/` (pasta ignorada
+pelo git — os arquivos existem localmente, mas não são versionados nem
+publicados)
+**Acesso quando estava ativa:** `/experiencias/alegria/index.html` (rota
+não existe mais)
 
-O conteúdo abaixo é a documentação técnica original, preservada sem
-alterações de conteúdo (apenas os caminhos de arquivo foram atualizados
-para refletir a nova localização).
+O conteúdo abaixo é a documentação técnica original, preservada como
+referência histórica caso a experiência seja retomada — ela não descreve
+mais o estado atual do site.
 
 ### O projeto (original)
 
@@ -159,17 +163,18 @@ A experiência é dividida em 7 fases por timestamps do áudio:
 Cada fase define a opacidade alvo das partículas (`MODES.p`) e o texto do
 HUD (`PHASES.label`).
 
-### Estrutura de arquivos
+### Estrutura de arquivos (no arquivo)
 
-- `public/experiencias/alegria/index.html` — markup, tela de boas-vindas,
-  player de áudio, HUD
-- `public/experiencias/alegria/ar.js` — toda a lógica WebXR, partículas,
-  palavras 3D, fases
-- `public/experiencias/alegria/style.css` — estilos globais, tokens de cor
-  da marca, player, telas
-- `public/experiencias/alegria/audio/alegria.mp3` — áudio da meditação
-- `public/experiencias/alegria/images/` — assets de imagem da tela de
-  boas-vindas
+- `__ARCHIVE/experiencias/alegria-ar/index.html` — markup, tela de
+  boas-vindas, player de áudio, HUD
+- `__ARCHIVE/experiencias/alegria-ar/ar.js` — toda a lógica WebXR,
+  partículas, palavras 3D, fases
+- `__ARCHIVE/experiencias/alegria-ar/style.css` — estilos globais, tokens
+  de cor da marca, player, telas
+- `__ARCHIVE/experiencias/alegria-ar/audio/alegria.mp3` — áudio da
+  meditação
+- `__ARCHIVE/experiencias/alegria-ar/images/` — assets de imagem da tela
+  de boas-vindas
 
 ### Princípios do projeto
 
@@ -188,7 +193,7 @@ HUD (`PHASES.label`).
 - Não fazer o player de áudio parecer um fallback — é uma experiência própria
 - Não usar ES modules ou importmap — o projeto usa CDN clássico do Three.js
 - Não integrar esta sub-experiência com React/Next.js — ela permanece HTML
-  estático isolado
+  estático isolado, mesmo se for retomada
 
 ### Próximos passos planejados (não implementar ainda)
 
@@ -204,6 +209,7 @@ HUD (`PHASES.label`).
 
 - Não implementar estilo, conteúdo real, banco de dados ou pagamento antes
   de instruções explícitas — cada etapa vem em prompts separados
-- Não alterar o conteúdo da sub-experiência AR ao mexer no site novo — ela é
-  isolada e deve permanecer intacta
+- Não alterar o conteúdo da sub-experiência AR arquivada em
+  `__ARCHIVE/experiencias/alegria-ar/` — preservar intacta caso seja
+  retomada
 - Não usar TypeScript — o projeto é JavaScript puro
