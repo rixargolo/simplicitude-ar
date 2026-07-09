@@ -8,3 +8,21 @@ html,
 body {
   height: 100%;
 }
+
+:root {
+  --bg:         #faf9f8;
+  --green:      #133429;
+  --green-nav:  #1e3706;
+  --brown:      #6b513f;
+  --caramel:    #a17a5e;
+  --cream-name: #dbd0c0;
+  --border:     #e5ddd4;
+  --gold:       #D4A843;
+  --cream:      #F5EDD8;
+}
+
+body {
+  background: var(--bg);
+  color: var(--brown);
+  font-family: var(--font-eb-garamond), serif;
+}
