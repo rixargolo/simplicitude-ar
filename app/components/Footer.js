@@ -28,20 +28,22 @@ export default function Footer() {
           </Link>
 
           <address className={styles.address}>
-            Coaraci, Bahia
+            Rua Clarindo Teixeira, nº20, 1º andar
             <br />
-            (73) 0000-0000
+            Centro, Coaraci, Bahia, Brasil.
             <br />
-            <a href="mailto:contato@simplicitude.com.br">
-              contato@simplicitude.com.br
+            (73) 99140-8689
+            <br />
+            <a href="mailto:viva@simplicitude.com.br">
+              viva@simplicitude.com.br
             </a>
             <br />
             <a
-              href="https://instagram.com/simplicitude"
+              href="https://instagram.com/simplicitude.co"
               target="_blank"
               rel="noreferrer noopener"
             >
-              @simplicitude
+              @simplicitude.co
             </a>
           </address>
         </div>
