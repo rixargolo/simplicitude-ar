@@ -1,0 +1,61 @@
+/* Réplica de .btn-audio / .btn-sub em
+   __ARCHIVE/experiencias/alegria-ar/style.css */
+
+.btnAudio {
+  display: block;
+  width: 100%;
+  font-family: var(--font-cinzel), serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--green);
+  background: transparent;
+  border: 1px solid rgba(19, 52, 41, 0.45);
+  padding: 18px 24px;
+  cursor: pointer;
+  transition: border-color 0.25s, transform 0.15s;
+  opacity: 0.75;
+  line-height: 1.4;
+}
+
+.btnAudio:active {
+  border-color: var(--green);
+  transform: scale(0.98);
+}
+
+.btnSub {
+  display: block;
+  font-family: var(--font-eb-garamond), serif;
+  font-size: 13px;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 0.05em;
+  text-transform: none;
+  opacity: 0.65;
+  margin-top: 6px;
+}
+
+.emBreve {
+  font-family: var(--font-eb-garamond), serif;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--caramel);
+  opacity: 0.65;
+}
+
+.player {
+  width: 100%;
+}
+
+@media (max-width: 480px) {
+  .btnAudio {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    padding: 18px 20px;
+  }
+
+  .btnSub {
+    font-size: 13px;
+  }
+}

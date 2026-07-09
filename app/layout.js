@@ -1,4 +1,9 @@
-import { Cinzel, EB_Garamond, Cormorant_Garamond } from 'next/font/google';
+import {
+  Cinzel,
+  EB_Garamond,
+  Cormorant_Garamond,
+  Dancing_Script,
+} from 'next/font/google';
 import './globals.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -26,6 +31,13 @@ const cormorantGaramond = Cormorant_Garamond({
   display: 'swap',
 });
 
+const dancingScript = Dancing_Script({
+  subsets: ['latin'],
+  weight: ['400', '600'],
+  variable: '--font-dancing',
+  display: 'swap',
+});
+
 export const metadata = {
   title: 'Simplicitude',
   description: 'Chocolate artesanal — Da Floresta à Fábrica',
@@ -35,7 +47,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="pt-BR"
-      className={`${cinzel.variable} ${ebGaramond.variable} ${cormorantGaramond.variable}`}
+      className={`${cinzel.variable} ${ebGaramond.variable} ${cormorantGaramond.variable} ${dancingScript.variable}`}
     >
       <body>
         <Header />

@@ -1,0 +1,43 @@
+/* Réplica de .section-title-hero e .section-title em
+   __ARCHIVE/experiencias/alegria-ar/style.css */
+
+.sectionTitleHero {
+  font-family: var(--font-cinzel), serif;
+  font-size: clamp(22px, 5.5vw, 52px);
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--green);
+  text-align: center;
+  padding: 44px 24px 0;
+  line-height: 1.2;
+}
+
+.sectionTitle {
+  font-family: var(--font-cinzel), serif;
+  font-size: clamp(16px, 4vw, 32px);
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--green);
+  text-align: center;
+  padding: 12px 24px 32px;
+}
+
+.empty {
+  font-family: var(--font-eb-garamond), serif;
+  font-size: 1.05rem;
+  color: var(--brown);
+  text-align: center;
+  padding: 40px 24px 80px;
+}
+
+@media (max-width: 480px) {
+  .sectionTitleHero {
+    padding: 32px 20px 0;
+  }
+
+  .sectionTitle {
+    padding: 8px 20px 24px;
+  }
+}

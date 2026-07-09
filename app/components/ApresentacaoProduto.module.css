@@ -1,0 +1,141 @@
+/* Réplica literal de .choco-block e classes relacionadas em
+   __ARCHIVE/experiencias/alegria-ar/style.css — mesmos valores exatos de
+   cor, fonte, tamanho e espaçamento, usando os tokens já declarados em
+   app/globals.css. */
+
+.block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  padding: 0 32px 48px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+@media (max-width: 700px) {
+  .block {
+    grid-template-columns: 1fr;
+    padding: 0 0 40px;
+  }
+}
+
+/* Fotos (esquerda) */
+.photos {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 8px;
+}
+
+@media (max-width: 480px) {
+  .photos {
+    gap: 6px;
+  }
+}
+
+.photoMainWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+}
+
+.photoMain {
+  object-fit: cover;
+  object-position: 50% 60%;
+}
+
+.photoPlaceholder {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cream);
+  color: var(--caramel);
+  font-family: var(--font-cinzel), serif;
+  font-weight: 600;
+  font-size: 4rem;
+  text-transform: uppercase;
+}
+
+.photoThumbs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+@media (max-width: 480px) {
+  .photoThumbs {
+    gap: 6px;
+  }
+}
+
+.photoThumbWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+}
+
+.photoThumb {
+  object-fit: cover;
+}
+
+/* Texto (direita) */
+.text {
+  padding: 12px 28px 12px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+@media (max-width: 700px) {
+  .text {
+    padding: 24px 24px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .text {
+    padding: 20px 20px 12px;
+  }
+}
+
+.labelScript {
+  font-family: var(--font-dancing), cursive;
+  font-size: clamp(22px, 3.5vw, 32px);
+  font-weight: 400;
+  color: var(--caramel);
+  line-height: 1.2;
+  margin-bottom: -6px;
+}
+
+.nameDisplay {
+  font-family: var(--font-cinzel), serif;
+  font-size: clamp(40px, 8vw, 72px);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cream-name);
+  line-height: 1;
+  margin-bottom: 18px;
+}
+
+.tags {
+  font-family: var(--font-cinzel), serif;
+  font-size: clamp(11px, 1.4vw, 12px);
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--brown);
+  margin-bottom: 22px;
+  opacity: 0.8;
+}
+
+.desc {
+  font-family: var(--font-eb-garamond), serif;
+  font-size: clamp(16px, 2vw, 17px);
+  font-weight: 400;
+  line-height: 1.85;
+  color: var(--brown);
+  text-align: justify;
+  margin-bottom: 32px;
+}
