@@ -1,0 +1,57 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 32px;
+  background: var(--green);
+}
+
+.brand {
+  font-family: var(--font-cinzel), serif;
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  color: var(--bg);
+}
+
+.main {
+  min-height: calc(100vh - 72px);
+  padding: 64px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+
+.title {
+  font-family: var(--font-cinzel), serif;
+  font-weight: 600;
+  font-size: 1.6rem;
+  color: var(--green);
+}
+
+.welcome {
+  font-family: var(--font-eb-garamond), serif;
+  font-size: 1.1rem;
+  color: var(--brown);
+}
+
+.link {
+  margin-top: 12px;
+  font-family: var(--font-cinzel), serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.9rem;
+  background: var(--green);
+  color: var(--bg);
+  padding: 14px 28px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.link:hover {
+  background: var(--green-nav);
+}

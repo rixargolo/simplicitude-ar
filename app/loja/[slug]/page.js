@@ -44,7 +44,16 @@ export default async function ProdutoPage({ params }) {
           </div>
 
           <div className={styles.actions}>
-            <button className={styles.cta}>Comprar</button>
+            {produto.estoque === 0 ? (
+              <div className={styles.esgotadoWrap}>
+                <span className={styles.esgotado}>Esgotado</span>
+                <button className={styles.cta} disabled>
+                  Comprar
+                </button>
+              </div>
+            ) : (
+              <button className={styles.cta}>Comprar</button>
+            )}
             {produto.tem_meditacao && (
               <Link href="/meditacao" className={styles.meditacaoLink}>
                 Meditação guiada disponível

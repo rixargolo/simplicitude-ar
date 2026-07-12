@@ -1,0 +1,186 @@
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 32px;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-family: var(--font-cinzel), serif;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--green);
+  font-size: 1.4rem;
+  text-transform: uppercase;
+}
+
+.novoLink {
+  font-family: var(--font-cinzel), serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.85rem;
+  background: var(--green);
+  color: var(--bg);
+  padding: 12px 22px;
+  border: none;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.novoLink:hover {
+  background: var(--green-nav);
+}
+
+.empty {
+  font-family: var(--font-eb-garamond), serif;
+  font-size: 1.05rem;
+  color: var(--brown);
+}
+
+.tableWrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-eb-garamond), serif;
+  font-size: 0.95rem;
+  min-width: 720px;
+}
+
+.table th {
+  text-align: left;
+  font-family: var(--font-cinzel), serif;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: var(--brown);
+  padding: 14px 16px;
+  background: var(--cream);
+  border-bottom: 1px solid var(--border);
+}
+
+.table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--brown);
+  vertical-align: middle;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.imgWrap {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.img {
+  object-fit: cover;
+}
+
+.imgPlaceholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cream);
+  color: var(--caramel);
+  font-family: var(--font-cinzel), serif;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+}
+
+.nome {
+  font-family: var(--font-cinzel), serif;
+  font-weight: 600;
+  color: var(--green-nav);
+}
+
+.preco {
+  font-family: var(--font-cinzel), serif;
+  font-weight: 600;
+  color: var(--green-nav);
+  white-space: nowrap;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-cinzel), serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.72rem;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.status:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.statusAtivo {
+  composes: status;
+  background: rgba(19, 52, 41, 0.1);
+  color: var(--green);
+}
+
+.statusInativo {
+  composes: status;
+  background: rgba(107, 81, 63, 0.12);
+  color: var(--brown);
+}
+
+.acoes {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.editarLink {
+  font-family: var(--font-eb-garamond), serif;
+  font-size: 0.9rem;
+  color: var(--caramel);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.editarLink:hover {
+  border-color: var(--caramel);
+}
+
+@media (max-width: 640px) {
+  .wrap {
+    padding: 32px 20px;
+  }
+}

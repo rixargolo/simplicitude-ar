@@ -7,6 +7,7 @@ import {
 import './globals.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import SiteChrome from './components/SiteChrome';
 
 const cinzel = Cinzel({
   subsets: ['latin'],
@@ -50,9 +51,9 @@ export default function RootLayout({ children }) {
       className={`${cinzel.variable} ${ebGaramond.variable} ${cormorantGaramond.variable} ${dancingScript.variable}`}
     >
       <body>
-        <Header />
-        {children}
-        <Footer />
+        <SiteChrome header={<Header />} footer={<Footer />}>
+          {children}
+        </SiteChrome>
       </body>
     </html>
   );

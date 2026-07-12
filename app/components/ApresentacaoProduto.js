@@ -1,12 +1,15 @@
 import Image from 'next/image';
+import { rotuloCategoria } from '@/lib/produtos';
 import styles from './ApresentacaoProduto.module.css';
 
 // Replica literalmente o bloco de apresentação de produto da tela de
-// boas-vindas do antigo app AR (__ARCHIVE/experiencias/alegria-ar/), com
-// label script "Chocolate" (ou a coleção), nome grande, tags e descrição,
-// ao lado de uma galeria de fotos (uma grande + miniaturas, se houver mais
-// de uma imagem disponível).
+// boas-vindas do antigo app AR (__ARCHIVE/experiencias/alegria-ar/): label
+// script com o nome da categoria (quando mostrar_categoria_no_titulo=true),
+// nome grande, tags e descrição, ao lado de uma galeria de fotos (uma
+// grande + miniaturas, se houver mais de uma imagem disponível).
 export default function ApresentacaoProduto({ produto, children }) {
+  const rotulo = rotuloCategoria(produto);
+
   const imagens =
     produto.imagens && produto.imagens.length > 0
       ? produto.imagens
@@ -54,9 +57,7 @@ export default function ApresentacaoProduto({ produto, children }) {
       </div>
 
       <div className={styles.text}>
-        <span className={styles.labelScript}>
-          {produto.colecao || 'Chocolate'}
-        </span>
+        {rotulo && <span className={styles.labelScript}>{rotulo}</span>}
         <h2 className={styles.nameDisplay}>{produto.nome}</h2>
         {produto.atributos && (
           <p className={styles.tags}>{produto.atributos}</p>
