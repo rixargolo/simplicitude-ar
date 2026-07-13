@@ -9,7 +9,7 @@
 
 .heroImg {
   object-fit: cover;
-  filter: grayscale(1) contrast(1.1) brightness(0.9);
+  filter: contrast(1.1) brightness(0.9);
   animation: heroKenBurns 20s ease-out forwards;
 }
 
@@ -23,15 +23,18 @@
   pointer-events: none;
 }
 
-.heroGrain {
+.heroStripes {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
-  opacity: 0.1;
-  mix-blend-mode: overlay;
   pointer-events: none;
+  background: repeating-linear-gradient(
+    -30deg,
+    rgba(0, 0, 0, 0.08) 0px,
+    rgba(0, 0, 0, 0.08) 3px,
+    rgba(255, 255, 255, 0.05) 3px,
+    rgba(255, 255, 255, 0.05) 6px
+  );
 }
 
 .heroGradient {

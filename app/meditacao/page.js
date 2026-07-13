@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { getProdutos } from '@/lib/produtos';
 import ApresentacaoProduto from '../components/ApresentacaoProduto';
 import MeditacaoPlayer from '../components/MeditacaoPlayer';
@@ -17,7 +18,43 @@ export default async function MeditacaoPage() {
 
   return (
     <main>
-      <h1 className={styles.sectionTitleHero}>Degustação Meditativa</h1>
+      <section className={styles.hero}>
+        <Image
+          src="/meditacao/hero.png"
+          alt="Três chocolates da Coleção Inspirar dispostos sobre uma tábua de madeira"
+          fill
+          sizes="100vw"
+          className={styles.heroImg}
+          priority
+        />
+        <div className={styles.heroDuotone} aria-hidden="true" />
+        <div className={styles.heroStripes} aria-hidden="true" />
+        <div className={styles.heroGradient} aria-hidden="true" />
+        <div className={styles.heroCaption}>
+          <h1 className={styles.heroTitle}>Degustação Meditativa</h1>
+          <span className={styles.heroUnderline} aria-hidden="true" />
+        </div>
+      </section>
+
+      <section className={styles.intro}>
+        <p className={styles.introLead}>
+          Viva uma experiência única com chocolates que te conduzem numa
+          jornada sensorial e emocional.
+        </p>
+        <p className={styles.introBody}>
+          A Coleção Inspirar é uma linha exclusiva da Simplicitude, criada
+          para harmonizar os benefícios nutricionais e sensoriais dos
+          chocolates com práticas de meditação e atenção plena. Cada
+          chocolate desta coleção é feito com ervas e especiarias
+          especialmente selecionadas para inspirar diferentes sentimentos.
+        </p>
+        <p className={styles.introBody}>
+          Além de deliciar o paladar, estes chocolates conectam corpo e
+          mente de forma holística, através de meditações guiadas pela voz
+          serena de Bruna Santos.
+        </p>
+      </section>
+
       <h2 className={styles.sectionTitle}>Chocolates para Meditação</h2>
 
       {produtosComMeditacao.length === 0 ? (

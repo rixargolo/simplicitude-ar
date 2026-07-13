@@ -20,7 +20,7 @@ export default function QuemSomosPage() {
           priority
         />
         <div className={styles.heroDuotone} aria-hidden="true" />
-        <div className={styles.heroGrain} aria-hidden="true" />
+        <div className={styles.heroStripes} aria-hidden="true" />
         <div className={styles.heroGradient} aria-hidden="true" />
         <div className={styles.heroCaption}>
           <h1 className={styles.heroTitle}>Quem Somos</h1>

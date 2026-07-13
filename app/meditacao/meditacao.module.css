@@ -1,17 +1,144 @@
-/* Réplica de .section-title-hero e .section-title em
-   __ARCHIVE/experiencias/alegria-ar/style.css */
+/* ============================================================
+   Hero — réplica do padrão de app/quem-somos/quem-somos.module.css
+   ============================================================ */
 
-.sectionTitleHero {
-  font-family: var(--font-cinzel), serif;
-  font-size: clamp(22px, 5.5vw, 52px);
-  font-weight: 400;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--green);
-  text-align: center;
-  padding: 44px 24px 0;
-  line-height: 1.2;
+.hero {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1270 / 446;
+  max-height: 60vh;
+  overflow: hidden;
+  background: var(--green);
 }
+
+.heroImg {
+  object-fit: cover;
+  filter: contrast(1.05) brightness(1.05);
+  animation: heroKenBurns 20s ease-out forwards;
+}
+
+.heroDuotone {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--green);
+  mix-blend-mode: multiply;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.heroStripes {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    -30deg,
+    rgba(0, 0, 0, 0.08) 0px,
+    rgba(0, 0, 0, 0.08) 3px,
+    rgba(255, 255, 255, 0.05) 3px,
+    rgba(255, 255, 255, 0.05) 6px
+  );
+}
+
+.heroGradient {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 40%,
+    rgba(19, 52, 41, 0.88) 100%
+  );
+  pointer-events: none;
+}
+
+.heroCaption {
+  position: absolute;
+  left: 24px;
+  bottom: 32px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: heroCaptionIn 0.8s ease-out 0.2s both;
+}
+
+.heroTitle {
+  margin: 0;
+  font-family: var(--font-cinzel), serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--bg);
+  font-size: clamp(2rem, 6vw, 4rem);
+  line-height: 1.1;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
+}
+
+.heroUnderline {
+  width: 60px;
+  height: 3px;
+  background: var(--caramel);
+}
+
+@keyframes heroKenBurns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes heroCaptionIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================
+   Introdução — Coleção Inspirar
+   ============================================================ */
+
+.intro {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 64px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+}
+
+.introLead {
+  margin: 0;
+  font-family: var(--font-cormorant), serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.3rem, 2.6vw, 1.7rem);
+  line-height: 1.5;
+  color: var(--green);
+}
+
+.introBody {
+  margin: 0;
+  font-family: var(--font-eb-garamond), serif;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--brown);
+}
+
+/* ============================================================
+   Lista de produtos
+   ============================================================ */
 
 .sectionTitle {
   font-family: var(--font-cinzel), serif;
@@ -32,12 +159,34 @@
   padding: 40px 24px 80px;
 }
 
-@media (max-width: 480px) {
-  .sectionTitleHero {
-    padding: 32px 20px 0;
+@media (max-width: 640px) {
+  .hero {
+    aspect-ratio: 3 / 2;
+    max-height: none;
   }
 
+  .heroCaption {
+    left: 20px;
+    bottom: 20px;
+  }
+
+  .intro {
+    padding: 48px 20px;
+  }
+}
+
+@media (max-width: 480px) {
   .sectionTitle {
     padding: 8px 20px 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroImg {
+    animation: none;
+  }
+
+  .heroCaption {
+    animation: none;
   }
 }

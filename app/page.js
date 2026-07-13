@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { getProdutosRecentes } from '@/lib/produtos';
+import VitrineProdutos from './components/VitrineProdutos';
 import styles from './home.module.css';
 
 export const metadata = {
@@ -34,7 +36,9 @@ const PARTICLES = Array.from({ length: PARTICLE_COUNT }, (_, i) => ({
   delay: rand() * -30,
 }));
 
-export default function HomePage() {
+export default async function HomePage() {
+  const produtos = await getProdutosRecentes();
+
   return (
     <main>
       <section className={styles.hero}>
@@ -95,6 +99,8 @@ export default function HomePage() {
         </div>
       </section>
 
+      <VitrineProdutos produtos={produtos} />
+
       <section className={styles.teaser}>
         <h2 className={styles.sectionTitle}>Meditação</h2>
         <p className={styles.teaserText}>
@@ -120,18 +126,17 @@ export default function HomePage() {
           className={styles.duotoneImg}
         />
         <div className={styles.duotoneOverlay} aria-hidden="true" />
+        <div className={styles.duotoneStripes} aria-hidden="true" />
         <div className={styles.duotoneContent}>
           <p className={styles.pullQuote}>
             Da floresta à fábrica — cacau de agrofloresta, cultivado por
             quatro gerações.
           </p>
-          <Link href="/quem-somos" className={styles.quietLink}>
+          <Link href="/quem-somos" className={styles.duotoneCta}>
             Conheça nossa história
           </Link>
         </div>
       </section>
-
-      {/* Vitrine de produtos: será conectada ao Supabase em etapa futura */}
     </main>
   );
 }
