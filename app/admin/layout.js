@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import LogoutButton from '../components/LogoutButton';
+import AdminNav from './AdminNav';
 import styles from './admin.module.css';
 
 // Checagem defensiva de sessão — o middleware já protege /admin/*, mas
@@ -17,12 +17,9 @@ export default async function AdminLayout({ children }) {
   }
 
   return (
-    <>
-      <header className={styles.header}>
-        <span className={styles.brand}>Simplicitude — Admin</span>
-        <LogoutButton />
-      </header>
-      {children}
-    </>
+    <div className={styles.shell}>
+      <AdminNav />
+      <div className={styles.content}>{children}</div>
+    </div>
   );
 }

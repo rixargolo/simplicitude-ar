@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { getProdutosComEstoque } from '@/lib/admin/estoque';
 import MovimentacaoForm from '../MovimentacaoForm';
 import formStyles from '../MovimentacaoForm.module.css';
@@ -12,6 +13,9 @@ export default async function NovaMovimentacaoPage({ searchParams }) {
 
   return (
     <div className={formStyles.page}>
+      <Link href="/admin/estoque" className={formStyles.voltar}>
+        ← Estoque
+      </Link>
       <MovimentacaoForm produtos={produtos} produtoIdInicial={produto ?? ''} />
     </div>
   );

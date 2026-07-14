@@ -120,18 +120,34 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
 
 Auth / admin (chrome oculto por `SiteChrome`):
 - **`/login`** — formulário email/senha (`signInWithPassword`)
-- **`/admin`** — dashboard, links para produtos, categorias e estoque
+- **`/admin`** — dashboard: saudação de boas-vindas + atalhos para as ações mais comuns
+  (novo produto, nova categoria, registrar movimentação). Os links de navegação entre
+  seções não ficam mais aqui — moraram para a sidebar persistente (ver abaixo)
 - **`/admin/produtos`**, **`/admin/produtos/novo`**, **`/admin/produtos/[id]/editar`** —
-  CRUD de produtos (toggle ativo/inativo, upload de imagem)
+  CRUD de produtos (toggle ativo/inativo, upload de imagem); `novo` e `[id]/editar` têm
+  link "← Produtos" acima do formulário, voltando para a listagem
 - **`/admin/categorias`**, **`/admin/categorias/nova`**,
-  **`/admin/categorias/[id]/editar`** — CRUD de categorias
+  **`/admin/categorias/[id]/editar`** — CRUD de categorias; `nova` e `[id]/editar` têm
+  link "← Categorias" acima do formulário
 - **`/admin/estoque`** — lista produtos com estoque atual, link para registrar
   movimentação por produto
 - **`/admin/estoque/nova`** — formulário de movimentação (`MovimentacaoForm`), aceita
   `?produto={id}` para pré-selecionar; só permite tipos `reposicao` e `ajuste` (insere em
   `estoque_movimentacoes`, nunca escreve em `produtos.estoque` diretamente — isso é
-  responsabilidade da trigger do banco)
-- **`/admin/estoque/historico`** — histórico de movimentações, mais recente primeiro
+  responsabilidade da trigger do banco); tem link "← Estoque" acima do formulário
+- **`/admin/estoque/historico`** — histórico de movimentações, mais recente primeiro (já
+  tinha link "Voltar" para `/admin/estoque`, mantido como estava)
+
+**Navegação persistente do admin:** `app/admin/layout.js` renderiza um shell de duas
+colunas (`app/admin/admin.module.css` → `.shell`) com a sidebar (`app/admin/AdminNav.js`,
+`'use client'`) à esquerda e o conteúdo da página à direita (`.content`). `AdminNav` lê a
+rota atual via `usePathname()` (primeiro uso desse padrão fora de `SiteChrome`) para
+destacar a seção ativa (array `SECOES` — acrescentar uma seção futura, ex. Pedidos ou
+Coleções, é só adicionar um item nesse array) e renderiza o `LogoutButton` no rodapé da
+sidebar. Em telas `≤640px` a sidebar vira uma barra superior horizontal. Toda a navegação
+entre seções (Início/Produtos/Categorias/Estoque) e o logout ficam ali, visíveis em todas
+as páginas de `/admin/*` — antes só havia um header estático com marca + logout, sem links
+de seção.
 
 ---
 
@@ -150,8 +166,9 @@ Cada um com `*.module.css` co-locado.
   linkando para `/loja/[slug]`, mais link "Ver todos" para `/loja`; usado em `app/page.js`
   logo abaixo do hero, alimentado por `getProdutosRecentes()`
 - **`MeditacaoPlayer`** (`'use client'`) — player de áudio da meditação guiada
-- **`LogoutButton`** (`'use client'`) — `signOut()` + redirect para `/login`, usado no
-  layout admin
+- **`LogoutButton`** (`'use client'`) — `signOut()` + redirect para `/login`, usado dentro
+  de `AdminNav` (`app/admin/AdminNav.js`, ver seção de Rotas — não faz parte de
+  `app/components/`, mas segue o mesmo padrão de client component com CSS module)
 
 ---
 

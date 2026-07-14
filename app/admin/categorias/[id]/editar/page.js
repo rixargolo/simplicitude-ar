@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import { getCategoriaById } from '@/lib/admin/categorias';
 import CategoriaForm from '../../CategoriaForm';
 import formStyles from '../../CategoriaForm.module.css';
@@ -18,6 +19,9 @@ export default async function EditarCategoriaPage({ params }) {
 
   return (
     <div className={formStyles.page}>
+      <Link href="/admin/categorias" className={formStyles.voltar}>
+        ← Categorias
+      </Link>
       <CategoriaForm mode="edit" categoria={categoria} />
     </div>
   );

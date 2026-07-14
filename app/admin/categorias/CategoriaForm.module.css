@@ -2,6 +2,21 @@
   padding: 48px 32px;
 }
 
+.voltar {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto 16px;
+  font-family: var(--font-eb-garamond), serif;
+  font-size: 0.95rem;
+  color: var(--caramel);
+  text-decoration: none;
+}
+
+.voltar:hover {
+  text-decoration: underline;
+}
+
 .form {
   width: 100%;
   max-width: 560px;

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { getColecoes, getCategorias } from '@/lib/admin/produtos';
 import ProdutoForm from '../ProdutoForm';
 import formStyles from '../ProdutoForm.module.css';
@@ -14,6 +15,9 @@ export default async function NovoProdutoPage() {
 
   return (
     <div className={formStyles.page}>
+      <Link href="/admin/produtos" className={formStyles.voltar}>
+        ← Produtos
+      </Link>
       <ProdutoForm mode="create" colecoes={colecoes} categorias={categorias} />
     </div>
   );

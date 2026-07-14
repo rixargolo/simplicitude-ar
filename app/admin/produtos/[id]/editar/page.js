@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import {
   getProdutoById,
   getColecoes,
@@ -26,6 +27,9 @@ export default async function EditarProdutoPage({ params }) {
 
   return (
     <div className={formStyles.page}>
+      <Link href="/admin/produtos" className={formStyles.voltar}>
+        ← Produtos
+      </Link>
       <ProdutoForm
         mode="edit"
         produto={produto}

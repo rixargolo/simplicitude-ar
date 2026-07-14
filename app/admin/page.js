@@ -6,18 +6,20 @@ export default function AdminPage() {
     <main className={styles.main}>
       <h1 className={styles.title}>Área Administrativa</h1>
       <p className={styles.welcome}>
-        Bem-vindo(a)! A gestão de pedidos será implementada em etapas
-        futuras.
+        Bem-vindo(a)! Use o menu ao lado para gerenciar produtos, categorias
+        e estoque. A gestão de pedidos será implementada em etapas futuras.
       </p>
-      <Link href="/admin/produtos" className={styles.link}>
-        Gerenciar produtos
-      </Link>
-      <Link href="/admin/categorias" className={styles.link}>
-        Gerenciar categorias
-      </Link>
-      <Link href="/admin/estoque" className={styles.link}>
-        Gerenciar estoque
-      </Link>
+      <div className={styles.atalhos}>
+        <Link href="/admin/produtos/novo" className={styles.atalho}>
+          + Novo produto
+        </Link>
+        <Link href="/admin/categorias/nova" className={styles.atalho}>
+          + Nova categoria
+        </Link>
+        <Link href="/admin/estoque/nova" className={styles.atalho}>
+          + Registrar movimentação
+        </Link>
+      </div>
     </main>
   );
 }
