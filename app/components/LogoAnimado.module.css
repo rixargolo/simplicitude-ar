@@ -1,0 +1,45 @@
+.wrap {
+  position: relative;
+  display: block;
+  line-height: 0;
+}
+
+.base {
+  height: 38px;
+  width: auto;
+  opacity: 1;
+}
+
+/* Some instantaneamente (sem transição) quando o traçado assume — quem
+   faz o fade suave de volta é .baseSettling. */
+.baseHidden {
+  opacity: 0;
+}
+
+.baseSettling {
+  opacity: 1;
+  transition: opacity 480ms ease-in;
+}
+
+.svg {
+  position: absolute;
+  inset: 0;
+  height: 38px;
+  width: auto;
+  opacity: 1;
+}
+
+.svgSettling {
+  opacity: 0;
+  transition: opacity 480ms ease-in;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .svg {
+    display: none;
+  }
+
+  .base {
+    opacity: 1 !important;
+  }
+}

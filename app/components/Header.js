@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import styles from './Header.module.css';
+import LogoAnimado from './LogoAnimado';
 
 const NAV_LINKS = [
   { href: '/', label: 'Início' },
@@ -20,15 +20,7 @@ export default function Header() {
     <header className={styles.header}>
       <div className={styles.bar}>
         <Link href="/" className={styles.logoLink} onClick={() => setOpen(false)}>
-          <Image
-            src="/marca/logo-simplicitude-677w.png"
-            alt="Simplicitude"
-            width={677}
-            height={118}
-            sizes="(max-width: 1024px) 30.7vw, 30.7vw"
-            className={styles.logo}
-            priority
-          />
+          <LogoAnimado />
         </Link>
 
         <nav className={styles.navDesktop} aria-label="Navegação principal">

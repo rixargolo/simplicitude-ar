@@ -158,6 +158,22 @@ Cada um com `*.module.css` co-locado.
 - **`SiteChrome`** (`'use client'`) — esconde Header/Footer em `/login` e `/admin/*` via
   `usePathname()`; usado em `app/layout.js` envolvendo `{children}`
 - **`Header`**, **`Footer`** — navegação e rodapé do site público
+- **`LogoAnimado`** (`'use client'`) — usado dentro do `<Link href="/">` do `Header` no
+  lugar do `<Image>` direto da wordmark. Na **1ª carga da Home (`/`) em cada sessão do
+  navegador**, toca uma animação de "escrita à mão" (traçado sequencial via
+  `stroke-dasharray`/`stroke-dashoffset`, com timing portado 1:1 de um protótipo HTML de
+  referência — `MIN_DURATION=220`, `SPEED=40`) sobre um `<svg>` inline com os traços da
+  wordmark (`viewBox="0 0 172.18108 31.367828"`, paths na ordem de desenho do arquivo de
+  referência `simplicitude-logo-traco.svg` — esse SVG **não** foi movido para `public/`,
+  os paths estão embutidos no componente); ao terminar, faz crossfade para o
+  `<Image src="/marca/logo-simplicitude-677w.png">` estático de sempre, que é a base já
+  renderizada por baixo o tempo todo (resultado final idêntico ao visual atual). Decide
+  se anima checando, nessa ordem, `pathname !== '/'`,
+  `matchMedia('(prefers-reduced-motion: reduce)')` e a chave de
+  **`sessionStorage`** `simplicitude:logoAnimada` (**primeiro uso de `sessionStorage` no
+  projeto** — em revisitas na mesma aba, ou em qualquer página fora da Home, mostra
+  direto a logo estática, sem tocar o traçado de novo). O `Header` segue dono do `<Link>`
+  (cujo `onClick` fecha o menu mobile); `LogoAnimado` só cuida do conteúdo visual da logo.
 - **`ApresentacaoProduto`** — bloco de apresentação de produto (galeria de fotos, rótulo
   de categoria via `rotuloCategoria()`, nome, atributos, descrição); usado em
   `/loja/[slug]` e `/meditacao`
