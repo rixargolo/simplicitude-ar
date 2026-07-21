@@ -65,6 +65,7 @@ export default function MovimentacaoForm({ produtos, produtoIdInicial }) {
       router.push('/admin/estoque');
       router.refresh();
     } catch (err) {
+      console.error(err);
       setErro(mensagemErroAmigavel(err));
       setSalvando(false);
     }
@@ -158,7 +159,7 @@ function mensagemErroAmigavel(err) {
     return 'Essa movimentação deixaria o estoque negativo — verifique a quantidade informada.';
   }
 
-  return err?.message || 'Não foi possível registrar a movimentação.';
+  return 'Não foi possível registrar a movimentação. Tente novamente.';
 }
 
 // Insere a movimentação. O estoque do produto (produtos.estoque) e o

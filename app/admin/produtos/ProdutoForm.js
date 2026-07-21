@@ -110,7 +110,8 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
       router.push('/admin/produtos');
       router.refresh();
     } catch (err) {
-      setErro(err.message || 'Não foi possível salvar o produto.');
+      console.error(err);
+      setErro('Não foi possível salvar o produto. Tente novamente.');
       setSalvando(false);
     }
   }

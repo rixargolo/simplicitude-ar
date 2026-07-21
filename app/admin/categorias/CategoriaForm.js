@@ -43,7 +43,8 @@ export default function CategoriaForm({ mode, categoria }) {
       router.push('/admin/categorias');
       router.refresh();
     } catch (err) {
-      setErro(err.message || 'Não foi possível salvar a categoria.');
+      console.error(err);
+      setErro('Não foi possível salvar a categoria. Tente novamente.');
       setSalvando(false);
     }
   }
