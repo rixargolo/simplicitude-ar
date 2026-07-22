@@ -45,6 +45,11 @@ export default function LogoAnimado() {
   useLayoutEffect(() => {
     if (pathname !== '/') return undefined;
 
+    // A partir daqui quem controla a visibilidade do PNG é o React (fases
+    // drawing/settling/idle) — remove o gate do script inline de
+    // app/layout.js, que só existe para cobrir o frame pré-hidratação.
+    document.documentElement.classList.remove('logo-animar');
+
     let animar = true;
     try {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -131,6 +136,7 @@ export default function LogoAnimado() {
         height={118}
         sizes="(max-width: 1024px) 30.7vw, 30.7vw"
         className={baseClasses}
+        data-logo-base
         priority
       />
       {phase !== 'idle' && (

@@ -174,6 +174,20 @@ Cada um com `*.module.css` co-locado.
   projeto** — em revisitas na mesma aba, ou em qualquer página fora da Home, mostra
   direto a logo estática, sem tocar o traçado de novo). O `Header` segue dono do `<Link>`
   (cujo `onClick` fecha o menu mobile); `LogoAnimado` só cuida do conteúdo visual da logo.
+  **Anti-flash pré-hidratação:** como o `useLayoutEffect` só age depois que o JS hidrata,
+  ele sozinho não evita que o PNG estático (já presente no HTML vindo do servidor) pinte
+  por um instante antes do traçado começar — perceptível principalmente em desktop, onde
+  o 1º paint é mais rápido que o download/hidratação do JS. Por isso há um `<script>`
+  inline síncrono em `app/layout.js` (primeiro filho de `<body>`, antes de
+  `<SiteChrome>`), que roda durante o parse do HTML e replica as mesmas condições do
+  componente (rota `/`, mesma chave de `sessionStorage`, `prefers-reduced-motion`); se
+  vai animar, adiciona a classe `logo-animar` em `document.documentElement`. Uma regra
+  global em `app/globals.css` (`html.logo-animar [data-logo-base] { opacity: 0; }`) usa
+  essa classe para esconder o PNG (marcado com o atributo `data-logo-base`) já no 1º
+  paint. Assim que `LogoAnimado` hidrata, remove a classe no mesmo `useLayoutEffect` de
+  decisão (antes de decidir se anima) — dali em diante quem controla a opacidade do PNG é
+  o React (fases `drawing`/`settling`/`idle`), não mais a classe global. Script e
+  componente precisam permanecer com as mesmas condições/chave — mudou um, muda o outro.
 - **`ApresentacaoProduto`** — bloco de apresentação de produto (galeria de fotos, rótulo
   de categoria via `rotuloCategoria()`, nome, atributos, descrição); usado em
   `/loja/[slug]` e `/meditacao`

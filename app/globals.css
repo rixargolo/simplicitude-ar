@@ -26,3 +26,10 @@ body {
   color: var(--brown);
   font-family: var(--font-eb-garamond), serif;
 }
+
+/* Antes da hidratação, quando o script inline de app/layout.js decidiu que a
+   logo vai animar nesta carga, esconde a wordmark PNG já no 1º paint — evita
+   o flash do logo estático antes do traçado (ver LogoAnimado). */
+html.logo-animar [data-logo-base] {
+  opacity: 0;
+}
