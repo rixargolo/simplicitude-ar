@@ -37,7 +37,17 @@ const STROKES = [
 export default function LogoAnimado() {
   const pathname = usePathname();
   const [phase, setPhase] = useState('idle'); // 'idle' | 'drawing' | 'settling'
+  const [ciclo, setCiclo] = useState(0); // incrementa a cada replay para reiniciar o efeito de desenho
   const svgRef = useRef(null);
+
+  // Na Home, clicar na logo refaz o traçado (ação explícita: ignora o flag de
+  // sessionStorage). Fora da Home o clique só navega, via o <Link> do Header.
+  function replay() {
+    if (pathname !== '/') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    setCiclo((c) => c + 1);
+    setPhase('drawing');
+  }
 
   // Decide, uma única vez por sessão, se o traçado deve tocar. Roda em
   // useLayoutEffect (não useEffect) para poder disparar o setPhase antes
@@ -110,7 +120,7 @@ export default function LogoAnimado() {
     timers.push(setTimeout(() => setPhase('settling'), decorrido));
 
     return () => timers.forEach(clearTimeout);
-  }, [phase]);
+  }, [phase, ciclo]);
 
   // Após o crossfade, encerra em 'idle' (só o PNG estático, igual ao visual atual).
   useEffect(() => {
@@ -128,7 +138,7 @@ export default function LogoAnimado() {
     .join(' ');
 
   return (
-    <span className={styles.wrap}>
+    <span className={styles.wrap} onClick={replay}>
       <Image
         src="/marca/logo-simplicitude-677w.png"
         alt="Simplicitude"

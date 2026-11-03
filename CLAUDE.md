@@ -188,6 +188,10 @@ Cada um com `*.module.css` co-locado.
   decisão (antes de decidir se anima) — dali em diante quem controla a opacidade do PNG é
   o React (fases `drawing`/`settling`/`idle`), não mais a classe global. Script e
   componente precisam permanecer com as mesmas condições/chave — mudou um, muda o outro.
+  **Replay por clique:** na Home, clicar na logo refaz o traçado (`onClick` no `<span>`
+  raiz; estado `ciclo` nas deps do efeito de desenho reinicia a animação mesmo no meio
+  dela; ignora a chave de `sessionStorage`, mas respeita `prefers-reduced-motion`). Fora
+  da Home o clique só navega para `/` via o `<Link>` do `Header`.
 - **`ApresentacaoProduto`** — bloco de apresentação de produto (galeria de fotos, rótulo
   de categoria via `rotuloCategoria()`, nome, atributos, descrição); usado em
   `/loja/[slug]` e `/meditacao`
