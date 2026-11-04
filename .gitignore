@@ -8,3 +8,6 @@ _DOCS/
 
 # Env
 .env*.local
+
+# taste-skill
+.taste-skill/

@@ -28,8 +28,77 @@ A experiência original de realidade aumentada em Three.js/WebXR foi **arquivada
 componentes `ApresentacaoProduto` e `MeditacaoPlayer` do site atual são ports do visual
 dessa tela.
 
-Site em produção: **https://simplicitude-ar.netlify.app**
+Site em produção: **https://simplicitude-ar.netlify.app** (o domínio próprio
+`simplicitude.com.br` entra no go-live da 1ª versão pública)
 Repositório: GitHub pessoal (rixargolo) + deploy via Netlify
+
+---
+
+## Produto e objetivo da v1
+
+Plano completo (auditoria, decisões, lista priorizada, contrato de dados, pendências):
+[`docs/plano-v1.md`](docs/plano-v1.md). Regras de portabilidade:
+[`docs/adr/0001-portabilidade.md`](docs/adr/0001-portabilidade.md) — **ler antes de adicionar
+qualquer dependência de plataforma** (Netlify/Supabase).
+
+- **Objetivo:** ampliar os canais de venda. Em 6 meses o fluxo de venda deve ser totalmente
+  automatizado (só o manuseio do produto é humano). Hoje a venda online é só por WhatsApp; o
+  padrão é feira, ponto de distribuição e B2B presencial. **B2B fica fora do site na v1.**
+- **Mote:** "Salvar o mundo comendo chocolate".
+- **Personas, em ordem de prioridade:** (3) bem-estar/saúde ligado à meditação, (2) presente,
+  (1) consumidor de guloseimas, (4) B2B.
+- **Descoberta:** indicação, Instagram, pontos de venda físicos — assumir muito tráfego mobile
+  vindo do Instagram.
+- **Pagamento:** os meios (PIX, cartão etc.) são os que o Checkout InfinitePay oferece; o site
+  não decide meio por faixa de valor.
+- **Entrega:** rota regional (de carro), Bahia toda, Brasil via Correios/transportadora, mais
+  retirada. Produção tem ociosidade; já há quem separe e envie.
+- **Marco da 1ª versão pública:** loja completa com checkout InfinitePay no domínio próprio,
+  com CNPJ/endereço no rodapé, privacidade, entrega/trocas e Open Graph. Escopo: Home, Loja,
+  Meditação (o redesign de `/meditacao` fica para depois do go-live).
+- **Decisões vigentes:** checkout como **convidado** (a decisão antiga de login obrigatório
+  está superada); vitrine da home com título derivado do critério de ordem — `created_at` = "Novidades",
+  `destaque_ordem` curado sem dado de venda = "Favoritos", só ordem real da dona ou histórico de
+  pedidos = "Mais vendidos" (**nunca "Mais vendidos" ordenado por `created_at`**);
+  frete por tabela de zonas por faixa de CEP (Melhor Envio depois); sem glossário e só o ADR
+  0001 (as demais decisões entram aqui em uma linha).
+- **Fluxo de trabalho da v1:** o redesign mora na branch `v1` (preview no Netlify, `noindex`);
+  `main` segue sendo o site atual até o go-live. Mockups de UI ficam atrás de
+  `NEXT_PUBLIC_MOCKUPS` e nunca vão para o domínio real. Nada disso está implementado ainda —
+  ver a lista priorizada no plano.
+- **Ordem do front:** A1 (preview) → A2 (tokens, header/footer) → A3/A4 (home) → A6/A7 (loja,
+  produto, só leitura) → mostrar o preview à dona; só depois o contrato de dados (A0) e
+  carrinho/checkout/pedido (A8–A10). Na 1ª rodada o produto não tem botão de compra.
+
+---
+
+## Paleta e tipografia oficiais
+
+**Paleta oficial da marca (papéis a definir no design):** Bege Background `#f6f3ea`, Azul
+Simplicitude `#272a5c`, Verde Musgo `#27401e`.
+
+> ⚠️ **Os tokens atuais em `app/globals.css` (`--bg`, `--green`, `--green-nav`, `--brown`,
+> `--caramel`, `--cream`, `--gold` etc., ver Convenções) ainda são os ANTIGOS.** A troca é o
+> item A2 do plano e substitui também as ~55 cores hex soltas nos CSS.
+
+**Tipografia:** provisória (Cinzel, EB Garamond, Cormorant Garamond, Dancing Script). Será
+centralizada em tokens (`--font-display`, `--font-body`, `--font-accent`) para trocar fácil
+quando a dona enviar a oficial.
+
+**Contato vigente:** WhatsApp **(73) 9 2002-6708**; e-mail `viva@simplicitude.com.br`
+(inalterado); Instagram `@simplicitude.co`. ⚠️ O `Footer` ainda exibe o telefone antigo
+`(73) 99140-8689` até o item A2.
+
+---
+
+## Infra: DNS e e-mail
+
+- Domínio registrado no registro.br, mas **DNS e e-mail principal estão na GoDaddy
+  (temporária)** — nameservers `ns41/42.domaincontrol.com`, MX/SPF `secureserver.net`, DMARC
+  `p=reject`. A intenção é sair da GoDaddy depois do go-live, **como mudança separada**.
+- **Não alterar MX, SPF, `_dmarc` nem mudar os nameservers** como parte do go-live: só `A @` e
+  `www` mudam. Detalhes e rollback em `docs/plano-v1.md` (B5).
+- E-mail transacional (Resend) sairá pelo subdomínio `send.simplicitude.com.br`.
 
 ---
 
@@ -66,13 +135,18 @@ Repositório: GitHub pessoal (rixargolo) + deploy via Netlify
   tem código/tela usando ainda; foram desenhadas e criadas com RLS antecipando o
   checkout, não é trabalho a refazer
 
-**Pendente / não implementado ainda:**
-- `/contato` — placeholder "em construção"
+**Pendente / não implementado ainda** (ordem e dependências em
+[`docs/plano-v1.md`](docs/plano-v1.md), seção 3):
+- `/contato` — placeholder "em construção" (será removido; contato vai para o rodapé)
 - Checkout real — botão "Comprar" em `/loja/[slug]` é inerte; integração InfinitePay não
   existe (quando existir, é quem vai gerar as movimentações `venda`/`cancelamento` em
   `estoque_movimentacoes` e os registros em `pagamentos`)
-- Cadastro/login de cliente (front) — tabelas prontas, sem tela ainda; login obrigatório
-  para comprar é a decisão vigente (não definitiva)
+- Checkout de **convidado**: exige migration (`pedidos.cliente_id` nullable, campos
+  `comprador_*`, `token_acesso`). Cadastro/login de cliente fica para depois da v1; as
+  tabelas `clientes`/`enderecos` seguem prontas, sem tela
+- Schema/migrations **não estão versionados no repo** (só existem no painel do Supabase) e
+  não há ambiente de staging — itens B-1/B-2 do plano
+- Sem testes, lint nem CI no projeto (`package.json` só tem dev/build/start)
 - Admin de pedidos
 - **Admin CRUD de coleções** — a tabela `colecoes` existe e é lida (dropdown no formulário
   de produto), mas não há tela de gestão para criá-las/editá-las
@@ -89,6 +163,11 @@ Repositório: GitHub pessoal (rixargolo) + deploy via Netlify
    tabela separada) e reescrever as policies de SELECT/UPDATE que hoje usam `to
    authenticated using (true)` para checar esse campo — senão qualquer cliente cadastrado
    passa a enxergar dados (endereços, pedidos) de outros clientes.
+   **Situação (verificada em 2026-11-04):** o cadastro público do Supabase Auth está
+   **desligado** (`disable_signup: true`) — religá-lo no painel reabre a falha. O checkout de
+   convidado da v1 não precisa de cadastro; `is_admin()` + policies é obrigatório **antes de
+   contas de cliente e antes de criar um 3º usuário no Auth** (esse 3º usuário viraria admin
+   pleno). Um vigia no GitHub Actions deve avisar se o cadastro for religado (plano, B7).
 2. **Falta policy de INSERT admin em `pedidos`.** Hoje só existe policy de INSERT para o
    próprio cliente (`auth.uid() = cliente_id`), pensada para o checkout. Criação manual de
    pedido pelo admin (ex.: venda por WhatsApp) ainda não tem policy — avaliar quando esse
@@ -351,7 +430,13 @@ implementado — ver pendência de segurança #3.
 
 - Variáveis: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (ver
   `.env.local.example`)
-- `next.config.mjs` — `images.remotePatterns` liberando o host do Storage do Supabase
+- `next.config.mjs` — `images.remotePatterns` liberando o host do Storage do Supabase;
+  `poweredByHeader: false`; headers de segurança em todas as rotas (CSP com
+  `frame-ancestors 'none'`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy`,
+  `nosniff`) — a CSP libera só o Storage do Supabase e precisará liberar a InfinitePay quando
+  o checkout existir
+- `.mcp.json` (Playwright + Context7 MCP) existe só localmente, **não está versionado**
+- `_DOCS/` (auditorias de segurança e de design, assets de marca) está no `.gitignore`
 - `netlify.toml` — build `next build` + `@netlify/plugin-nextjs`
 - `scripts/migrar-imagens-produtos.mjs` — migração one-off e idempotente de imagens no
   Storage para a estrutura `{id}/principal.{ext}`; usa `SUPABASE_ADMIN_EMAIL` /
