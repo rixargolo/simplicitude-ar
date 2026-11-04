@@ -28,7 +28,19 @@ const contentSecurityPolicy = [
   "object-src 'none'",
 ].join('; ');
 
+// Envs próprias (ADR 0001, nada de CONTEXT/URL do Netlify). Padrão seguro: não indexar.
+const mockups = process.env.NEXT_PUBLIC_MOCKUPS === '1';
+const indexavel = process.env.SITE_INDEXAVEL === '1';
+if (mockups && indexavel) {
+  throw new Error(
+    'Build abortado: SITE_INDEXAVEL=1 junto com NEXT_PUBLIC_MOCKUPS=1 publicaria mockups no domínio real.',
+  );
+}
+
 const securityHeaders = [
+  ...(indexavel
+    ? []
+    : [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }]),
   { key: 'Content-Security-Policy', value: contentSecurityPolicy },
   { key: 'X-Frame-Options', value: 'DENY' },
   { key: 'X-Content-Type-Options', value: 'nosniff' },

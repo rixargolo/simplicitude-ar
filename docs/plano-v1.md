@@ -59,7 +59,7 @@ Os meios de pagamento são os que o Checkout InfinitePay oferece.
 ### 1.4 Lacunas de engenharia
 - **Sem migrations no repo**: schema, RLS e trigger só existem no painel do Supabase.
 - **Sem ambiente de teste**: qualquer teste de RLS ou checkout bateria em produção.
-- **Sem testes, lint ou CI** (`package.json` só tem dev/build/start).
+- **Sem lint ou CI**; testes só com Vitest desde o A1 (`npm test`).
 - **Achados abertos da auditoria de segurança** (`_DOCS/AUDITORIA_SEGURANCA.md`, local): M2
   (sem validação server-side, upload sem MIME/tamanho, sem `CHECK`) e pendências #1–#4.
 - **Achados abertos da avaliação de design** (`_DOCS/avaliacao-design-2026-10-20.md`, local):
@@ -185,7 +185,7 @@ Consequências:
 | # | Item | Situação | Marca | Notas / skills / testes |
 |---|---|---|---|---|
 | A0 | *(depois do ✋)* **Contrato de dados** do carrinho, cotação, checkout e pedido público (seção 4) + Vitest | real | 🔒 | `lib/checkout/contrato.js` com JSDoc, fixtures e `validar*()` usados pelo mock e pela API futura. tdd |
-| A1 | **Infra de preview**: branch `v1`, branch deploy, flag `NEXT_PUBLIC_MOCKUPS`, `noindex`, `/admin` e `/login` em 404 no preview (B3, B4) | real | 🔒 | nenhuma escrita em dados reais |
+| A1 | **Infra de preview**: branch `v1`, branch deploy, flag `NEXT_PUBLIC_MOCKUPS`, `noindex`, `/admin` e `/login` em 404 no preview (B3, B4) | real | 🔒 | nenhuma escrita em dados reais. **Código pronto na `v1` (2026-11-04)**; falta o painel do Netlify |
 | A2 | Tokens (cor + fonte) + Header/Footer: nav Início/Loja/Meditação, WhatsApp novo, e-mail, Instagram, **CNPJ, razão social, endereço**; remove `/contato`; `/quem-somos` com link no rodapé | real | 🔒🧩 (CNPJ) | no preview aparece "CNPJ a confirmar". design-taste-frontend |
 | A3 | Home: hero em carrossel (auto, setas/pontos, pausa, `prefers-reduced-motion`) com slides de Loja e Meditação | real | 🔒 | fotos atuais; fotos novas 🧩 não bloqueiam. Unitário do índice do carrossel |
 | A4 | Home: vitrine de produtos no layout da dona (B6) com produtos reais | real | 🔒 | **o título depende do critério de ordem (regra de nomes abaixo): com `created_at` a seção se chama "Novidades", nunca "Mais vendidos".** Descrição com fallback `line-clamp` |

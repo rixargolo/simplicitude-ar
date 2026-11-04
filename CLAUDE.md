@@ -64,8 +64,11 @@ qualquer dependência de plataforma** (Netlify/Supabase).
   0001 (as demais decisões entram aqui em uma linha).
 - **Fluxo de trabalho da v1:** o redesign mora na branch `v1` (preview no Netlify, `noindex`);
   `main` segue sendo o site atual até o go-live. Mockups de UI ficam atrás de
-  `NEXT_PUBLIC_MOCKUPS` e nunca vão para o domínio real. Nada disso está implementado ainda —
-  ver a lista priorizada no plano.
+  `NEXT_PUBLIC_MOCKUPS` e nunca vão para o domínio real. **A1 (infra de preview) está no código**
+  (branch `v1`, ver [Env / deploy / scripts](#env--deploy--scripts)); falta só a configuração
+  no painel do Netlify (branch deploy da `v1` + `NEXT_PUBLIC_MOCKUPS=1` só nos contextos
+  branch-deploy/deploy-preview). Os mockups em si ainda não existem — ver a lista priorizada
+  no plano.
 - **Ordem do front:** A1 (preview) → A2 (tokens, header/footer) → A3/A4 (home) → A6/A7 (loja,
   produto, só leitura) → mostrar o preview à dona; só depois o contrato de dados (A0) e
   carrinho/checkout/pedido (A8–A10). Na 1ª rodada o produto não tem botão de compra.
@@ -146,7 +149,7 @@ quando a dona enviar a oficial.
   tabelas `clientes`/`enderecos` seguem prontas, sem tela
 - Schema/migrations **não estão versionados no repo** (só existem no painel do Supabase) e
   não há ambiente de staging — itens B-1/B-2 do plano
-- Sem testes, lint nem CI no projeto (`package.json` só tem dev/build/start)
+- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview). Sem lint nem CI
 - Admin de pedidos
 - **Admin CRUD de coleções** — a tabela `colecoes` existe e é lida (dropdown no formulário
   de produto), mas não há tela de gestão para criá-las/editá-las
@@ -391,7 +394,8 @@ Login em `app/login/page.js` (`signInWithPassword`, sessão em cookies) → redi
 `/admin`. Proteção em **duas camadas**:
 1. Middleware **`proxy.js`** (padrão Next 16 — renomeado de `middleware.js`, exporta
    `proxy()`), `matcher: ['/admin/:path*', '/login']`, delega a
-   `lib/supabase/middleware.js`
+   `lib/supabase/middleware.js`. **Com `NEXT_PUBLIC_MOCKUPS=1` (preview) responde 404 a
+   `/admin/*` e `/login` antes de qualquer outra coisa**
 2. Guard defensivo em `app/admin/layout.js` (re-checa `getUser()` no server, redireciona
    se não autenticado)
 
@@ -430,6 +434,11 @@ implementado — ver pendência de segurança #3.
 
 - Variáveis: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (ver
   `.env.local.example`)
+- Envs próprias de preview (ADR 0001, nunca `CONTEXT`/`URL` do Netlify), ambas opcionais:
+  `NEXT_PUBLIC_MOCKUPS=1` (só nos contextos branch-deploy/deploy-preview; liga mockups e o 404
+  de `/admin`/`/login` no `proxy.js`) e `SITE_INDEXAVEL=1` (só produção, no go-live; remove o
+  `noindex`). **O build aborta se as duas estiverem juntas** (trava em `next.config.mjs`).
+  Sem `SITE_INDEXAVEL=1` toda rota sai com `X-Robots-Tag: noindex, nofollow`.
 - `next.config.mjs` — `images.remotePatterns` liberando o host do Storage do Supabase;
   `poweredByHeader: false`; headers de segurança em todas as rotas (CSP com
   `frame-ancestors 'none'`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy`,
