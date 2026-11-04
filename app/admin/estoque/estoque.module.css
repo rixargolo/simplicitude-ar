@@ -14,7 +14,7 @@
 }
 
 .title {
-  font-family: var(--font-cinzel), serif;
+  font-family: var(--font-display);
   font-weight: 600;
   letter-spacing: 0.08em;
   color: var(--green);
@@ -30,7 +30,7 @@
 }
 
 .novoLink {
-  font-family: var(--font-cinzel), serif;
+  font-family: var(--font-display);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -49,7 +49,7 @@
 }
 
 .secundarioLink {
-  font-family: var(--font-eb-garamond), serif;
+  font-family: var(--font-body);
   font-size: 0.95rem;
   color: var(--caramel);
   text-decoration: none;
@@ -62,7 +62,7 @@
 }
 
 .empty {
-  font-family: var(--font-eb-garamond), serif;
+  font-family: var(--font-body);
   font-size: 1.05rem;
   color: var(--brown);
 }
@@ -76,14 +76,14 @@
 .table {
   width: 100%;
   border-collapse: collapse;
-  font-family: var(--font-eb-garamond), serif;
+  font-family: var(--font-body);
   font-size: 0.95rem;
   min-width: 720px;
 }
 
 .table th {
   text-align: left;
-  font-family: var(--font-cinzel), serif;
+  font-family: var(--font-display);
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -106,13 +106,13 @@
 }
 
 .nome {
-  font-family: var(--font-cinzel), serif;
+  font-family: var(--font-display);
   font-weight: 600;
   color: var(--green-nav);
 }
 
 .estoque {
-  font-family: var(--font-cinzel), serif;
+  font-family: var(--font-display);
   font-weight: 600;
   color: var(--green-nav);
 }
@@ -129,7 +129,7 @@
 }
 
 .editarLink {
-  font-family: var(--font-eb-garamond), serif;
+  font-family: var(--font-body);
   font-size: 0.9rem;
   color: var(--caramel);
   text-decoration: none;
@@ -144,7 +144,7 @@
 .tipoPill {
   display: inline-flex;
   align-items: center;
-  font-family: var(--font-cinzel), serif;
+  font-family: var(--font-display);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;

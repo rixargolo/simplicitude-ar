@@ -15,7 +15,7 @@
 
 .sectionTitle {
   margin: 0;
-  font-family: var(--font-cinzel), serif;
+  font-family: var(--font-display);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -28,7 +28,7 @@
 
 .verTodos {
   flex-shrink: 0;
-  font-family: var(--font-cinzel), serif;
+  font-family: var(--font-display);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -82,7 +82,7 @@
 
 .slide:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 28px rgba(19, 52, 41, 0.12);
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--cor-destaque) 12%, transparent);
 }
 
 .slideImgWrap {
@@ -105,7 +105,7 @@
   justify-content: center;
   background: var(--cream);
   color: var(--caramel);
-  font-family: var(--font-cinzel), serif;
+  font-family: var(--font-display);
   font-weight: 600;
   font-size: 2.5rem;
   text-transform: uppercase;
@@ -115,7 +115,7 @@
   position: absolute;
   top: 12px;
   left: 12px;
-  font-family: var(--font-cinzel), serif;
+  font-family: var(--font-display);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -136,7 +136,7 @@
 
 .slideTitle {
   margin: 0;
-  font-family: var(--font-cinzel), serif;
+  font-family: var(--font-display);
   font-weight: 600;
   letter-spacing: 0.04em;
   color: var(--green-nav);
@@ -146,7 +146,7 @@
 
 .slidePreco {
   flex-shrink: 0;
-  font-family: var(--font-cinzel), serif;
+  font-family: var(--font-display);
   font-weight: 600;
   font-size: 0.95rem;
   color: var(--caramel);

@@ -2,8 +2,8 @@
   position: sticky;
   top: 0;
   z-index: 20;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
 }
 
 .bar {
@@ -16,42 +16,49 @@
 .logoLink {
   display: block;
   line-height: 0;
+  color: inherit;
 }
 
 .navDesktop {
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 32px;
 }
 
 .navLink {
-  font-family: var(--font-cinzel), serif;
-  font-size: 15px;
+  font-family: var(--font-display);
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--green-nav);
+  color: var(--cor-texto);
   text-decoration: none;
+  padding: 4px 0;
 }
 
-.burger {
+.navLink:hover,
+.navLinkAtivo {
+  color: var(--cor-destaque);
+}
+
+.navLinkAtivo {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 8px;
+}
+
+.menuBtn {
   display: none;
-  flex-direction: column;
-  justify-content: center;
-  gap: 5px;
-  width: 32px;
-  height: 32px;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0;
-}
-
-.burger span {
-  display: block;
-  height: 1px;
-  width: 100%;
-  background: var(--green-nav);
+  padding: 8px 0;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cor-texto);
 }
 
 .navMobile {
@@ -59,15 +66,16 @@
   flex-direction: column;
   gap: 20px;
   padding: 8px 24px 24px;
-  border-top: 1px solid var(--border);
+  background: var(--cor-superficie);
 }
 
-@media (max-width: 640px) {
+/* 5 itens em Cinzel espaçado não cabem em uma linha antes de ~960px */
+@media (max-width: 960px) {
   .navDesktop {
     display: none;
   }
 
-  .burger {
-    display: flex;
+  .menuBtn {
+    display: block;
   }
 }

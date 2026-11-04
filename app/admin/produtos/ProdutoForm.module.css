@@ -7,7 +7,7 @@
   width: 100%;
   max-width: 560px;
   margin: 0 auto 16px;
-  font-family: var(--font-eb-garamond), serif;
+  font-family: var(--font-body);
   font-size: 0.95rem;
   color: var(--caramel);
   text-decoration: none;
@@ -31,7 +31,7 @@
 }
 
 .title {
-  font-family: var(--font-cinzel), serif;
+  font-family: var(--font-display);
   font-weight: 600;
   font-size: 1.3rem;
   color: var(--green);
@@ -53,14 +53,14 @@
 }
 
 .label {
-  font-family: var(--font-eb-garamond), serif;
+  font-family: var(--font-body);
   font-size: 0.95rem;
   color: var(--brown);
 }
 
 .input,
 .textarea {
-  font-family: var(--font-eb-garamond), serif;
+  font-family: var(--font-body);
   font-size: 1rem;
   color: var(--green);
   padding: 10px 12px;
@@ -82,7 +82,7 @@ select.input:focus {
 }
 
 .inputFile {
-  font-family: var(--font-eb-garamond), serif;
+  font-family: var(--font-body);
   font-size: 0.9rem;
   color: var(--brown);
 }
@@ -91,7 +91,7 @@ select.input:focus {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-family: var(--font-eb-garamond), serif;
+  font-family: var(--font-body);
   font-size: 0.95rem;
   color: var(--brown);
 }
@@ -117,7 +117,7 @@ select.input:focus {
 }
 
 .erro {
-  font-family: var(--font-eb-garamond), serif;
+  font-family: var(--font-body);
   font-size: 0.9rem;
   color: #a13c3c;
   text-align: center;
@@ -129,7 +129,7 @@ select.input:focus {
 }
 
 .cta {
-  font-family: var(--font-cinzel), serif;
+  font-family: var(--font-display);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.14em;

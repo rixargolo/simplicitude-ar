@@ -17,7 +17,7 @@
 
 .brand {
   display: block;
-  font-family: var(--font-cinzel), serif;
+  font-family: var(--font-display);
   font-weight: 600;
   font-size: 1.05rem;
   letter-spacing: 0.06em;
@@ -34,7 +34,7 @@
 
 .navLink {
   display: block;
-  font-family: var(--font-cinzel), serif;
+  font-family: var(--font-display);
   font-weight: 600;
   font-size: 0.85rem;
   text-transform: uppercase;
@@ -111,14 +111,14 @@
 }
 
 .title {
-  font-family: var(--font-cinzel), serif;
+  font-family: var(--font-display);
   font-weight: 600;
   font-size: 1.6rem;
   color: var(--green);
 }
 
 .welcome {
-  font-family: var(--font-eb-garamond), serif;
+  font-family: var(--font-body);
   font-size: 1.1rem;
   color: var(--brown);
   max-width: 480px;
@@ -133,7 +133,7 @@
 }
 
 .atalho {
-  font-family: var(--font-eb-garamond), serif;
+  font-family: var(--font-body);
   font-size: 0.95rem;
   color: var(--green);
   background: #fff;

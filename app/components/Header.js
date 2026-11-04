@@ -2,19 +2,31 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import styles from './Header.module.css';
 import LogoAnimado from './LogoAnimado';
-
-const NAV_LINKS = [
-  { href: '/', label: 'Início' },
-  { href: '/quem-somos', label: 'Quem Somos' },
-  { href: '/meditacao', label: 'Meditação' },
-  { href: '/loja', label: 'Loja' },
-  { href: '/contato', label: 'Contato' },
-];
+import { itensMenu } from '@/lib/navegacao';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const links = itensMenu();
+
+  const renderLinks = (onClick) =>
+    links.map((link) => {
+      const ativo = pathname === link.href || pathname.startsWith(`${link.href}/`);
+      return (
+        <Link
+          key={link.href}
+          href={link.href}
+          className={`${styles.navLink} ${ativo ? styles.navLinkAtivo : ''}`}
+          aria-current={ativo ? 'page' : undefined}
+          onClick={onClick}
+        >
+          {link.rotulo}
+        </Link>
+      );
+    });
 
   return (
     <header className={styles.header}>
@@ -24,38 +36,23 @@ export default function Header() {
         </Link>
 
         <nav className={styles.navDesktop} aria-label="Navegação principal">
-          {NAV_LINKS.map((link) => (
-            <Link key={link.href} href={link.href} className={styles.navLink}>
-              {link.label}
-            </Link>
-          ))}
+          {renderLinks()}
         </nav>
 
         <button
           type="button"
-          className={styles.burger}
-          aria-label={open ? 'Fechar menu' : 'Abrir menu'}
+          className={styles.menuBtn}
           aria-expanded={open}
+          aria-controls="menu-mobile"
           onClick={() => setOpen((v) => !v)}
         >
-          <span />
-          <span />
-          <span />
+          {open ? 'Fechar' : 'Menu'}
         </button>
       </div>
 
       {open && (
-        <nav className={styles.navMobile} aria-label="Navegação principal (mobile)">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={styles.navLink}
-              onClick={() => setOpen(false)}
-            >
-              {link.label}
-            </Link>
-          ))}
+        <nav id="menu-mobile" className={styles.navMobile} aria-label="Navegação principal (mobile)">
+          {renderLinks(() => setOpen(false))}
         </nav>
       )}
     </header>

@@ -64,11 +64,12 @@ qualquer dependência de plataforma** (Netlify/Supabase).
   0001 (as demais decisões entram aqui em uma linha).
 - **Fluxo de trabalho da v1:** o redesign mora na branch `v1` (preview no Netlify, `noindex`);
   `main` segue sendo o site atual até o go-live. Mockups de UI ficam atrás de
-  `NEXT_PUBLIC_MOCKUPS` e nunca vão para o domínio real. **A1 (infra de preview) está no código**
-  (branch `v1`, ver [Env / deploy / scripts](#env--deploy--scripts)); falta só a configuração
-  no painel do Netlify (branch deploy da `v1` + `NEXT_PUBLIC_MOCKUPS=1` só nos contextos
-  branch-deploy/deploy-preview). Os mockups em si ainda não existem — ver a lista priorizada
-  no plano.
+  `NEXT_PUBLIC_MOCKUPS` e nunca vão para o domínio real. **A1 (infra de preview) está concluído**
+  (branch `v1`, ver [Env / deploy / scripts](#env--deploy--scripts)): branch deploy da `v1`
+  ativo e envs configuradas no Netlify (`NEXT_PUBLIC_MOCKUPS=1` só nos contextos
+  branch-deploy/deploy-preview), verificado em produção e na `v1`. **A2 (tokens + Header/Footer)
+  está no código.** Mockups existentes: só `/bem-fazer` e `/assinaturas` ("Em breve"); os de
+  carrinho/checkout vêm depois — ver a lista priorizada no plano.
 - **Ordem do front:** A1 (preview) → A2 (tokens, header/footer) → A3/A4 (home) → A6/A7 (loja,
   produto, só leitura) → mostrar o preview à dona; só depois o contrato de dados (A0) e
   carrinho/checkout/pedido (A8–A10). Na 1ª rodada o produto não tem botão de compra.
@@ -77,20 +78,30 @@ qualquer dependência de plataforma** (Netlify/Supabase).
 
 ## Paleta e tipografia oficiais
 
-**Paleta oficial da marca (papéis a definir no design):** Bege Background `#f6f3ea`, Azul
-Simplicitude `#272a5c`, Verde Musgo `#27401e`.
+**Paleta oficial da marca:** Bege Background `#f6f3ea`, Azul Simplicitude `#272a5c`, Verde
+Musgo `#27401e`. Em `app/globals.css` vira **tokens por papel** (não por cor), para um seletor de
+presets (só no preview, próximo item) trocar a paleta inteira só por variáveis CSS:
+`--cor-fundo` (bege), `--cor-texto` (azul), `--cor-destaque` (verde: nomes de produto, item ativo
+do menu, foco), `--cor-botao`/`--cor-botao-texto`, `--cor-rodape`/`--cor-rodape-texto`, mais
+`--raio-botao` (pílula). Derivados via `color-mix` (seguem o preset sozinhos): `--cor-texto-suave`,
+`--cor-superficie`, `--cor-borda`. **Código novo usa só esses papéis.**
 
-> ⚠️ **Os tokens atuais em `app/globals.css` (`--bg`, `--green`, `--green-nav`, `--brown`,
-> `--caramel`, `--cream`, `--gold` etc., ver Convenções) ainda são os ANTIGOS.** A troca é o
-> item A2 do plano e substitui também as ~55 cores hex soltas nos CSS.
+> ⚠️ **Aliases temporários:** `--bg`, `--green`, `--green-nav`, `--brown`, `--caramel`,
+> `--border`, `--cream`, `--cream-name` seguem existindo em `globals.css` só como aliases dos
+> papéis (as páginas ainda não refeitas já pegam a paleta nova); `--gold` é o único hex antigo
+> (admin + home antiga). Cada item do plano (A3–A7, A12) troca pelos papéis nos arquivos que
+> reescreve; o bloco some quando ninguém usar. Hex soltos remanescentes: admin e scrims pretos
+> dos heroes (refeitos no A3).
 
-**Tipografia:** provisória (Cinzel, EB Garamond, Cormorant Garamond, Dancing Script). Será
-centralizada em tokens (`--font-display`, `--font-body`, `--font-accent`) para trocar fácil
-quando a dona enviar a oficial.
+**Tipografia:** provisória, centralizada em tokens (`--font-display` Cinzel, `--font-body` EB
+Garamond, `--font-accent` Cormorant Garamond, definidos em `globals.css` sobre as variáveis do
+`next/font` em `app/layout.js`). Nenhum CSS cita as famílias direto: trocar pela oficial é
+mexer só nesses dois arquivos. Dancing Script foi removida.
 
 **Contato vigente:** WhatsApp **(73) 9 2002-6708**; e-mail `viva@simplicitude.com.br`
-(inalterado); Instagram `@simplicitude.co`. ⚠️ O `Footer` ainda exibe o telefone antigo
-`(73) 99140-8689` até o item A2.
+(inalterado); Instagram `@simplicitude.co`. O `Footer` já usa esses dados. **CNPJ/razão
+social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a confirmar" só com
+`NEXT_PUBLIC_MOCKUPS=1`; em produção a linha some até o dado chegar (check do D2).
 
 ---
 
@@ -140,7 +151,8 @@ quando a dona enviar a oficial.
 
 **Pendente / não implementado ainda** (ordem e dependências em
 [`docs/plano-v1.md`](docs/plano-v1.md), seção 3):
-- `/contato` — placeholder "em construção" (será removido; contato vai para o rodapé)
+- Conteúdo de `/bem-fazer` e `/assinaturas` (hoje mockups "Em breve" só no preview) e confirmar
+  com a dona o rótulo "Bem-estar" para `/meditacao`
 - Checkout real — botão "Comprar" em `/loja/[slug]` é inerte; integração InfinitePay não
   existe (quando existir, é quem vai gerar as movimentações `venda`/`cancelamento` em
   `estoque_movimentacoes` e os registros em `pagamentos`)
@@ -149,7 +161,7 @@ quando a dona enviar a oficial.
   tabelas `clientes`/`enderecos` seguem prontas, sem tela
 - Schema/migrations **não estão versionados no repo** (só existem no painel do Supabase) e
   não há ambiente de staging — itens B-1/B-2 do plano
-- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview). Sem lint nem CI
+- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview e o menu/mockups). Sem lint nem CI
 - Admin de pedidos
 - **Admin CRUD de coleções** — a tabela `colecoes` existe e é lida (dropdown no formulário
   de produto), mas não há tela de gestão para criá-las/editá-las
@@ -198,7 +210,9 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
 - **`/loja`** — grade de produtos ativos
 - **`/loja/[slug]`** — detalhe do produto (slug calculado em memória, não é coluna do
   banco)
-- **`/contato`** — placeholder
+- **`/bem-fazer`**, **`/assinaturas`** — mockups "Em breve" (`EmBreve`); só existem com
+  `NEXT_PUBLIC_MOCKUPS=1` (`exigirMockups()` → 404 em produção, e saem do menu)
+- `/contato` foi **removida** (contato vive no rodapé)
 
 Auth / admin (chrome oculto por `SiteChrome`):
 - **`/login`** — formulário email/senha (`signInWithPassword`)
@@ -239,7 +253,12 @@ Cada um com `*.module.css` co-locado.
 
 - **`SiteChrome`** (`'use client'`) — esconde Header/Footer em `/login` e `/admin/*` via
   `usePathname()`; usado em `app/layout.js` envolvendo `{children}`
-- **`Header`**, **`Footer`** — navegação e rodapé do site público
+- **`Header`** (`'use client'`) — menu LOJA, BEM-ESTAR, BEM-FAZER, QUEM SOMOS, ASSINATURAS
+  (vindo de `itensMenu()`, `lib/navegacao.js`); logo leva à home (sem item "Início"); item ativo
+  via `usePathname()` + `aria-current`; sem linha divisória; abaixo de 960px vira botão de texto
+  "Menu"/"Fechar". **`Footer`** — campo `--cor-rodape` com logo, lema, contatos (WhatsApp via
+  `wa.me`), links do mesmo `itensMenu()` e linha legal (CNPJ só no preview).
+- **`EmBreve`** — página mockup "Em breve" com botão pílula para `/loja`
 - **`LogoAnimado`** (`'use client'`) — usado dentro do `<Link href="/">` do `Header` no
   lugar do `<Image>` direto da wordmark. Na **1ª carga da Home (`/`) em cada sessão do
   navegador**, toca uma animação de "escrita à mão" (traçado sequencial via
@@ -247,9 +266,11 @@ Cada um com `*.module.css` co-locado.
   referência — `MIN_DURATION=220`, `SPEED=40`) sobre um `<svg>` inline com os traços da
   wordmark (`viewBox="0 0 172.18108 31.367828"`, paths na ordem de desenho do arquivo de
   referência `simplicitude-logo-traco.svg` — esse SVG **não** foi movido para `public/`,
-  os paths estão embutidos no componente); ao terminar, faz crossfade para o
-  `<Image src="/marca/logo-simplicitude-677w.png">` estático de sempre, que é a base já
-  renderizada por baixo o tempo todo (resultado final idêntico ao visual atual). Decide
+  os paths estão embutidos no componente); ao terminar, faz crossfade para a wordmark estática, que é a base já
+  renderizada por baixo o tempo todo. **A base é um `<span role="img" aria-label="Simplicitude">`
+  com `mask` do `/marca/logo-simplicitude-677w.png` + `background: currentColor`** (o PNG tem
+  alpha), e os traços do SVG usam `stroke="currentColor"`: a logo acompanha `--cor-texto` e os
+  presets de paleta. O `Footer` usa a mesma máscara. Decide
   se anima checando, nessa ordem, `pathname !== '/'`,
   `matchMedia('(prefers-reduced-motion: reduce)')` e a chave de
   **`sessionStorage`** `simplicitude:logoAnimada` (**primeiro uso de `sessionStorage` no
@@ -265,7 +286,7 @@ Cada um com `*.module.css` co-locado.
   componente (rota `/`, mesma chave de `sessionStorage`, `prefers-reduced-motion`); se
   vai animar, adiciona a classe `logo-animar` em `document.documentElement`. Uma regra
   global em `app/globals.css` (`html.logo-animar [data-logo-base] { opacity: 0; }`) usa
-  essa classe para esconder o PNG (marcado com o atributo `data-logo-base`) já no 1º
+  essa classe para esconder a wordmark (marcada com o atributo `data-logo-base`) já no 1º
   paint. Assim que `LogoAnimado` hidrata, remove a classe no mesmo `useLayoutEffect` de
   decisão (antes de decidir se anima) — dali em diante quem controla a opacidade do PNG é
   o React (fases `drawing`/`settling`/`idle`), não mais a classe global. Script e
@@ -302,6 +323,12 @@ Cada um com `*.module.css` co-locado.
   `next/headers`). Para leituras em server components (loja pública via `lib/produtos.js`
   não usa este; admin usa este via `lib/admin/*`).
 - **`lib/supabase/middleware.js`** (`updateSession`) — usado pelo `proxy.js`.
+
+### Navegação — `lib/navegacao.js`
+
+Fonte única do menu (Header e Footer): array com `href`, `rotulo` e `status` (`real` ou
+`mockup`). `itensMenu()` filtra: `mockup` só com `NEXT_PUBLIC_MOCKUPS=1`. `exigirMockups()`
+(`notFound()` sem a flag) vai no topo de toda página mockup. Item novo = uma linha no array.
 
 ### Storefront — `lib/produtos.js`
 
@@ -408,11 +435,13 @@ implementado — ver pendência de segurança #3.
 ## Convenções
 
 - CSS Modules (`*.module.css`) co-locados, classes em camelCase
-- Tokens de marca em `app/globals.css`: `--bg #faf9f8`, `--green #133429`,
-  `--green-nav #1e3706`, `--brown #6b513f`, `--caramel #a17a5e`, `--cream #F5EDD8`,
-  `--border #e5ddd4`, `--gold #D4A843`
-- Fontes via `next/font/google` em `app/layout.js`: `--font-cinzel`,
-  `--font-eb-garamond`, `--font-cormorant`, `--font-dancing`
+- Cores: **só tokens de papel** (`--cor-*`, ver [Paleta](#paleta-e-tipografia-oficiais)); hex
+  solto em componente novo é proibido. Fontes: só `--font-display/body/accent`. Os nomes
+  antigos (`--bg`, `--green`…) são aliases a eliminar, não a usar.
+- Fontes via `next/font/google` em `app/layout.js`: Cinzel, EB Garamond e Cormorant Garamond
+  (`--font-cinzel`, `--font-eb-garamond`, `--font-cormorant`), só consumidas por
+  `globals.css`
+- Menu e mockups: ver `lib/navegacao.js`; mockup = `status: 'mockup'` + `exigirMockups()`
 - Preços sempre em **centavos** (inteiro) no banco; formatação BRL na exibição
 - Selo "Esgotado" (`estoque === 0` em `/loja` e `/loja/[slug]`, desabilita "Comprar") usa
   comparação estrita — `estoque` é nullable e `null` significa "não controlado", não deve

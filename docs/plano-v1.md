@@ -1,6 +1,6 @@
 # Simplicitude v1 — Auditoria, decisões e lista priorizada
 
-Data: 2026-11-04 · Status: plano aprovado, **nada implementado ainda**.
+Data: 2026-11-04 · Status: plano aprovado. **Feitos: A1 (concluído e verificado) e A2 (no código).**
 Decisão de portabilidade: [ADR 0001](adr/0001-portabilidade.md).
 
 **Legenda:** 🔒 bloqueia o go-live · 🧩 depende de terceiros (dona, você ou fornecedor).
@@ -48,8 +48,8 @@ Os meios de pagamento são os que o Checkout InfinitePay oferece.
 2. **`pedidos.cliente_id NOT NULL`**: impede checkout de convidado sem migration.
 3. **Convenção "sem API routes"**: o checkout precisa de rota server-side com service role
    (pendência #3 do CLAUDE.md).
-4. **Menu** tem Quem Somos e Contato; a v1 é Início/Loja/Meditação.
-5. **Telefone do rodapé** é o antigo `(73) 99140-8689`.
+4. ~~**Menu** tem Quem Somos e Contato; a v1 é Início/Loja/Meditação.~~ **Resolvido no A2:** menu Loja/Bem-estar/Bem-fazer/Quem somos/Assinaturas (os dois últimos de mockup, só no preview); `/contato` removida.
+5. ~~**Telefone do rodapé** é o antigo `(73) 99140-8689`.~~ **Resolvido no A2.**
 6. **Slug calculado do nome**: renomear um produto quebra links já postados no Instagram.
 7. **Estoque compartilhado com feiras/B2B**: sem lançar as vendas presenciais, o estoque online
    vende o que não existe.
@@ -185,8 +185,8 @@ Consequências:
 | # | Item | Situação | Marca | Notas / skills / testes |
 |---|---|---|---|---|
 | A0 | *(depois do ✋)* **Contrato de dados** do carrinho, cotação, checkout e pedido público (seção 4) + Vitest | real | 🔒 | `lib/checkout/contrato.js` com JSDoc, fixtures e `validar*()` usados pelo mock e pela API futura. tdd |
-| A1 | **Infra de preview**: branch `v1`, branch deploy, flag `NEXT_PUBLIC_MOCKUPS`, `noindex`, `/admin` e `/login` em 404 no preview (B3, B4) | real | 🔒 | nenhuma escrita em dados reais. **Código pronto na `v1` (2026-11-04)**; falta o painel do Netlify |
-| A2 | Tokens (cor + fonte) + Header/Footer: nav Início/Loja/Meditação, WhatsApp novo, e-mail, Instagram, **CNPJ, razão social, endereço**; remove `/contato`; `/quem-somos` com link no rodapé | real | 🔒🧩 (CNPJ) | no preview aparece "CNPJ a confirmar". design-taste-frontend |
+| A1 | **Infra de preview**: branch `v1`, branch deploy, flag `NEXT_PUBLIC_MOCKUPS`, `noindex`, `/admin` e `/login` em 404 no preview (B3, B4) | real | 🔒 | nenhuma escrita em dados reais. ✅ **Concluído (2026-11-04):** branch deploy da `v1` ativo, envs configuradas no Netlify, verificado em produção e na `v1` |
+| A2 | Tokens por papel (cor + fonte) + Header/Footer: menu **Loja, Bem-estar** (`/meditacao`, rótulo a confirmar), **Bem-fazer, Quem somos, Assinaturas** (logo leva à home; itens definidos em `lib/navegacao.js` com status real/mockup; Bem-fazer e Assinaturas são páginas "Em breve" só no preview, 404 e fora do menu em produção), WhatsApp novo, e-mail, Instagram, **CNPJ, razão social, endereço**; remove `/contato` | real | 🔒🧩 (CNPJ) | ✅ **No código (2026-11-04).** Tokens por papel (`--cor-fundo/texto/destaque/botao/rodape`) preparam o seletor de presets do preview; nomes antigos viram aliases até cada página ser refeita. No preview aparece "CNPJ a confirmar"; em produção a linha some até o dado chegar. Referência vaga da dona (Canva), não especificação. design-taste-frontend |
 | A3 | Home: hero em carrossel (auto, setas/pontos, pausa, `prefers-reduced-motion`) com slides de Loja e Meditação | real | 🔒 | fotos atuais; fotos novas 🧩 não bloqueiam. Unitário do índice do carrossel |
 | A4 | Home: vitrine de produtos no layout da dona (B6) com produtos reais | real | 🔒 | **o título depende do critério de ordem (regra de nomes abaixo): com `created_at` a seção se chama "Novidades", nunca "Mais vendidos".** Descrição com fallback `line-clamp` |
 | A5 | Home: grade de categorias com fotos | cortar-se-atrasar | — | os chips do A4 cobrem a navegação por categoria |
@@ -239,7 +239,7 @@ consumidor, então o título sai do critério de ordem realmente usado, e nunca 
 | # | Item | Marca | Notas |
 |---|---|---|---|
 | D1 | Preparar o domínio: adicionar no Netlify sem apontar; Resend em `send.simplicitude.com.br` | 🔒🧩 (acesso DNS GoDaddy) | não toca o SPF raiz |
-| D2 | Virada: env de produção, migrations em produção, **inventário físico + `ajuste`**, merge `v1`→`main` (flag desligada; o build falha se algum mockup ficar ligado), **conferir o título da vitrine da home (regra de nomes: nada de "Mais vendidos" sem ordem real da dona)**, `SITE_INDEXAVEL=1`, DNS (B5), SSL, pagamento real baixo + estorno, smoke | 🔒🧩 | security-review |
+| D2 | Virada: env de produção, migrations em produção, **inventário físico + `ajuste`**, merge `v1`→`main` (flag desligada; o build falha se algum mockup ficar ligado), **conferir o título da vitrine da home (regra de nomes: nada de "Mais vendidos" sem ordem real da dona)**, **conferir CNPJ/razão social reais no rodapé (a linha "a confirmar" só aparece no preview)**, `SITE_INDEXAVEL=1`, DNS (B5), SSL, pagamento real baixo + estorno, smoke | 🔒🧩 | security-review |
 
 ### Pós-go-live (ordem sugerida)
 1. `admins` + `is_admin()` + policies + storage só admin. Obrigatório antes de contas de cliente e
@@ -383,7 +383,7 @@ Actions (`schedule` diário, `workflow_dispatch` e o mesmo cron da reconciliaç�
 | Inventário físico no dia da virada + regra de lançar vendas de feira/B2B | dona | 🔒🧩 |
 | Acesso ao DNS na GoDaddy + o que roda hoje em `103.169.142.0` | você/dona | 🔒🧩 |
 | Token Supabase (CLI) + ok para o projeto de staging | você | 🔒🧩 |
-| Acesso às envs e aos contextos de deploy do Netlify | você | 🔒🧩 |
+| ~~Acesso às envs e aos contextos de deploy do Netlify~~ — feito (A1) | você | — |
 | Conta Resend | você | 🔒🧩 |
 | GitHub Actions habilitado (cron + vigia) | você | 🧩 (a reconciliação é 🔒) |
 | Nota fiscal nas vendas online | dona | 🧩 (pode bloquear por motivo fiscal) |
@@ -394,4 +394,4 @@ Actions (`schedule` diário, `workflow_dispatch` e o mesmo cron da reconciliaç�
 | Novo provedor de e-mail (saída da GoDaddy) | você/dona | 🧩 pós-go-live |
 
 **Decisões a confirmar:** cortar-se-atrasar A5 (grade de categorias) e o redesign de `/meditacao`;
-checkout de convidado; `/quem-somos` fora do menu, com link no rodapé.
+checkout de convidado; o rótulo "Bem-estar" para `/meditacao`; o conteúdo de Bem-fazer e Assinaturas (hoje só "Em breve"). Superada: "`/quem-somos` fora do menu" — agora está no menu.
