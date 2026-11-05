@@ -1,42 +1,39 @@
-import {
-  Cinzel,
-  EB_Garamond,
-  Cormorant_Garamond,
-  Dancing_Script,
-} from 'next/font/google';
+import localFont from 'next/font/local';
 import './globals.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import SiteChrome from './components/SiteChrome';
+import SeletorPaleta from './components/SeletorPaleta';
+import { scriptPaleta } from '@/lib/paletas';
 
-const cinzel = Cinzel({
-  subsets: ['latin'],
-  weight: ['400', '600'],
+// Fontes hospedadas no projeto (app/fonts, subconjunto latin, variáveis): o build não
+// depende do Google Fonts, que já derrubou o build no Netlify. Ver app/fonts/LEIA-ME.md.
+const cinzel = localFont({
+  src: './fonts/cinzel-latin.woff2',
+  weight: '400 900',
   variable: '--font-cinzel',
   display: 'swap',
+  adjustFontFallback: 'Times New Roman',
 });
 
-const ebGaramond = EB_Garamond({
-  subsets: ['latin'],
-  weight: ['400', '600'],
-  style: ['normal', 'italic'],
+const ebGaramond = localFont({
+  src: [
+    { path: './fonts/eb-garamond-latin.woff2', weight: '400 800', style: 'normal' },
+    { path: './fonts/eb-garamond-italic-latin.woff2', weight: '400 800', style: 'italic' },
+  ],
   variable: '--font-eb-garamond',
   display: 'swap',
+  adjustFontFallback: 'Times New Roman',
 });
 
-const cormorantGaramond = Cormorant_Garamond({
-  subsets: ['latin'],
-  weight: ['300', '400'],
-  style: ['normal', 'italic'],
+const cormorantGaramond = localFont({
+  src: [
+    { path: './fonts/cormorant-garamond-latin.woff2', weight: '300 700', style: 'normal' },
+    { path: './fonts/cormorant-garamond-italic-latin.woff2', weight: '300 700', style: 'italic' },
+  ],
   variable: '--font-cormorant',
   display: 'swap',
-});
-
-const dancingScript = Dancing_Script({
-  subsets: ['latin'],
-  weight: ['400', '600'],
-  variable: '--font-dancing',
-  display: 'swap',
+  adjustFontFallback: 'Times New Roman',
 });
 
 export const metadata = {
@@ -45,12 +42,19 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const paleta = scriptPaleta(); // null em produção (sem NEXT_PUBLIC_MOCKUPS=1)
   return (
     <html
       lang="pt-BR"
-      className={`${cinzel.variable} ${ebGaramond.variable} ${cormorantGaramond.variable} ${dancingScript.variable}`}
+      className={`${cinzel.variable} ${ebGaramond.variable} ${cormorantGaramond.variable}`}
+      suppressHydrationWarning // scripts inline alteram style/data-/class do <html> antes da hidratação
     >
       <body>
+        {paleta && (
+          // Paleta do preview aplicada antes da 1ª pintura (sem flash), ver lib/paletas.js
+          <script dangerouslySetInnerHTML={{ __html: paleta }} />
+        )}
+        {paleta && <SeletorPaleta />}
         <script
           // Decide, antes de qualquer paint, se a logo vai animar nesta carga —
           // evita o flash do PNG estático aparecendo antes do traçado começar

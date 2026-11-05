@@ -9,26 +9,57 @@ body {
   height: 100%;
 }
 
+/* Tokens por PAPEL, não por cor: um preset de paleta troca só os papéis-base
+   (aplicado no <html>) e tudo o que deriva deles acompanha. */
 :root {
-  --bg:         #faf9f8;
-  --green:      #133429;
-  --green-nav:  #1e3706;
-  --brown:      #6b513f;
-  --caramel:    #a17a5e;
-  --cream-name: #dbd0c0;
-  --border:     #e5ddd4;
-  --gold:       #D4A843;
-  --cream:      #F5EDD8;
+  /* papéis-base */
+  --cor-fundo: #f6f3ea;          /* Bege Background */
+  --cor-texto: #272a5c;          /* Azul Simplicitude */
+  --cor-destaque: #27401e;       /* Verde Musgo: nomes de produto, item ativo, foco */
+  --cor-botao: var(--cor-texto);
+  --cor-botao-texto: var(--cor-fundo);
+  --cor-rodape: var(--cor-texto);
+  --cor-rodape-texto: var(--cor-fundo);
+
+  /* derivados (seguem o preset sozinhos) */
+  --cor-texto-suave: color-mix(in srgb, var(--cor-texto) 72%, var(--cor-fundo));
+  --cor-superficie: color-mix(in srgb, var(--cor-texto) 6%, var(--cor-fundo));
+  --cor-borda: color-mix(in srgb, var(--cor-texto) 18%, var(--cor-fundo));
+
+  --raio-botao: 999px;
+
+  /* tipografia provisória: trocar a oficial é mexer só aqui e em app/layout.js */
+  --font-display: var(--font-cinzel), serif;
+  --font-body: var(--font-eb-garamond), serif;
+  --font-accent: var(--font-cormorant), serif;
+
+  /* shortcut: nomes antigos como aliases dos papéis, para as páginas que ainda não
+     foram refeitas já pegarem a paleta nova. Cada item do plano (A3–A7, A12) troca
+     pelos papéis nos arquivos que reescreve; o bloco some quando ninguém mais usar. */
+  --bg: var(--cor-fundo);
+  --green: var(--cor-destaque);
+  --green-nav: var(--cor-texto);
+  --brown: var(--cor-texto);
+  --caramel: var(--cor-texto-suave);
+  --border: var(--cor-borda);
+  --cream: var(--cor-superficie);
+  --cream-name: var(--cor-fundo);
+  --gold: #d4a843; /* só admin e home antiga */
 }
 
 body {
-  background: var(--bg);
-  color: var(--brown);
-  font-family: var(--font-eb-garamond), serif;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-family: var(--font-body);
+}
+
+:focus-visible {
+  outline: 2px solid var(--cor-destaque);
+  outline-offset: 3px;
 }
 
 /* Antes da hidratação, quando o script inline de app/layout.js decidiu que a
-   logo vai animar nesta carga, esconde a wordmark PNG já no 1º paint — evita
+   logo vai animar nesta carga, esconde a wordmark já no 1º paint — evita
    o flash do logo estático antes do traçado (ver LogoAnimado). */
 html.logo-animar [data-logo-base] {
   opacity: 0;

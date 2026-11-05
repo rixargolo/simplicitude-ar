@@ -1,0 +1,18 @@
+.barra {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.25rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--cor-texto);
+  background: var(--cor-superficie);
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.barra select {
+  font: inherit;
+  color: inherit;
+  background: var(--cor-fundo);
+  border: 1px solid var(--cor-borda);
+  border-radius: 4px;
+}

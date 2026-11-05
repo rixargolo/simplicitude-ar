@@ -1,0 +1,268 @@
+/* Estrutura comum a todo layout. O que muda de layout para layout (posição do cartão,
+   altura da foto) fica nos blocos `.sobreposto …` abaixo; um 2º layout é um bloco novo. */
+
+.raiz {
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+}
+
+/* slides empilhados na mesma célula: a altura é a do mais alto, o texto nunca é cortado */
+.palco {
+  display: grid;
+}
+
+.slide {
+  grid-area: 1 / 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+.slideAtivo {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.foto {
+  position: relative;
+  overflow: hidden;
+  background: var(--cor-superficie);
+}
+
+.img {
+  object-fit: cover;
+}
+
+.cartao {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 32px;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+}
+
+.titulo {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  color: var(--cor-texto);
+}
+
+.texto {
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  line-height: 1.55;
+  color: var(--cor-texto);
+}
+
+.botao {
+  display: inline-block;
+  padding: 12px 28px;
+  border-radius: var(--raio-botao);
+  background: var(--cor-botao);
+  color: var(--cor-botao-texto);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.botao:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.botao:active {
+  transform: translateY(1px);
+}
+
+/* controles: setas, pontos e pausa, centralizados logo abaixo da foto */
+.controles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 16px;
+}
+
+.seta,
+.ponto,
+.pausa {
+  min-width: 44px;
+  min-height: 44px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--cor-texto);
+}
+
+.seta {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.ponto {
+  display: grid;
+  place-items: center;
+}
+
+/* ponto inativo: 3:1 sobre o fundo; o ativo é mais largo e cheio (não depende só da cor) */
+.ponto::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--cor-texto) 60%, var(--cor-fundo));
+  transition: width 0.3s ease;
+}
+
+.pontoAtivo::before {
+  width: 26px;
+  background: var(--cor-texto);
+}
+
+.pausa {
+  margin-left: 12px;
+  padding: 0 12px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.pausa:hover {
+  color: var(--cor-destaque);
+}
+
+/* ===== Layout "sobreposto": foto em largura total, cartão sólido no canto inferior esquerdo ===== */
+
+.sobreposto .slide {
+  display: grid;
+}
+
+.sobreposto .foto,
+.sobreposto .cartao {
+  grid-area: 1 / 1;
+}
+
+.sobreposto .foto {
+  height: min(80svh, 760px);
+}
+
+/* Cartão translúcido sobre a foto, cantos arredondados. 70% de --cor-fundo é o piso: mesmo com
+   uma foto preta por baixo o texto mantém ≥ 4,5:1 (no preset verde dá 4,9; a 65% cairia para
+   4,3). tests/paletas.test.js lê este percentual e confere em todo preset. O blur separa o
+   cartão da foto e segura o contraste em fotos agitadas. */
+.sobreposto .cartao {
+  position: relative;
+  align-self: end;
+  justify-self: start;
+  max-width: 28rem;
+  margin: 0 0 32px 32px;
+  padding: 28px 32px 32px;
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--cor-fundo) 70%, transparent);
+  -webkit-backdrop-filter: blur(14px); /* taste-skill-ignore: pedido explícito do usuário */
+  backdrop-filter: blur(14px); /* taste-skill-ignore: pedido explícito do usuário */
+}
+
+/* Controles dentro da foto, numa pílula sólida para o contraste não depender da imagem. Assim
+   cabem na 1ª tela mesmo em notebook baixo (antes ficavam abaixo da foto e saíam da dobra).
+   A pílula é ESCURA (papéis do rodapé, par testado a 4,5:1 por preset): clara, ela se
+   emendava ao cartão claro vizinho. */
+@media (min-width: 641px) {
+  .sobreposto {
+    position: relative;
+  }
+
+  .sobreposto .controles {
+    position: absolute;
+    z-index: 2;
+    bottom: 16px;
+    right: 16px;
+    flex-wrap: nowrap;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--cor-rodape);
+    color: var(--cor-rodape-texto);
+  }
+
+  .sobreposto .seta,
+  .sobreposto .pausa {
+    color: var(--cor-rodape-texto);
+  }
+
+  /* largura fixa: "Continuar" é mais largo que "Pausar" e a pílula não pode pular */
+  .sobreposto .pausa {
+    min-width: 8rem;
+  }
+
+  .sobreposto .pausa:hover {
+    color: var(--cor-rodape-texto);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .sobreposto .ponto::before {
+    background: color-mix(in srgb, var(--cor-rodape-texto) 60%, var(--cor-rodape));
+  }
+
+  .sobreposto .pontoAtivo::before {
+    background: var(--cor-rodape-texto);
+  }
+}
+
+/* Centralizada só quando sobra espaço: a pílula (~450px) precisa caber à direita do cartão
+   (32px + 28rem) com folga. Abaixo disso fica no canto direito. Se mudar o nº de slides ou o
+   tamanho do cartão, rever este corte. */
+@media (min-width: 1440px) {
+  .sobreposto .controles {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+/* celular: foto em cima, cartão embaixo (controles seguem abaixo, no fluxo) */
+@media (max-width: 640px) {
+  .sobreposto .slide {
+    display: block;
+  }
+
+  .sobreposto .foto {
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  /* abaixo da foto (fora dela) o cartão volta a ser sólido e sem cantos */
+  .sobreposto .cartao {
+    max-width: none;
+    margin: 0;
+    padding: 24px 20px;
+    border-radius: 0;
+    background: var(--cor-fundo);
+    -webkit-backdrop-filter: none; /* taste-skill-ignore: só desliga o blur */
+    backdrop-filter: none; /* taste-skill-ignore: só desliga o blur */
+  }
+}
+
+/* sem rolagem automática, não há o que pausar nem o que animar */
+@media (prefers-reduced-motion: reduce) {
+  .slide,
+  .ponto::before {
+    transition: none;
+  }
+
+  .pausa {
+    display: none;
+  }
+}

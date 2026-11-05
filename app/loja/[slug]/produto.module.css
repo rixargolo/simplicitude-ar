@@ -9,13 +9,13 @@
 }
 
 .peso {
-  font-family: var(--font-eb-garamond), serif;
+  font-family: var(--font-body);
   font-size: 1rem;
   color: var(--brown);
 }
 
 .preco {
-  font-family: var(--font-cinzel), serif;
+  font-family: var(--font-display);
   font-weight: 600;
   font-size: 1.5rem;
   color: var(--green-nav);
@@ -30,7 +30,7 @@
 }
 
 .cta {
-  font-family: var(--font-cinzel), serif;
+  font-family: var(--font-display);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -65,7 +65,7 @@
 }
 
 .esgotado {
-  font-family: var(--font-cinzel), serif;
+  font-family: var(--font-display);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -77,7 +77,7 @@
 }
 
 .meditacaoLink {
-  font-family: var(--font-cinzel), serif;
+  font-family: var(--font-display);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.14em;

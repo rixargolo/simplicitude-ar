@@ -5,8 +5,12 @@
 }
 
 .base {
+  display: block;
   height: 38px;
-  width: auto;
+  aspect-ratio: 677 / 118;
+  background: currentColor;
+  -webkit-mask: url('/marca/logo-simplicitude-677w.png') center / contain no-repeat;
+  mask: url('/marca/logo-simplicitude-677w.png') center / contain no-repeat;
   opacity: 1;
 }
 

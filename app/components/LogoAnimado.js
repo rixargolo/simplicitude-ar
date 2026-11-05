@@ -2,7 +2,6 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import Image from 'next/image';
 import styles from './LogoAnimado.module.css';
 
 // Efeito de "escrita à mão" da wordmark, tocado só na 1ª carga da Home
@@ -139,15 +138,13 @@ export default function LogoAnimado() {
 
   return (
     <span className={styles.wrap} onClick={replay}>
-      <Image
-        src="/marca/logo-simplicitude-677w.png"
-        alt="Simplicitude"
-        width={677}
-        height={118}
-        sizes="(max-width: 1024px) 30.7vw, 30.7vw"
+      {/* Wordmark como máscara do PNG: pega a cor do texto (currentColor), então
+          acompanha a paleta/presets. Quem carrega o nome acessível é o role="img". */}
+      <span
+        role="img"
+        aria-label="Simplicitude"
         className={baseClasses}
         data-logo-base
-        priority
       />
       {phase !== 'idle' && (
         <svg
@@ -162,7 +159,7 @@ export default function LogoAnimado() {
                 key={d}
                 d={d}
                 fill="none"
-                stroke="#000000"
+                stroke="currentColor"
                 strokeWidth="1.22129"
                 strokeLinecap="round"
                 strokeLinejoin="round"
