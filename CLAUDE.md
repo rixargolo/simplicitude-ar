@@ -323,8 +323,8 @@ Cada um com `*.module.css` co-locado.
   para enquadrar a foto quando a tela larga corta o 16:9 em cima e embaixo — slide 3 com
   `'50% 0%'` para não cortar as cabeças; slide 1 com `'50% 70%'` (cabeça no topo e cacau na base:
   mostra o rosto com os óculos e o cacau inteiro; em notebook bem baixo o rosto corta na boca)) e `layout` (padrão `sobreposto`: foto em
-  largura total, cartão **translúcido** (82% de `--cor-fundo` + blur, cantos de 24px; no celular
-  volta a sólido, fora da foto) no canto inferior esquerdo — o teste de paletas lê esse 82% do
+  largura total, cartão **translúcido** (70% de `--cor-fundo` + blur, cantos de 24px; no celular
+  volta a sólido, fora da foto) no canto inferior esquerdo — o teste de paletas lê esse 70% do
   CSS e exige 4,5:1 do texto com foto preta ou branca por trás —, controles numa pílula sólida
   escura (`--cor-rodape`/`--cor-rodape-texto`, para não se emendar ao cartão claro) **dentro da
   foto**, embaixo — centralizada só a partir de 1440px; abaixo disso, no canto direito, para não

@@ -158,9 +158,10 @@
   height: min(80svh, 760px);
 }
 
-/* Cartão translúcido sobre a foto, cantos arredondados. 82% de --cor-fundo: mesmo com uma foto
-   preta por baixo o texto mantém ≥ 4,5:1 (tests/paletas.test.js lê este percentual e confere em
-   todo preset). O blur separa o cartão da foto e segura o contraste em fotos agitadas. */
+/* Cartão translúcido sobre a foto, cantos arredondados. 70% de --cor-fundo é o piso: mesmo com
+   uma foto preta por baixo o texto mantém ≥ 4,5:1 (no preset verde dá 4,9; a 65% cairia para
+   4,3). tests/paletas.test.js lê este percentual e confere em todo preset. O blur separa o
+   cartão da foto e segura o contraste em fotos agitadas. */
 .sobreposto .cartao {
   position: relative;
   align-self: end;
@@ -169,7 +170,7 @@
   margin: 0 0 32px 32px;
   padding: 28px 32px 32px;
   border-radius: 24px;
-  background: color-mix(in srgb, var(--cor-fundo) 82%, transparent);
+  background: color-mix(in srgb, var(--cor-fundo) 70%, transparent);
   -webkit-backdrop-filter: blur(14px); /* taste-skill-ignore: pedido explícito do usuário */
   backdrop-filter: blur(14px); /* taste-skill-ignore: pedido explícito do usuário */
 }
