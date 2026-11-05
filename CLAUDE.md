@@ -92,7 +92,7 @@ do menu, foco), `--cor-botao`/`--cor-botao-texto`, `--cor-rodape`/`--cor-rodape-
 > papéis (as páginas ainda não refeitas já pegam a paleta nova); `--gold` é o único hex antigo
 > (só o admin usa). Cada item do plano (A4–A7, A12) troca pelos papéis nos arquivos que
 > reescreve; o bloco some quando ninguém usar. Hex soltos remanescentes: admin e os scrims
-> pretos do teaser duotone da home, de `/quem-somos` e de `/meditacao`. O hero da home (A3) já
+> pretos de `/quem-somos` e de `/meditacao` (e do `app/home.module.css`, hoje sem uso, ver `/`). O hero da home (A3) já
 > usa só papéis.
 
 **Tipografia:** provisória, centralizada em tokens (`--font-display` Cinzel, `--font-body` EB
@@ -217,7 +217,10 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
 Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
 - **`/`** (`app/page.js`) — Home: `HeroCarrossel` (array `SLIDES` no próprio arquivo, filtrado
   por `slidesVisiveis()`; sem slide com foto o hero não renderiza), `VitrineProdutos`,
-  `GradeCategorias` e teaser duotone de Quem Somos (a meditação é coberta pelo slide do hero e pelo menu "Bem-estar")
+  e `GradeCategorias` (a meditação é coberta pelo slide do hero e pelo menu "Bem-estar"; Quem
+  Somos pelo slide do hero e pelo menu). O teaser duotone "Da floresta à fábrica" foi **removido
+  da home em 2026-11-05, só visualmente**: `app/home.module.css` (`.duotone*`) segue no repo,
+  sem nenhum import, para ser reaproveitado se a seção voltar
 - **`/quem-somos`** — institucional
 - **`/meditacao`** — hero (faixa de imagem + duotone + listras diagonais + título, no
   padrão de `/quem-somos`) e bloco de introdução da Coleção Inspirar, seguidos da lista de

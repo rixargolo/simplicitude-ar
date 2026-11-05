@@ -1,11 +1,8 @@
-import Link from 'next/link';
-import Image from 'next/image';
 import { getVitrine, getCategoriasComProdutos } from '@/lib/produtos';
 import { slidesVisiveis } from '@/lib/carrossel';
 import HeroCarrossel from './components/HeroCarrossel';
 import VitrineProdutos from './components/VitrineProdutos';
 import GradeCategorias from './components/GradeCategorias';
-import styles from './home.module.css';
 
 export const metadata = {
   title: 'Simplicitude — Da Floresta à Fábrica',
@@ -86,27 +83,6 @@ export default async function HomePage() {
       />
 
       <GradeCategorias categorias={categorias} />
-
-      <section className={styles.duotoneTeaser}>
-        <Image
-          src="/quem-somos/cabruca.jpg"
-          alt="Plantio de cacau em sistema Cabruca, dentro da Mata Atlântica"
-          fill
-          sizes="100vw"
-          className={styles.duotoneImg}
-        />
-        <div className={styles.duotoneOverlay} aria-hidden="true" />
-        <div className={styles.duotoneStripes} aria-hidden="true" />
-        <div className={styles.duotoneContent}>
-          <p className={styles.pullQuote}>
-            Da floresta à fábrica — cacau de agrofloresta, cultivado por
-            quatro gerações.
-          </p>
-          <Link href="/quem-somos" className={styles.duotoneCta}>
-            Conheça nossa história
-          </Link>
-        </div>
-      </section>
     </main>
   );
 }
