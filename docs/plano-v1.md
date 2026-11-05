@@ -217,6 +217,93 @@ consumidor, então o título sai do critério de ordem realmente usado, e nunca 
   a ordem sem dado de venda). Isso não bloqueia a virada, só o nome.
 - `destaque_ordem` é criado no C2; antes disso só "Novidades" existe.
 
+### Backlog X — ajustes vindos do feedback da dona (ajuste de 2026-11-05)
+
+**Mudança de rota:** o site vai ao ar primeiro com o botão **Comprar levando ao WhatsApp**; o
+checkout automático (bloco C, A0, A8–A10) fica **para depois do go-live**. Os ajustes que a dona da
+fábrica pedir entram neste backlog "X" (X1, X2…), cada um uma fatia pequena, encaixada na ordem onde
+fizer sentido.
+
+**Nova ordem:** A1 → A2 → A3/A4/A5 → A6 → **X1** → A7 (Comprar → WhatsApp) → ✋ dona → A11 (legais + Open
+Graph) → D (go-live sem pagamento) → depois: C, A0, A8–A10 (carrinho/checkout). B-1/B-2 seguem em
+paralelo. Do D2 sai, por ora, o "pagamento real baixo + estorno" (volta quando o C existir).
+
+| # | Item | Situação | Marca | Notas |
+|---|---|---|---|---|
+| X1 | Várias fotos por produto | real | 🔒 | ✅ **No código (2026-11-05).** Tabela `produto_imagens` (ordem, foco/zoom e texto alternativo por foto; a primeira é a principal); `produtos.imagem_url`/`imagem_foco_x/y`/`imagem_zoom` seguem como **cópia da principal** (a `main` e o admin atual só leem/gravam isso, e preview e produção dividem o banco). Admin: `FotosProduto` (enviar várias, subir/descer por botão, tornar principal, excluir também do Storage, ajustar com o `SeletorFoco`). Limites: 8 fotos, JPEG/PNG/WebP, 5 MB (também no bucket). `getFotosDoProduto()` pronta para o A7; **a galeria não entra aqui**. Exige o SQL abaixo rodado antes de abrir a edição de produto no admin |
+
+**SQL do X1** (rodar no SQL Editor do Supabase; idempotente — **rodar de novo no D2**, porque até o
+go-live a dona edita fotos pelo admin da `main`, que só grava em `produtos`):
+
+```sql
+-- X1: várias fotos por produto. Aditiva: produtos.imagem_url/foco/zoom ficam como cópia da principal.
+create table if not exists public.produto_imagens (
+  id uuid primary key default gen_random_uuid(),
+  produto_id uuid not null references public.produtos(id) on delete cascade,
+  caminho text not null,                       -- caminho no bucket "produtos", sem URL nem ?v=
+  ordem integer not null default 0,            -- menor = antes; a primeira é a principal
+  foco_x smallint not null default 50 check (foco_x between 0 and 100),
+  foco_y smallint not null default 50 check (foco_y between 0 and 100),
+  zoom smallint not null default 100 check (zoom between 100 and 200),
+  alt text,
+  created_at timestamptz not null default now(),
+  unique (produto_id, caminho)
+);
+create index if not exists produto_imagens_produto_ordem_idx
+  on public.produto_imagens (produto_id, ordem);
+
+alter table public.produto_imagens enable row level security;
+
+grant select on public.produto_imagens to anon, authenticated;
+grant insert, update, delete on public.produto_imagens to authenticated;
+
+drop policy if exists "produto_imagens leitura publica" on public.produto_imagens;
+create policy "produto_imagens leitura publica" on public.produto_imagens
+  for select to anon
+  using (exists (select 1 from public.produtos p where p.id = produto_id and p.ativo));
+
+-- mesmo modelo das demais tabelas: authenticated = admin (pendência de segurança #1)
+drop policy if exists "produto_imagens admin" on public.produto_imagens;
+create policy "produto_imagens admin" on public.produto_imagens
+  for all to authenticated using (true) with check (true);
+
+-- Preenchimento e reconciliação com produtos.imagem_url (também é rodado de novo no D2, porque até
+-- o go-live a dona edita fotos pelo admin da main, que só grava em produtos).
+-- 1) principal antiga trocada de extensão pelo admin da main: arquivo apagado, linha sai
+delete from public.produto_imagens i using public.produtos p
+ where i.produto_id = p.id
+   and i.caminho like p.id::text || '/principal.%'
+   and i.caminho is distinct from
+       split_part(substring(p.imagem_url from '/object/public/produtos/(.+)$'), '?', 1);
+-- 2) principal de produtos que ainda não está na tabela entra como primeira
+insert into public.produto_imagens (produto_id, caminho, ordem, foco_x, foco_y, zoom)
+select p.id, c.caminho,
+       coalesce((select min(i.ordem) from public.produto_imagens i where i.produto_id = p.id) - 1, 0),
+       coalesce(p.imagem_foco_x, 50), coalesce(p.imagem_foco_y, 50), coalesce(p.imagem_zoom, 100)
+  from public.produtos p
+ cross join lateral (select split_part(substring(p.imagem_url from '/object/public/produtos/(.+)$'), '?', 1) as caminho) c
+ where c.caminho <> ''
+on conflict (produto_id, caminho) do nothing;
+-- 3) foco/zoom da principal seguem produtos (o admin da main só edita ali)
+update public.produto_imagens i
+   set foco_x = coalesce(p.imagem_foco_x, 50), foco_y = coalesce(p.imagem_foco_y, 50), zoom = coalesce(p.imagem_zoom, 100)
+  from public.produtos p
+ where i.produto_id = p.id
+   and i.caminho = split_part(substring(p.imagem_url from '/object/public/produtos/(.+)$'), '?', 1);
+
+-- Limite no servidor (Storage)
+update storage.buckets
+   set file_size_limit = 5242880, allowed_mime_types = array['image/jpeg','image/png','image/webp']
+ where id = 'produtos';
+
+-- Conferência: deve listar 1 linha por produto com foto, ordem 0
+select p.nome, i.caminho, i.ordem, i.foco_x, i.foco_y, i.zoom
+  from public.produtos p left join public.produto_imagens i on i.produto_id = p.id order by p.nome, i.ordem;
+```
+
+**Fora do X1:** galeria em `/loja/[slug]` e Comprar → WhatsApp (A7); arrastar para reordenar; recorte
+ou compressão no navegador; HEIC; apagar a cópia em `produtos.imagem_*`; limite de 8 no banco.
+
 ### Bloco B — Fundação do backend (pode correr em paralelo à aprovação)
 
 | # | Item | Marca | Notas |
@@ -241,7 +328,7 @@ consumidor, então o título sai do critério de ordem realmente usado, e nunca 
 | # | Item | Marca | Notas |
 |---|---|---|---|
 | D1 | Preparar o domínio: adicionar no Netlify sem apontar; Resend em `send.simplicitude.com.br` | 🔒🧩 (acesso DNS GoDaddy) | não toca o SPF raiz |
-| D2 | Virada: env de produção, migrations em produção, **inventário físico + `ajuste`**, merge `v1`→`main` (flag desligada; o build falha se algum mockup ficar ligado), **conferir o título da vitrine da home (regra de nomes: nada de "Mais vendidos" sem ordem real da dona)**, **conferir CNPJ/razão social reais no rodapé (a linha "a confirmar" só aparece no preview)**, **conferir que todos os slides do hero têm foto real (hoje têm; se alguma for removida, o slide some em produção e, sem nenhuma, o hero some e a home perde o `h1`)**, `SITE_INDEXAVEL=1`, DNS (B5), SSL, pagamento real baixo + estorno, smoke | 🔒🧩 | security-review |
+| D2 | Virada: env de produção, migrations em produção, **inventário físico + `ajuste`**, **rodar de novo o SQL do X1 (reconcilia `produto_imagens` com as fotos editadas pela `main`)**, merge `v1`→`main` (flag desligada; o build falha se algum mockup ficar ligado), **conferir o título da vitrine da home (regra de nomes: nada de "Mais vendidos" sem ordem real da dona)**, **conferir CNPJ/razão social reais no rodapé (a linha "a confirmar" só aparece no preview)**, **conferir que todos os slides do hero têm foto real (hoje têm; se alguma for removida, o slide some em produção e, sem nenhuma, o hero some e a home perde o `h1`)**, `SITE_INDEXAVEL=1`, DNS (B5), SSL, pagamento real baixo + estorno, smoke | 🔒🧩 | security-review |
 
 ### Pós-go-live (ordem sugerida)
 1. `admins` + `is_admin()` + policies + storage só admin. Obrigatório antes de contas de cliente e
@@ -249,7 +336,7 @@ consumidor, então o título sai do critério de ordem realmente usado, e nunca 
 2. Transições de `/admin/pedidos` + e-mail de "enviado" + cancelamento (movimentação `cancelamento`).
 3. `/admin/frete`.
 4. Redesign de `/meditacao`.
-5. Galeria do produto 🧩 (a grade de categorias, A5, já está no código; só as fotos esperam a coluna do C2 e a dona).
+5. Galeria do produto 🧩 (várias fotos: X1 no código; a galeria em si é do A7. A grade de categorias, A5, já está no código; só as fotos dela esperam a coluna do C2 e a dona).
 6. ESLint + CI no GitHub Actions.
 7. **Migração do DNS e do e-mail para fora da GoDaddy** (B5), como mudança separada.
 8. Melhor Envio, WhatsApp, contas de cliente, institucional, NF-e, B2B.

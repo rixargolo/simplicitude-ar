@@ -53,9 +53,12 @@ qualquer dependência de plataforma** (Netlify/Supabase).
   não decide meio por faixa de valor.
 - **Entrega:** rota regional (de carro), Bahia toda, Brasil via Correios/transportadora, mais
   retirada. Produção tem ociosidade; já há quem separe e envie.
-- **Marco da 1ª versão pública:** loja completa com checkout InfinitePay no domínio próprio,
-  com CNPJ/endereço no rodapé, privacidade, entrega/trocas e Open Graph. Escopo: Home, Loja,
-  Meditação (o redesign de `/meditacao` fica para depois do go-live).
+- **Marco da 1ª versão pública (rota mudada em 2026-11-05):** loja no domínio próprio com o botão
+  **Comprar levando ao WhatsApp**, CNPJ/endereço no rodapé, privacidade, entrega/trocas e Open
+  Graph. O **checkout InfinitePay (bloco C, A0, A8–A10) fica para depois do go-live**. Escopo: Home,
+  Loja, Meditação (o redesign de `/meditacao` fica para depois do go-live).
+- **Backlog X:** ajustes vindos do feedback da dona da fábrica, em fatias pequenas (X1, X2…), na seção
+  "Backlog X" de [`docs/plano-v1.md`](docs/plano-v1.md). **X1 (várias fotos por produto) está no código.**
 - **Decisões vigentes:** checkout como **convidado** (a decisão antiga de login obrigatório
   está superada); vitrine da home com título derivado do critério de ordem — `created_at` = "Novidades",
   `destaque_ordem` curado sem dado de venda = "Favoritos", só ordem real da dona ou histórico de
@@ -71,9 +74,9 @@ qualquer dependência de plataforma** (Netlify/Supabase).
   está no código. A3 (hero da home em carrossel) está no código, com as 4 fotos reais ligadas
   (ver `HeroCarrossel`). A5 (categorias na home) está no código, sem fotos (ver `GradeCategorias`). A6 (`/loja` com filtro por categoria) está no código (ver `CardProduto`).** Mockups existentes: só `/bem-fazer` e `/assinaturas` ("Em breve"); os de
   carrinho/checkout vêm depois — ver a lista priorizada no plano.
-- **Ordem do front:** A1 (preview) → A2 (tokens, header/footer) → A3/A4/A5 (home) → A6/A7 (loja,
-  produto, só leitura) → mostrar o preview à dona; só depois o contrato de dados (A0) e
-  carrinho/checkout/pedido (A8–A10). Na 1ª rodada o produto não tem botão de compra.
+- **Ordem do front:** A1 (preview) → A2 (tokens, header/footer) → A3/A4/A5 (home) → A6 → **X1 (fotos)** →
+  A7 (produto, Comprar → WhatsApp) → mostrar o preview à dona → A11 → go-live (D); o contrato de dados
+  (A0) e carrinho/checkout/pedido (A8–A10, bloco C) ficam para depois do go-live.
 
 ---
 
@@ -173,8 +176,9 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   mín. 1920×1080, ideal 2400×1350, sem upscale), PSNR ≥ ~38 dB contra o original (a foto 3, com céu,
   precisou de q90). Os PNGs originais ficam em `_DOCS/originais-hero/` (fora do git). Mantém o
   check do D2: todo slide do hero com foto real
+- **X1 (várias fotos): SQL a rodar no Supabase** (em `docs/plano-v1.md`, Backlog X) **antes de abrir a edição de produto no admin** (`getProdutoById` consulta `produto_imagens`). Rodar de novo no D2. Falta a galeria em `/loja/[slug]` (A7)
 - **Foto de categoria:** `categorias` não tem `imagem_url`. A coluna (+ upload no `CategoriaForm`) pertence ao grupo da migration C2 do plano; `GradeCategorias` já renderiza a foto quando o campo vier, falta incluí-lo no `select` de `getCategoriasComProdutos()`. A foto em si depende da dona
-- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, as paletas (inclusive o contraste dos cartões de categoria), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `filtrarPorCategoria` e `lib/foco.js`). Sem lint nem CI
+- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, as paletas (inclusive o contraste dos cartões de categoria), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `filtrarPorCategoria`, `lib/foco.js` e `lib/fotos.js`). Sem lint nem CI
 - Admin de pedidos
 - **Admin CRUD de coleções** — a tabela `colecoes` existe e é lida (dropdown no formulário
   de produto), mas não há tela de gestão para criá-las/editá-las
@@ -451,9 +455,24 @@ clique/arrasto na foto (ponteiro, funciona com o dedo), três deslizantes (Horiz
 "Centralizar" (só a posição) e prévia no quadro do card; foto nova volta ao centro e 100%. Cobertos em
 `tests/foco.test.js`.
 
+### Fotos do produto (X1) — `lib/fotos.js`
+
+Várias fotos por produto na tabela `produto_imagens`; a primeira por `ordem` é a principal. Funções puras
+(testadas em `tests/fotos.test.js`): `ordenarFotos`, `fotosDoProduto(produto, linhas, urlDe)` (sem linhas cai em
+`produtos.imagem_url`, então produto nunca fica sem foto), `mover`, `tornarPrincipal`, `validarArquivos`
+(limites `MAX_FOTOS = 8`, `TAMANHO_MAX` 5 MB, `TIPOS_ACEITOS` JPEG/PNG/WebP; o bucket impõe o mesmo) e
+`caminhoDaUrl`. **`getFotosDoProduto(produto)`** (`lib/produtos.js`) entrega `[{ caminho, url, alt, foco_x, foco_y,
+zoom }]` para a galeria do A7 (usar `estiloFoto(foco_x, foco_y, zoom)`). **`produtos.imagem_url` /
+`imagem_foco_x/y` / `imagem_zoom` continuam como CÓPIA da principal**, regravada pelo `ProdutoForm` a cada
+salvar: o card da home/loja, `/meditacao`, a lista do admin e a branch `main` (que só conhece essas colunas)
+seguem funcionando sem mudança. No admin, `FotosProduto` (`app/admin/produtos/`) lista as fotos com botões
+Subir/Descer/Tornar principal/Ajustar/Excluir (teclado e celular, sem arrastar) e reusa o `SeletorFoco` por
+foto; `salvarFotos()` (no `ProdutoForm`) envia para `{produto_id}/{uuid}.{ext}`, grava as linhas, atualiza a cópia e só
+então apaga do Storage as excluídas.
+
 ### Admin — `lib/admin/produtos.js`, `lib/admin/categorias.js`, `lib/admin/estoque.js`
 
-- `getAllProdutos()`, `getProdutoById(id)`, `getColecoes()`, `getCategorias()`
+- `getAllProdutos()`, `getProdutoById(id)` (com `produto_imagens(*)`), `getColecoes()`, `getCategorias()`
 - `getAllCategorias()`, `getCategoriaById(id)`
 - `getProdutosComEstoque()` — `{ produtos, colecoes }`, todos os produtos (ativos e
   inativos) com estoque atual + coleções para exibir o nome
@@ -477,6 +496,11 @@ clique/arrasto na foto (ponteiro, funciona com o dedo), três deslizantes (Horiz
   painel do Supabase**, ver `lib/foco.js` —, `estoque` (nullable — mantido pela trigger, nunca por
   `UPDATE` da aplicação), `created_at` (usado por `getVitrine()` para ordenar a
   vitrine da home, critério "Novidades")
+- **`produto_imagens`** (X1; criada à mão no SQL Editor, SQL em `docs/plano-v1.md`) — `id` (uuid), `produto_id` (FK
+  `produtos`, `on delete cascade`), `caminho` (no bucket `produtos`, `unique (produto_id, caminho)`), `ordem`
+  (menor = antes; a primeira é a principal), `foco_x`/`foco_y` (0–100, default 50), `zoom` (100–200, default
+  100), `alt` (opcional), `created_at`. RLS: leitura pública (`anon`) só de produto ativo; escrita para
+  `authenticated` (mesmo modelo das demais, ver pendência de segurança #1). `produtos.imagem_*` é a cópia da principal
 - **`categorias`** — `id`, `nome`, `slug`, `descricao` — tipo do produto, usado como
   rótulo de exibição (ex.: "Chocolate", "Combo"). Sem `imagem_url` ainda (planejada no C2)
 - **`colecoes`** — `id`, `nome`, `slug`, `descricao` — linha de marketing/produto (ex.:
@@ -522,8 +546,9 @@ checkout):**
   a linha vigente é a mais recente por `created_at`. Ver pendência de segurança #3 sobre
   como isso deve ser escrito quando o checkout existir.
 
-- **Storage**: bucket `produtos`, caminho `{produto_id}/principal.{ext}`, URL pública com
-  cache-buster `?v={timestamp}`
+- **Storage**: bucket `produtos` (limite de 5 MB e só JPEG/PNG/WebP, definido no SQL do X1), caminho
+  `{produto_id}/{uuid}.{ext}` nas fotos novas (nome único, sem cache-buster); fotos antigas ficam em
+  `{produto_id}/principal.{ext}` (com `?v=` em `imagem_url`). URL pública
 
 ---
 

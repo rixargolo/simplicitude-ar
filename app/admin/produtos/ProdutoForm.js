@@ -1,32 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { FOCO_PADRAO, ZOOM_PADRAO, normalizarFoco, normalizarZoom } from '@/lib/foco';
-import SeletorFoco from './SeletorFoco';
+import { caminhoDaUrl, fotosDoProduto } from '@/lib/fotos';
+import FotosProduto from './FotosProduto';
 import styles from './ProdutoForm.module.css';
 
 const BUCKET = 'produtos';
 
-// Extensão do arquivo escolhido pelo usuário (ex.: "jpg", "png").
-function extensaoDoArquivo(file) {
-  const partes = file.name.split('.');
-  return partes.length > 1 ? partes.pop().toLowerCase() : 'jpg';
-}
+const EXTENSAO = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
 
-// Extensão atual da imagem de um produto, lida a partir de imagem_url
-// (ignora query string, ex. "?v=169..." usado para furar cache).
-function extensaoDaUrl(url) {
-  if (!url) return null;
-  try {
-    const { pathname } = new URL(url);
-    const partes = pathname.split('.');
-    return partes.length > 1 ? partes.pop().toLowerCase() : null;
-  } catch {
-    return null;
-  }
-}
+const urlPublica = (supabase, caminho) =>
+  supabase.storage.from(BUCKET).getPublicUrl(caminho).data.publicUrl;
 
 // Converte um texto de preço em reais (ex. "10,00" ou "10.00") para
 // centavos (inteiro). Retorna NaN se o texto não for um número válido.
@@ -63,32 +49,16 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
   );
   const [audioUrl, setAudioUrl] = useState(produto?.audio_url ?? '');
   const [ativo, setAtivo] = useState(produto?.ativo ?? true);
-  const [arquivo, setArquivo] = useState(null);
-  const [previaUrl, setPreviaUrl] = useState(null);
-  const [foco, setFoco] = useState({
-    x: normalizarFoco(produto?.imagem_foco_x),
-    y: normalizarFoco(produto?.imagem_foco_y),
-    zoom: normalizarZoom(produto?.imagem_zoom),
-  });
+  // fotos: [{ chave, caminho?, arquivo?, url, foco_x, foco_y, zoom, alt }], a primeira é a principal
+  const [fotosIniciais] = useState(() =>
+    fotosDoProduto(produto, produto?.produto_imagens, (c) => urlPublica(createClient(), c)).map((f) => ({
+      ...f,
+      chave: f.caminho ?? 'legado',
+    })),
+  );
+  const [fotos, setFotos] = useState(fotosIniciais);
   const [erro, setErro] = useState('');
   const [salvando, setSalvando] = useState(false);
-
-  // prévia do arquivo escolhido (ainda não enviado) para o seletor de foco
-  useEffect(() => {
-    if (!arquivo) {
-      setPreviaUrl(null);
-      return;
-    }
-    const url = URL.createObjectURL(arquivo);
-    setPreviaUrl(url);
-    return () => URL.revokeObjectURL(url);
-  }, [arquivo]);
-
-  function escolherArquivo(event) {
-    setArquivo(event.target.files?.[0] ?? null);
-    // foto nova: o foco antigo não vale mais
-    setFoco({ x: FOCO_PADRAO, y: FOCO_PADRAO, zoom: ZOOM_PADRAO });
-  }
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -119,9 +89,6 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
       tem_meditacao: temMeditacao,
       audio_url: temMeditacao ? audioUrl.trim() || null : null,
       ativo,
-      imagem_foco_x: foco.x,
-      imagem_foco_y: foco.y,
-      imagem_zoom: foco.zoom,
     };
 
     try {
@@ -130,9 +97,7 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
           ? await criarProduto(supabase, payload)
           : await atualizarProduto(supabase, produto.id, payload);
 
-      if (arquivo) {
-        await enviarImagemPrincipal(supabase, produtoId, arquivo, produto);
-      }
+      await salvarFotos(supabase, produtoId, fotos, fotosIniciais, produto);
 
       router.push('/admin/produtos');
       router.refresh();
@@ -279,26 +244,7 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
         <span>Ativo (visível na loja)</span>
       </label>
 
-      <label className={styles.field}>
-        <span className={styles.label}>Imagem principal</span>
-        <input
-          className={styles.inputFile}
-          type="file"
-          accept="image/*"
-          onChange={escolherArquivo}
-        />
-      </label>
-
-      {(previaUrl ?? produto?.imagem_url) && (
-        <SeletorFoco
-          src={previaUrl ?? produto.imagem_url}
-          alt={nome || 'Imagem do produto'}
-          x={foco.x}
-          y={foco.y}
-          zoom={foco.zoom}
-          onChange={setFoco}
-        />
-      )}
+      <FotosProduto fotos={fotos} onChange={setFotos} nomeProduto={nome} />
 
       {erro && <p className={styles.erro}>{erro}</p>}
 
@@ -334,44 +280,83 @@ async function atualizarProduto(supabase, id, payload) {
   return id;
 }
 
-// Envia a imagem principal para o Storage no caminho {id}/principal.{ext},
-// remove o arquivo antigo se a extensão mudou, e grava a URL pública em
-// imagem_url (com cache-buster ao sobrescrever).
-async function enviarImagemPrincipal(supabase, produtoId, arquivo, produtoAtual) {
-  const ext = extensaoDoArquivo(arquivo);
-  const caminho = `${produtoId}/principal.${ext}`;
+// Grava as fotos do produto, em ordem segura (nunca apontar para arquivo apagado):
+// 1) envia os arquivos novos para {id}/{uuid}.{ext}; 2) grava/ordena as linhas de produto_imagens e
+// apaga as das fotos excluídas; 3) atualiza a cópia da principal em produtos (imagem_url e foco/zoom,
+// que o card da home/loja e a branch main leem); 4) só então remove do Storage os arquivos excluídos
+// (se falhar, sobra um arquivo órfão, nunca um card quebrado).
+// shortcut: se o passo 3 falhar, as linhas já gravadas ficam e um novo "Salvar" reenvia as fotos novas
+// (sobram linhas/arquivos extras); upgrade: RPC transacional se isso incomodar.
+async function salvarFotos(supabase, produtoId, fotos, fotosIniciais, produtoAtual) {
+  const enviados = [];
+  let prontas;
+  try {
+    prontas = [];
+    for (const foto of fotos) {
+      if (!foto.arquivo) {
+        prontas.push(foto);
+        continue;
+      }
+      const caminho = `${produtoId}/${crypto.randomUUID()}.${EXTENSAO[foto.arquivo.type]}`;
+      const { error } = await supabase.storage
+        .from(BUCKET)
+        .upload(caminho, foto.arquivo, { cacheControl: '31536000' }); // nome único: cache longo é seguro
+      if (error) throw new Error(`Produto salvo, mas o envio de uma foto falhou: ${error.message}`);
+      enviados.push(caminho);
+      prontas.push({ ...foto, caminho, url: urlPublica(supabase, caminho) });
+    }
 
-  const { error: uploadError } = await supabase.storage
-    .from(BUCKET)
-    .upload(caminho, arquivo, { upsert: true, cacheControl: '3600' });
-
-  if (uploadError) {
-    throw new Error(
-      `Produto salvo, mas o upload da imagem falhou: ${uploadError.message}`,
-    );
+    const linhas = prontas
+      .map((f, ordem) => ({
+        produto_id: produtoId,
+        caminho: f.caminho,
+        ordem,
+        foco_x: f.foco_x,
+        foco_y: f.foco_y,
+        zoom: f.zoom,
+        alt: f.alt?.trim() || null,
+      }))
+      .filter((l) => l.caminho);
+    if (linhas.length > 0) {
+      const { error } = await supabase
+        .from('produto_imagens')
+        .upsert(linhas, { onConflict: 'produto_id,caminho' });
+      if (error) throw new Error(`Produto salvo, mas não foi possível gravar as fotos: ${error.message}`);
+    }
+  } catch (err) {
+    if (enviados.length > 0) await supabase.storage.from(BUCKET).remove(enviados);
+    throw err;
   }
 
-  const extAntiga = extensaoDaUrl(produtoAtual?.imagem_url);
-  if (extAntiga && extAntiga !== ext) {
-    await supabase.storage
-      .from(BUCKET)
-      .remove([`${produtoId}/principal.${extAntiga}`]);
+  const mantidos = new Set(prontas.map((f) => f.caminho).filter(Boolean));
+  const removidos = fotosIniciais.map((f) => f.caminho).filter((c) => c && !mantidos.has(c));
+
+  if (removidos.length > 0) {
+    const { error } = await supabase
+      .from('produto_imagens')
+      .delete()
+      .eq('produto_id', produtoId)
+      .in('caminho', removidos);
+    if (error) throw new Error(`Fotos salvas, mas não foi possível remover as excluídas: ${error.message}`);
   }
 
-  const { data: publicUrlData } = supabase.storage
-    .from(BUCKET)
-    .getPublicUrl(caminho);
+  const principal = prontas[0];
+  if (principal || fotosIniciais.length > 0) {
+    const mantemUrl = principal && caminhoDaUrl(produtoAtual?.imagem_url) === principal.caminho;
+    const { error } = await supabase
+      .from('produtos')
+      .update({
+        imagem_url: principal ? (mantemUrl ? produtoAtual.imagem_url : principal.url) : null,
+        imagem_foco_x: principal?.foco_x ?? 50,
+        imagem_foco_y: principal?.foco_y ?? 50,
+        imagem_zoom: principal?.zoom ?? 100,
+      })
+      .eq('id', produtoId);
+    if (error) throw new Error(`Fotos salvas, mas não foi possível atualizar a principal: ${error.message}`);
+  }
 
-  const imagemUrl = `${publicUrlData.publicUrl}?v=${Date.now()}`;
-
-  const { error: updateError } = await supabase
-    .from('produtos')
-    .update({ imagem_url: imagemUrl })
-    .eq('id', produtoId);
-
-  if (updateError) {
-    throw new Error(
-      `Imagem enviada, mas não foi possível salvar a URL: ${updateError.message}`,
-    );
+  if (removidos.length > 0) {
+    const { error } = await supabase.storage.from(BUCKET).remove(removidos);
+    if (error) console.error('Fotos excluídas continuam no Storage:', error.message);
   }
 }
