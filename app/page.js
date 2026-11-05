@@ -12,7 +12,7 @@ export const metadata = {
     'Chocolate artesanal e alimentos plant-based com ingredientes agroflorestais do Sul da Bahia.',
 };
 
-// Slides do hero. `imagem` é opcional ({ src, alt }): sem ela o slide mostra um
+// Slides do hero. `imagem` é opcional ({ src, alt, posicao? }; `posicao` = object-position): sem ela o slide mostra um
 // placeholder no preview e é omitido em produção (ver slidesVisiveis). Fotos 16:9 em
 // WebP (receita no CLAUDE.md); o texto dos slides é provisório.
 const SLIDES = [
@@ -49,6 +49,8 @@ const SLIDES = [
     cta: { rotulo: 'Conheça nossa história', href: '/quem-somos' },
     imagem: {
       src: '/home/hero_slide_3.webp',
+      // telas largas cortam a foto 16:9 em cima e embaixo: ancora no topo para manter as cabeças
+      posicao: '50% 0%',
       alt: 'Produtor e uma mulher espalhando cacau para secar num secador de madeira, com colinas ao fundo',
     },
   },

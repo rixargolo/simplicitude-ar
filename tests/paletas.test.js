@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('next/navigation', () => ({ notFound: () => {} }));
@@ -34,6 +35,35 @@ describe('contraste', () => {
       expect(contraste(p.destaque, p.fundo), `${chave}: destaque/fundo`).toBeGreaterThanOrEqual(4.5);
       expect(contraste(p.botaoTexto, p.botao), `${chave}: botão`).toBeGreaterThanOrEqual(4.5);
       expect(contraste(p.rodapeTexto, p.rodape), `${chave}: rodapé`).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  it('texto do cartão translúcido do hero cumpre 4,5:1 mesmo com foto preta ou branca por trás', async () => {
+    // o percentual vem do próprio CSS: mudar a opacidade lá é conferido aqui
+    const css = readFileSync(
+      new URL('../app/components/HeroCarrossel.module.css', import.meta.url),
+      'utf8',
+    );
+    const m = css.match(/color-mix\(in srgb, var\(--cor-fundo\) (\d+)%, transparent\)/);
+    expect(m, 'cartão sem color-mix de --cor-fundo').not.toBeNull();
+    const alfa = Number(m[1]) / 100;
+    const sobre = (cor, base) =>
+      '#' +
+      [1, 3, 5]
+        .map((i) => {
+          const c = parseInt(cor.slice(i, i + 2), 16);
+          const b = parseInt(base.slice(i, i + 2), 16);
+          return Math.round(c * alfa + b * (1 - alfa)).toString(16).padStart(2, '0');
+        })
+        .join('');
+    const { PALETAS } = await carregar('1');
+    for (const [chave, p] of Object.entries(PALETAS)) {
+      for (const base of ['#000000', '#ffffff']) {
+        expect(
+          contraste(p.texto, sobre(p.fundo, base)),
+          `${chave} sobre ${base}`,
+        ).toBeGreaterThanOrEqual(4.5);
+      }
     }
   });
 

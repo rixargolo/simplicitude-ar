@@ -88,6 +88,7 @@ export default function HeroCarrossel({ slides, layout = 'sobreposto' }) {
                     sizes={config.sizes}
                     preload={i === 0}
                     className={styles.img}
+                    style={slide.imagem.posicao ? { objectPosition: slide.imagem.posicao } : undefined}
                   />
                 ) : (
                   <FotoPendente especificacao={config.especFoto} />

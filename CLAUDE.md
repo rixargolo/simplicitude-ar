@@ -319,8 +319,12 @@ Cada um com `*.module.css` co-locado.
   de categoria via `rotuloCategoria()`, nome, atributos, descrição); usado em
   `/loja/[slug]` e `/meditacao`
 - **`HeroCarrossel`** (`'use client'`) — hero da home. Props `slides` (`{ id, rotulo, titulo,
-  texto, cta: { rotulo, href }, imagem?: { src, alt } }`) e `layout` (padrão `sobreposto`: foto em
-  largura total, cartão sólido no canto inferior esquerdo, controles numa pílula sólida
+  texto, cta: { rotulo, href }, imagem?: { src, alt, posicao? } }`; `posicao` = `object-position`
+  para enquadrar a foto quando a tela larga corta o 16:9 em cima e embaixo — ex.: slide 3 com
+  `'50% 0%'` para não cortar as cabeças) e `layout` (padrão `sobreposto`: foto em
+  largura total, cartão **translúcido** (82% de `--cor-fundo` + blur, cantos de 24px; no celular
+  volta a sólido, fora da foto) no canto inferior esquerdo — o teste de paletas lê esse 82% do
+  CSS e exige 4,5:1 do texto com foto preta ou branca por trás —, controles numa pílula sólida
   escura (`--cor-rodape`/`--cor-rodape-texto`, para não se emendar ao cartão claro) **dentro da
   foto**, embaixo — centralizada só a partir de 1440px; abaixo disso, no canto direito, para não
   encostar no cartão (corte a rever se mudar o nº de slides ou o tamanho do cartão); no celular, foto em cima, cartão embaixo e controles
