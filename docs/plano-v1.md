@@ -167,7 +167,7 @@ ou lógica definitiva), **mockup** (UI final com dados falsos atrás da flag, B3
 ### Bloco A — Front (vem primeiro: destrava a aprovação de design)
 
 **Ordem de execução do front (ajuste de 2026-11-04):**
-**A1 → A2 → A3/A4 → A6/A7 → ✋ mostrar o preview à dona.** Só depois disso vêm o **A0** (contrato
+**A1 → A2 → A3/A4/A5 → A6/A7 → ✋ mostrar o preview à dona.** Só depois disso vêm o **A0** (contrato
 de dados) e o carrinho/checkout (**A8–A10**), e então A11–A12. A numeração dos itens não muda;
 vale a ordem desta frase, não a da tabela.
 
@@ -190,7 +190,7 @@ Consequências:
 | A2b | **Seletor de paleta** do preview: barra no topo (só com `NEXT_PUBLIC_MOCKUPS=1`), presets Azul/Verde/Mix 1/Mix 2 em `lib/paletas.js`, escolha em `?paleta=` + `localStorage`, aplicada antes da 1ª pintura | real | 🔒 | ✅ **No código (2026-11-04).** Fora do bundle de produção (verificado); contraste ≥ 4,5:1 testado por preset. Vitest |
 | A3 | Home: hero em carrossel (auto, setas/pontos, pausa, `prefers-reduced-motion`) com slides de Loja e Meditação | real | 🔒 | ✅ **No código (2026-11-04).** `HeroCarrossel` (layout "sobreposto"; 2º layout "dividido" é uma entrada em `LAYOUTS` + um bloco de CSS) e `lib/carrossel.js` com Vitest. **Fotos (2026-11-05):** as 4 fotos da dona estão ligadas aos slides (`public/home/hero_slide_{1..4}.webp`, WebP q85 nas dimensões originais, de ~15 MB de PNG para ~1,7 MB; receita no CLAUDE.md). Slide sem foto continua virando placeholder `FotoPendente` no preview e sendo omitido em produção (sem nenhum, o hero não renderiza e a home fica sem `h1`). Check no D2 mantido, para o caso de a dona trocar alguma foto |
 | A4 | Home: vitrine de produtos no layout da dona (B6) com produtos reais | real | 🔒 | **o título depende do critério de ordem (regra de nomes abaixo): com `created_at` a seção se chama "Novidades", nunca "Mais vendidos".** Descrição com fallback `line-clamp` | ✅ **No código (2026-11-04).** `VitrineProdutos` em duas colunas; `lib/vitrine.js` (critério → título) + `getVitrine()`; chips levam a `/loja?categoria=slug` (filtro é o A6) |
-| A5 | Home: grade de categorias com fotos | cortar-se-atrasar | — | os chips do A4 cobrem a navegação por categoria |
+| A5 | Home: seção de categorias logo abaixo da vitrine (substitui o teaser antigo de meditação, já coberto pelo slide do hero e pelo item "Bem-estar" do menu) | real | 🔒 | ✅ **No código (2026-11-05).** Reativado (antes era cortar-se-atrasar). `GradeCategorias`: cartões tipográficos de campo de cor cheio (nome em serifa itálica grande, descrição, nº de produtos, "Ver produtos →") com dados reais de `getCategoriasComProdutos()`, cada um levando a `/loja?categoria=slug` (o filtro é o A6). Só tokens de papel; pares de cor testados a 4,5:1 por preset em `tests/paletas.test.js`. **Sem foto por enquanto:** `categorias` não tem `imagem_url`. O componente já aceita `imagem_url` opcional (faixa 16:9 no topo do cartão); **a coluna `categorias.imagem_url` (+ upload no `CategoriaForm`) pertence ao grupo da migration C2** e, criada, basta incluí-la no `select` de `getCategoriasComProdutos()`. A foto em si depende da dona (seção 5). design-taste-frontend |
 | A6 | `/loja` com filtro por chip (`?categoria=slug`) | real | 🔒 | |
 | A7 | Produto: ficha, preço, estoque, selo de meditação. **Quantidade e "Adicionar ao carrinho" só entram com o A8** | real | 🔒 | rota segue com `slugify` até a coluna `slug` (C2); o backfill gera os mesmos slugs |
 | A8 | Carrinho (`localStorage`, formato do A0, preços lidos do banco) + quantidade/"Adicionar ao carrinho" no A7 | real | 🔒 | depende do A0. Só cliente. tdd |
@@ -198,7 +198,7 @@ Consequências:
 | A10 | Tela "indo para o pagamento" + `/pedido/[token]` | mockup → real em C5 | 🔒 | fixture do A0 |
 | A11 | Páginas legais (`/privacidade`, `/entrega`, `/trocas`) + Open Graph | real | 🔒🧩 (aprovação dos textos) | eu redijo, a dona aprova |
 | A12 | `/meditacao`: herda os tokens + link "Comprar" por produto | real | — | o redesign é cortar-se-atrasar (pós-go-live) |
-| ✋ | **Aprovação do design pela dona** sobre o preview do A1, **mostrado após A1 → A2 → A3/A4 → A6/A7** | — | 🔒🧩 | impedimento atual; não bloqueia os blocos B–D. O preview mostra a seção como "Novidades" e deve-se avisar a dona do porquê (regra de nomes) |
+| ✋ | **Aprovação do design pela dona** sobre o preview do A1, **mostrado após A1 → A2 → A3/A4/A5 → A6/A7** | — | 🔒🧩 | impedimento atual; não bloqueia os blocos B–D. O preview mostra a seção como "Novidades" e deve-se avisar a dona do porquê (regra de nomes) |
 
 **Regra de nomes da vitrine da home (ajuste de 2026-11-04):** "Mais vendidos" é uma afirmação ao
 consumidor, então o título sai do critério de ordem realmente usado, e nunca é escolhido à mão:
@@ -229,7 +229,7 @@ consumidor, então o título sai do critério de ordem realmente usado, e nunca 
 | # | Item | Marca | Notas |
 |---|---|---|---|
 | C1 | Pesquisa InfinitePay (URL oficial, payload do webhook, sandbox?) → `docs/research/infinitepay.md` | 🔒🧩 (conta + `handle`) | research. As fontes públicas divergem na URL da API |
-| C2 | Migration de venda: `produtos.slug`/`descricao_curta`/`destaque_ordem` (+ campos no `ProdutoForm`); `pedidos` de convidado (`cliente_id` nullable, `comprador_*`, `token_acesso`); `metodo_entrega` ganha `regional`; `unique(pagamentos.referencia_externa_id)`; `frete_zonas` com seed; RPC `confirmar_pagamento()`; `CHECK`s | 🔒🧩 (regras de frete) | tdd: integração da RPC no staging |
+| C2 | Migration de venda: `produtos.slug`/`descricao_curta`/`destaque_ordem` (+ campos no `ProdutoForm`); **`categorias.imagem_url`** (+ upload no `CategoriaForm`; a foto do cartão do A5 depende dela); `pedidos` de convidado (`cliente_id` nullable, `comprador_*`, `token_acesso`); `metodo_entrega` ganha `regional`; `unique(pagamentos.referencia_externa_id)`; `frete_zonas` com seed; RPC `confirmar_pagamento()`; `CHECK`s | 🔒🧩 (regras de frete) | tdd: integração da RPC no staging |
 | C3 | `POST /api/frete`, `/api/checkout`, `/api/webhooks/infinitepay`, `/api/tarefas/reconciliar` + `lib/checkout/*`, todos usando o contrato do A0 | 🔒 | codebase-design, tdd, security-review |
 | C4 | `lib/email.js` (Resend via `fetch`): comprador + separação; `/admin/pedidos` só leitura | 🔒🧩 (Resend, e-mail de quem separa) | e-mail real com DMARC=pass |
 | C5 | Trocar os mockups A9/A10 pela API real (mesmo contrato) | 🔒 | |
@@ -248,13 +248,13 @@ consumidor, então o título sai do critério de ordem realmente usado, e nunca 
 2. Transições de `/admin/pedidos` + e-mail de "enviado" + cancelamento (movimentação `cancelamento`).
 3. `/admin/frete`.
 4. Redesign de `/meditacao`.
-5. Grade de categorias (A5) e galeria do produto 🧩.
+5. Galeria do produto 🧩 (a grade de categorias, A5, já está no código; só as fotos esperam a coluna do C2 e a dona).
 6. ESLint + CI no GitHub Actions.
 7. **Migração do DNS e do e-mail para fora da GoDaddy** (B5), como mudança separada.
 8. Melhor Envio, WhatsApp, contas de cliente, institucional, NF-e, B2B.
 
 ### Skills por fase
-`design-taste-frontend` (A2–A4, A6, A7, A9–A11) · `tdd` (A0, A8, C2, C3) · `research` (C1) ·
+`design-taste-frontend` (A2–A7, A9–A11) · `tdd` (A0, A8, C2, C3) · `research` (C1) ·
 `codebase-design` (C3) · `security-review` (C3, D2) · `wizard` (B-1, B-2, D1, D2) ·
 `grilling` (regras de frete e checkout com a dona) · `code-review`/`ponytail-review` ao fim de
 cada bloco.
@@ -390,9 +390,9 @@ Actions (`schedule` diário, `workflow_dispatch` e o mesmo cron da reconciliaç�
 | Nota fiscal nas vendas online | dona | 🧩 (pode bloquear por motivo fiscal) |
 | Ordem real dos mais vendidos (a partir de vendas de feira/WhatsApp) + descrição curta | dona | 🧩 (fallback: a seção vai ao ar como "Novidades"; sem esse dado o nome "Mais vendidos" não é usado) |
 | Fotos do hero | dona | 🧩 (há fotos atuais) |
-| Fotos de categoria / galeria | dona | 🧩 pós-go-live |
+| Fotos de categoria (precisam de `categorias.imagem_url`, C2) / galeria do produto | dona | 🧩 pós-go-live (o A5 vai ao ar sem foto) |
 | Tipografia oficial | dona | 🧩 (provisória fica) |
 | Novo provedor de e-mail (saída da GoDaddy) | você/dona | 🧩 pós-go-live |
 
-**Decisões a confirmar:** cortar-se-atrasar A5 (grade de categorias) e o redesign de `/meditacao`;
+**Decisões a confirmar:** o redesign de `/meditacao` (cortar-se-atrasar; o A5 já foi reativado);
 checkout de convidado; o rótulo "Bem-estar" para `/meditacao`; o conteúdo de Bem-fazer e Assinaturas (hoje só "Em breve"). Superada: "`/quem-somos` fora do menu" — agora está no menu.

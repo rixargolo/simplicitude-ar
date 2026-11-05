@@ -67,6 +67,27 @@ describe('contraste', () => {
     }
   });
 
+  it('cartões de categoria da home: cada par de cores cumpre 4,5:1 em todo preset', async () => {
+    // os pares vêm do próprio CSS: trocar a cor de uma variante lá é conferido aqui
+    const css = readFileSync(
+      new URL('../app/components/GradeCategorias.module.css', import.meta.url),
+      'utf8',
+    );
+    const pares = [
+      ...css.matchAll(/--cartao-fundo:\s*var\((--cor-[\w-]+)\);\s*--cartao-texto:\s*var\((--cor-[\w-]+)\)/g),
+    ].map((m) => [m[1], m[2]]);
+    expect(pares.length, 'cartão sem pares --cartao-fundo/--cartao-texto').toBeGreaterThanOrEqual(1);
+    const { PALETAS, variaveis } = await carregar('1');
+    for (const chave of Object.keys(PALETAS)) {
+      const v = variaveis(chave);
+      for (const [fundo, texto] of pares) {
+        expect(v[fundo], `${fundo} não é papel-base`).toBeDefined();
+        expect(v[texto], `${texto} não é papel-base`).toBeDefined();
+        expect(contraste(v[texto], v[fundo]), `${chave}: ${texto} sobre ${fundo}`).toBeGreaterThanOrEqual(4.5);
+      }
+    }
+  });
+
   it('o padrão existe', async () => {
     const { PALETAS, PALETA_PADRAO } = await carregar('1');
     expect(PALETAS[PALETA_PADRAO]).toBeDefined();

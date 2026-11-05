@@ -1,0 +1,179 @@
+/* Celular primeiro: uma coluna de campos de cor cheios; a partir de 720px, duas colunas.
+   A vitrine acima já deixa 72/120px embaixo, então a seção começa colada (padding-top 0).
+   Cores: só pares de papéis já cobertos por tests/paletas.test.js (4,5:1 em todo preset) —
+   cada variante declara --cartao-fundo/--cartao-texto e o teste lê esses pares daqui. */
+.section {
+  padding: 0 20px 72px;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+}
+
+.titulo {
+  margin: 0 0 32px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  color: var(--cor-texto);
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cartao {
+  --cartao-fundo: var(--cor-botao);
+  --cartao-texto: var(--cor-botao-texto);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 22rem;
+  background: var(--cartao-fundo);
+  color: var(--cartao-texto);
+}
+
+.cartao:nth-child(3n + 2) {
+  --cartao-fundo: var(--cor-destaque);
+  --cartao-texto: var(--cor-fundo);
+}
+
+.cartao:nth-child(3n + 3) {
+  --cartao-fundo: var(--cor-rodape);
+  --cartao-texto: var(--cor-rodape-texto);
+}
+
+/* foto opcional (categorias.imagem_url, C2): faixa no topo, o texto segue embaixo */
+.foto {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: var(--cor-superficie);
+}
+
+.fotoImg {
+  object-fit: cover;
+}
+
+.corpo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 28px 24px;
+}
+
+.nome {
+  margin: 0;
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(2.75rem, 7vw, 5.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  overflow-wrap: break-word;
+}
+
+/* o link cobre o cartão inteiro; o nome acessível é o nome da categoria */
+.link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.cartao:has(.link:focus-visible) {
+  outline: 3px solid var(--cor-destaque);
+  outline-offset: 4px;
+}
+
+.link:focus-visible {
+  outline: none;
+}
+
+.descricao {
+  margin: auto 0 0;
+  max-width: 34rem;
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  color: var(--cartao-texto);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+
+.chamada {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  color: var(--cartao-texto);
+}
+
+.ver {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  letter-spacing: 0.04em;
+}
+
+.seta {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.cartao:hover .seta {
+  transform: translateX(6px);
+}
+
+@media (min-width: 720px) {
+  .section {
+    padding: 0 24px 120px;
+  }
+
+  .titulo {
+    margin-bottom: 48px;
+  }
+
+  .grade {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  /* número ímpar: o último ocupa a linha inteira, sem buraco */
+  .cartao:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  .cartao {
+    min-height: 30rem;
+  }
+
+  .corpo {
+    padding: 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seta {
+    transition: none;
+  }
+
+  .cartao:hover .seta {
+    transform: none;
+  }
+}

@@ -4,6 +4,7 @@ import { getVitrine, getCategoriasComProdutos } from '@/lib/produtos';
 import { slidesVisiveis } from '@/lib/carrossel';
 import HeroCarrossel from './components/HeroCarrossel';
 import VitrineProdutos from './components/VitrineProdutos';
+import GradeCategorias from './components/GradeCategorias';
 import styles from './home.module.css';
 
 export const metadata = {
@@ -84,21 +85,7 @@ export default async function HomePage() {
         categorias={categorias}
       />
 
-      <section className={styles.teaser}>
-        <h2 className={styles.sectionTitle}>Meditação</h2>
-        <p className={styles.teaserText}>
-          A Simplicitude traz uma linha especial de chocolates para
-          meditação. A Coleção Inspirar apresenta chocolates com ervas e
-          especiarias que promovem bem estar. Cada blend tem a intenção de
-          despertar uma emoção, através das propriedades de seus
-          ingredientes. São três sabores que, associados à práticas de
-          meditação e atenção plena, inspiram bons sentimentos e uma
-          deliciosa sensação de Simplicitude.
-        </p>
-        <Link href="/meditacao" className={styles.cta}>
-          Acesse a meditação guiada
-        </Link>
-      </section>
+      <GradeCategorias categorias={categorias} />
 
       <section className={styles.duotoneTeaser}>
         <Image

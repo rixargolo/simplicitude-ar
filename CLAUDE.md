@@ -69,9 +69,9 @@ qualquer dependência de plataforma** (Netlify/Supabase).
   ativo e envs configuradas no Netlify (`NEXT_PUBLIC_MOCKUPS=1` só nos contextos
   branch-deploy/deploy-preview), verificado em produção e na `v1`. **A2 (tokens + Header/Footer)
   está no código. A3 (hero da home em carrossel) está no código, com as 4 fotos reais ligadas
-  (ver `HeroCarrossel`).** Mockups existentes: só `/bem-fazer` e `/assinaturas` ("Em breve"); os de
+  (ver `HeroCarrossel`). A5 (categorias na home) está no código, sem fotos (ver `GradeCategorias`).** Mockups existentes: só `/bem-fazer` e `/assinaturas` ("Em breve"); os de
   carrinho/checkout vêm depois — ver a lista priorizada no plano.
-- **Ordem do front:** A1 (preview) → A2 (tokens, header/footer) → A3/A4 (home) → A6/A7 (loja,
+- **Ordem do front:** A1 (preview) → A2 (tokens, header/footer) → A3/A4/A5 (home) → A6/A7 (loja,
   produto, só leitura) → mostrar o preview à dona; só depois o contrato de dados (A0) e
   carrinho/checkout/pedido (A8–A10). Na 1ª rodada o produto não tem botão de compra.
 
@@ -142,7 +142,8 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
 - `/` (home) — hero em carrossel (`HeroCarrossel`, 4 slides: Loja, Bem-estar, Quem somos, Presentes, todos com
   foto real; slide sem foto vira placeholder no preview e é omitido em produção) e, logo abaixo, a vitrine de produtos
   em duas colunas (título derivado do critério de ordem — hoje "Novidades" —, chips de
-  categoria e carrossel de cards), via `VitrineProdutos`
+  categoria e carrossel de cards), via `VitrineProdutos`; logo abaixo, a seção de categorias
+  (`GradeCategorias`, cartões tipográficos sem foto com dados reais), que substituiu o teaser antigo de meditação
 - Estoque: `produtos.estoque` é mantido pela trigger `calcular_estoque_movimentacao` a
   partir de `INSERT`s em `estoque_movimentacoes`; admin registra `reposicao`/`ajuste` em
   `/admin/estoque`; loja pública mostra selo "Esgotado" e desabilita "Comprar" quando
@@ -172,7 +173,8 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   mín. 1920×1080, ideal 2400×1350, sem upscale), PSNR ≥ ~38 dB contra o original (a foto 3, com céu,
   precisou de q90). Os PNGs originais ficam em `_DOCS/originais-hero/` (fora do git). Mantém o
   check do D2: todo slide do hero com foto real
-- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, as paletas, o carrossel do hero e o critério/título da vitrine). Sem lint nem CI
+- **Foto de categoria:** `categorias` não tem `imagem_url`. A coluna (+ upload no `CategoriaForm`) pertence ao grupo da migration C2 do plano; `GradeCategorias` já renderiza a foto quando o campo vier, falta incluí-lo no `select` de `getCategoriasComProdutos()`. A foto em si depende da dona
+- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, as paletas (inclusive o contraste dos cartões de categoria), o carrossel do hero, o critério/título da vitrine e `getCategoriasComProdutos`). Sem lint nem CI
 - Admin de pedidos
 - **Admin CRUD de coleções** — a tabela `colecoes` existe e é lida (dropdown no formulário
   de produto), mas não há tela de gestão para criá-las/editá-las
@@ -214,8 +216,8 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
 
 Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
 - **`/`** (`app/page.js`) — Home: `HeroCarrossel` (array `SLIDES` no próprio arquivo, filtrado
-  por `slidesVisiveis()`; sem slide com foto o hero não renderiza), `VitrineProdutos`, teaser
-  de meditação e teaser duotone de Quem Somos
+  por `slidesVisiveis()`; sem slide com foto o hero não renderiza), `VitrineProdutos`,
+  `GradeCategorias` e teaser duotone de Quem Somos (a meditação é coberta pelo slide do hero e pelo menu "Bem-estar")
 - **`/quem-somos`** — institucional
 - **`/meditacao`** — hero (faixa de imagem + duotone + listras diagonais + título, no
   padrão de `/quem-somos`) e bloco de introdução da Coleção Inspirar, seguidos da lista de
@@ -351,6 +353,16 @@ Cada um com `*.module.css` co-locado.
   em 2 linhas (`line-clamp`; vira `descricao_curta` no C2) e preço. Só papéis `--cor-*`.
   Usado em `app/page.js` logo abaixo do hero, alimentado por `getVitrine()` e
   `getCategoriasComProdutos()`
+- **`GradeCategorias`** (server component) — seção "Escolha por categoria" da home, abaixo da
+  vitrine. Prop `categorias` (`{ nome, slug, descricao, total, imagem_url? }`; vazio → não renderiza).
+  Um cartão por categoria, campo de cor cheio (sem borda/sombra): nome em `--font-accent` itálico
+  grande, `descricao` em 3 linhas (`line-clamp`), "N produtos" e "Ver produtos →"; o `Link` está no
+  `h3` com `::after` cobrindo o cartão (foco por `:has(.link:focus-visible)`). Celular primeiro: uma
+  coluna; ≥720px duas colunas (último cartão ímpar ocupa a linha inteira). As cores alternam por
+  posição via `--cartao-fundo`/`--cartao-texto` com pares de papéis (botão, destaque/fundo, rodapé);
+  **`tests/paletas.test.js` lê esses pares do CSS e exige 4,5:1 em todo preset** — variante nova
+  precisa usar papéis-base de `lib/paletas.js`. `imagem_url` opcional vira faixa 16:9 no topo do
+  cartão (hoje nunca vem; ver pendência de foto de categoria/C2)
 - **`MeditacaoPlayer`** (`'use client'`) — player de áudio da meditação guiada
 - **`LogoutButton`** (`'use client'`) — `signOut()` + redirect para `/login`, usado dentro
   de `AdminNav` (`app/admin/AdminNav.js`, ver seção de Rotas — não faz parte de
@@ -405,8 +417,9 @@ cai no padrão — e é `null` sem `NEXT_PUBLIC_MOCKUPS=1` (então `?paleta` é 
   **`lib/vitrine.js`** (`novidades`/`created_at`, `favoritos` e `maisVendidos`/`destaque_ordem`,
   esses dois só a partir do C2); `CRITERIO_VITRINE` = Novidades. Consulta e título saem da mesma
   entrada para não divergirem; "Mais vendidos" nunca com `created_at` (`tests/vitrine.test.js`)
-- `getCategoriasComProdutos()` — `[{ nome, slug }]` das categorias com ao menos um produto ativo
-  (join `produtos!inner`); alimenta os chips da vitrine
+- `getCategoriasComProdutos()` — `[{ nome, slug, descricao, total }]` das categorias com ao menos
+  um produto ativo (join `produtos!inner`; `total` = nº de produtos ativos); alimenta os chips da
+  vitrine e `GradeCategorias`
 - `rotuloCategoria(produto)` — retorna o nome da categoria só quando
   `mostrar_categoria_no_titulo=true` **e** há `categoria_id` vinculado; senão `null` (sem
   fallback fixo)
@@ -438,7 +451,7 @@ cai no padrão — e é `null` sem `NEXT_PUBLIC_MOCKUPS=1` (então `?paleta` é 
   `UPDATE` da aplicação), `created_at` (usado por `getVitrine()` para ordenar a
   vitrine da home, critério "Novidades")
 - **`categorias`** — `id`, `nome`, `slug`, `descricao` — tipo do produto, usado como
-  rótulo de exibição (ex.: "Chocolate", "Combo")
+  rótulo de exibição (ex.: "Chocolate", "Combo"). Sem `imagem_url` ainda (planejada no C2)
 - **`colecoes`** — `id`, `nome`, `slug`, `descricao` — linha de marketing/produto (ex.:
   "Coleção Inspirar"); **conceito diferente de categoria** (ver acima)
 - **`estoque_movimentacoes`** — `id`, `produto_id` (FK), `tipo` (constraint: `venda`,

@@ -1,61 +1,5 @@
 /* ============================================================
-   SEÇÃO 2 — Teaser Meditação
-   ============================================================ */
-
-.teaser {
-  background: var(--bg);
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 72px 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  text-align: center;
-}
-
-.sectionTitle {
-  margin: 0 auto;
-  font-family: var(--font-display);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--green-nav);
-  font-size: clamp(1.35rem, 2.6vw, 1.75rem);
-  padding-bottom: 14px;
-  border-bottom: 2px solid var(--caramel);
-  width: fit-content;
-}
-
-.teaserText {
-  font-family: var(--font-body);
-  font-size: 1.05rem;
-  line-height: 1.8;
-  color: var(--brown);
-  max-width: 620px;
-}
-
-.cta {
-  font-family: var(--font-display);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-size: 0.95rem;
-  background: var(--green);
-  color: var(--bg);
-  padding: 14px 28px;
-  border-radius: 4px;
-  text-decoration: none;
-  display: inline-block;
-  transition: background-color 0.2s ease;
-}
-
-.cta:hover {
-  background: var(--green-nav);
-}
-
-/* ============================================================
-   SEÇÃO 3 — Teaser Quem Somos (duotone)
+   Teaser Quem Somos (duotone)
    ============================================================ */
 
 .duotoneTeaser {
@@ -145,10 +89,6 @@
    ============================================================ */
 
 @media (max-width: 640px) {
-  .teaser {
-    padding: 48px 20px;
-  }
-
   .duotoneTeaser {
     min-height: 36vh;
   }
