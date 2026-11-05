@@ -355,13 +355,15 @@ Cada um com `*.module.css` co-locado.
   `getCategoriasComProdutos()`
 - **`GradeCategorias`** (server component) — seção "Escolha por categoria" da home, abaixo da
   vitrine. Prop `categorias` (`{ nome, slug, descricao, total, imagem_url? }`; vazio → não renderiza).
-  Um cartão por categoria, campo de cor cheio (sem borda/sombra): nome em `--font-accent` itálico
-  grande, `descricao` em 3 linhas (`line-clamp`), "N produtos" e "Ver produtos →"; o `Link` está no
-  `h3` com `::after` cobrindo o cartão (foco por `:has(.link:focus-visible)`). Celular primeiro: uma
-  coluna; ≥720px duas colunas (último cartão ímpar ocupa a linha inteira). As cores alternam por
-  posição via `--cartao-fundo`/`--cartao-texto` com pares de papéis (botão, destaque/fundo, rodapé);
-  **`tests/paletas.test.js` lê esses pares do CSS e exige 4,5:1 em todo preset** — variante nova
-  precisa usar papéis-base de `lib/paletas.js`. `imagem_url` opcional vira faixa 16:9 no topo do
+  Um cartão por categoria no estilo do cartão do hero (claro, cantos de 24px, sem borda/sombra):
+  nome em `--font-accent` itálico moderado (`--cor-texto`), `descricao` em 2 linhas (`line-clamp`),
+  "N produtos" e pílula discreta "Ver produtos →" (`--cor-botao`); o `Link` está no `h3` com
+  `::after` cobrindo o cartão (foco por `:has(.link:focus-visible)`). Celular primeiro: 1 coluna;
+  ≥640px 2; ≥1100px 4. O tom de fundo varia por posição (`--cartao-fundo` = `color-mix` de
+  `--cor-texto`/`--cor-destaque` sobre `--cor-fundo`, 4 tons); **`tests/paletas.test.js` lê essas
+  misturas do CSS e exige 4,5:1 de `--cor-texto` sobre cada tom em todo preset** — tom novo precisa
+  usar papéis-base de `lib/paletas.js`. Só aparece categoria com ≥1 produto ativo (join
+  `produtos!inner` em `getCategoriasComProdutos()`). `imagem_url` opcional vira faixa 16:9 no topo do
   cartão (hoje nunca vem; ver pendência de foto de categoria/C2)
 - **`MeditacaoPlayer`** (`'use client'`) — player de áudio da meditação guiada
 - **`LogoutButton`** (`'use client'`) — `signOut()` + redirect para `/login`, usado dentro

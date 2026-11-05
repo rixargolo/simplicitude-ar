@@ -67,23 +67,37 @@ describe('contraste', () => {
     }
   });
 
-  it('cartões de categoria da home: cada par de cores cumpre 4,5:1 em todo preset', async () => {
-    // os pares vêm do próprio CSS: trocar a cor de uma variante lá é conferido aqui
+  it('cartões de categoria da home: --cor-texto sobre cada tom de cartão cumpre 4,5:1 em todo preset', async () => {
+    // as misturas vêm do próprio CSS (color-mix em sRGB): trocar um tom lá é conferido aqui
     const css = readFileSync(
       new URL('../app/components/GradeCategorias.module.css', import.meta.url),
       'utf8',
     );
-    const pares = [
-      ...css.matchAll(/--cartao-fundo:\s*var\((--cor-[\w-]+)\);\s*--cartao-texto:\s*var\((--cor-[\w-]+)\)/g),
-    ].map((m) => [m[1], m[2]]);
-    expect(pares.length, 'cartão sem pares --cartao-fundo/--cartao-texto').toBeGreaterThanOrEqual(1);
+    const tons = [
+      ...css.matchAll(
+        /--cartao-fundo:\s*color-mix\(in srgb,\s*var\((--cor-[\w-]+)\)\s*(\d+)%,\s*var\((--cor-[\w-]+)\)\)/g,
+      ),
+    ].map((m) => ({ cor: m[1], pct: Number(m[2]) / 100, base: m[3] }));
+    expect(tons.length, 'cartão sem tons --cartao-fundo').toBeGreaterThanOrEqual(2);
+    const mistura = (a, b, pct) =>
+      '#' +
+      [1, 3, 5]
+        .map((i) => {
+          const x = parseInt(a.slice(i, i + 2), 16);
+          const y = parseInt(b.slice(i, i + 2), 16);
+          return Math.round(x * pct + y * (1 - pct)).toString(16).padStart(2, '0');
+        })
+        .join('');
     const { PALETAS, variaveis } = await carregar('1');
     for (const chave of Object.keys(PALETAS)) {
       const v = variaveis(chave);
-      for (const [fundo, texto] of pares) {
-        expect(v[fundo], `${fundo} não é papel-base`).toBeDefined();
-        expect(v[texto], `${texto} não é papel-base`).toBeDefined();
-        expect(contraste(v[texto], v[fundo]), `${chave}: ${texto} sobre ${fundo}`).toBeGreaterThanOrEqual(4.5);
+      for (const { cor, pct, base } of tons) {
+        expect(v[cor], `${cor} não é papel-base`).toBeDefined();
+        expect(v[base], `${base} não é papel-base`).toBeDefined();
+        expect(
+          contraste(v['--cor-texto'], mistura(v[cor], v[base], pct)),
+          `${chave}: texto sobre ${cor} ${pct * 100}% + ${base}`,
+        ).toBeGreaterThanOrEqual(4.5);
       }
     }
   });

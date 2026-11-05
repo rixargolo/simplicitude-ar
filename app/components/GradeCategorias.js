@@ -2,9 +2,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import styles from './GradeCategorias.module.css';
 
-// Grade de categorias da home: um campo de cor cheio por categoria, nome grande em serifa
-// itálica. `categoria.imagem_url` é opcional (a coluna só nasce no C2): quando vier, a foto
-// entra no topo do cartão sem mexer no resto.
+// Grade de categorias da home: cartão claro e arredondado por categoria (estilo do cartão do
+// hero), nome em serifa itálica, descrição de 2 linhas, contagem e pílula "Ver produtos".
+// `categoria.imagem_url` é opcional (a coluna só nasce no C2): quando vier, a foto entra no
+// topo do cartão sem mexer no resto.
 export default function GradeCategorias({ categorias = [] }) {
   if (!categorias || categorias.length === 0) return null;
 
