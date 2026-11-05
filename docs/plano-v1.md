@@ -32,7 +32,7 @@ Os meios de pagamento são os que o Checkout InfinitePay oferece.
   sem nenhuma referência (as imagens vêm do Storage).
 - Ramo `produto.imagens` em `ApresentacaoProduto.js`: não existe coluna `imagens`, então a galeria
   nunca renderiza.
-- `getProdutosRecentes()`: substituído pelo critério de "mais vendidos".
+- `getProdutosRecentes()`: substituído por `getVitrine()` (A4), que deriva o título do critério.
 - Home atual (partículas `mulberry32`, glow, teaser duotone, título em inglês).
 - `app/contato/page.js`: placeholder quebrado que está no menu.
 - Tokens `--green-nav`, `--cream-name`, `--gold`, `--caramel`, `--cream` e ~55 cores hex soltas
@@ -189,7 +189,7 @@ Consequências:
 | A2 | Tokens por papel (cor + fonte) + Header/Footer: menu **Loja, Bem-estar** (`/meditacao`, rótulo a confirmar), **Bem-fazer, Quem somos, Assinaturas** (logo leva à home; itens definidos em `lib/navegacao.js` com status real/mockup; Bem-fazer e Assinaturas são páginas "Em breve" só no preview, 404 e fora do menu em produção), WhatsApp novo, e-mail, Instagram, **CNPJ, razão social, endereço**; remove `/contato` | real | 🔒🧩 (CNPJ) | ✅ **No código (2026-11-04).** Tokens por papel (`--cor-fundo/texto/destaque/botao/rodape`) preparam o seletor de presets do preview; nomes antigos viram aliases até cada página ser refeita. No preview aparece "CNPJ a confirmar"; em produção a linha some até o dado chegar. Referência vaga da dona (Canva), não especificação. design-taste-frontend |
 | A2b | **Seletor de paleta** do preview: barra no topo (só com `NEXT_PUBLIC_MOCKUPS=1`), presets Azul/Verde/Mix 1/Mix 2 em `lib/paletas.js`, escolha em `?paleta=` + `localStorage`, aplicada antes da 1ª pintura | real | 🔒 | ✅ **No código (2026-11-04).** Fora do bundle de produção (verificado); contraste ≥ 4,5:1 testado por preset. Vitest |
 | A3 | Home: hero em carrossel (auto, setas/pontos, pausa, `prefers-reduced-motion`) com slides de Loja e Meditação | real | 🔒 | ✅ **No código (2026-11-04).** `HeroCarrossel` (layout "sobreposto"; 2º layout "dividido" é uma entrada em `LAYOUTS` + um bloco de CSS) e `lib/carrossel.js` com Vitest. **Slides sem foto:** as fotos atuais têm resolução baixa, então os 2 slides começam sem imagem. No preview mostram o placeholder `FotoPendente` (16:9, 2400×1350); em produção o slide sem foto é omitido e, sem nenhum, o hero não renderiza (a home fica sem `h1` até haver foto). 🧩 fotos 16:9 da dona (check no D2) |
-| A4 | Home: vitrine de produtos no layout da dona (B6) com produtos reais | real | 🔒 | **o título depende do critério de ordem (regra de nomes abaixo): com `created_at` a seção se chama "Novidades", nunca "Mais vendidos".** Descrição com fallback `line-clamp` |
+| A4 | Home: vitrine de produtos no layout da dona (B6) com produtos reais | real | 🔒 | **o título depende do critério de ordem (regra de nomes abaixo): com `created_at` a seção se chama "Novidades", nunca "Mais vendidos".** Descrição com fallback `line-clamp` | ✅ **No código (2026-11-04).** `VitrineProdutos` em duas colunas; `lib/vitrine.js` (critério → título) + `getVitrine()`; chips levam a `/loja?categoria=slug` (filtro é o A6) |
 | A5 | Home: grade de categorias com fotos | cortar-se-atrasar | — | os chips do A4 cobrem a navegação por categoria |
 | A6 | `/loja` com filtro por chip (`?categoria=slug`) | real | 🔒 | |
 | A7 | Produto: ficha, preço, estoque, selo de meditação. **Quantidade e "Adicionar ao carrinho" só entram com o A8** | real | 🔒 | rota segue com `slugify` até a coluna `slug` (C2); o backfill gera os mesmos slugs |

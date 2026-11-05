@@ -12,10 +12,10 @@ const formatBRL = (centavos) =>
     currency: 'BRL',
   }).format(centavos / 100);
 
-// Vitrine de produtos da home: carrossel com scroll horizontal (scroll-snap)
-// dos produtos ativos mais recentemente cadastrados, com setas de navegação
-// e link para a loja completa.
-export default function VitrineProdutos({ produtos }) {
+// Vitrine da home: à esquerda título (derivado do critério de ordem, ver lib/vitrine.js),
+// chips de categoria e link para a loja; à direita, carrossel scroll-snap que vai até a
+// borda da tela (o próximo card aparece cortado) com setas no desktop.
+export default function VitrineProdutos({ titulo, produtos, categorias = [] }) {
   const trackRef = useRef(null);
 
   if (!produtos || produtos.length === 0) return null;
@@ -29,15 +29,30 @@ export default function VitrineProdutos({ produtos }) {
   }
 
   return (
-    <section className={styles.section}>
-      <div className={styles.header}>
-        <h2 className={styles.sectionTitle}>Confira nossa Loja</h2>
-        <Link href="/loja" className={styles.verTodos}>
-          Ver todos
+    <section className={styles.section} aria-labelledby="vitrine-titulo">
+      <div className={styles.intro}>
+        <h2 id="vitrine-titulo" className={styles.titulo}>
+          {titulo} <em className={styles.enfase}>da floresta</em>
+        </h2>
+
+        {categorias.length > 0 && (
+          <ul className={styles.chips}>
+            {categorias.map((c) => (
+              <li key={c.slug}>
+                <Link href={`/loja?categoria=${c.slug}`} className={styles.chip}>
+                  {c.nome}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <Link href="/loja" className={styles.botao}>
+          Ver toda a loja
         </Link>
       </div>
 
-      <div className={styles.carousel}>
+      <div className={styles.trilho}>
         <button
           type="button"
           className={`${styles.arrow} ${styles.arrowPrev}`}
@@ -54,33 +69,30 @@ export default function VitrineProdutos({ produtos }) {
               href={`/loja/${slugify(produto.nome)}`}
               className={styles.slide}
             >
-              {produto.imagem_url ? (
-                <div className={styles.slideImgWrap}>
+              <div className={styles.slideImgWrap}>
+                {produto.imagem_url ? (
                   <Image
                     src={produto.imagem_url}
                     alt={produto.nome}
                     fill
-                    sizes="(max-width: 640px) 60vw, 240px"
+                    sizes="(max-width: 900px) 70vw, 18rem"
                     className={styles.slideImg}
                   />
-                  {produto.estoque === 0 && (
-                    <span className={styles.esgotado}>Esgotado</span>
-                  )}
-                </div>
-              ) : (
-                <div className={styles.imgPlaceholder} aria-hidden="true">
-                  {produto.nome.charAt(0)}
-                  {produto.estoque === 0 && (
-                    <span className={styles.esgotado}>Esgotado</span>
-                  )}
-                </div>
-              )}
+                ) : (
+                  <span className={styles.inicial} aria-hidden="true">
+                    {produto.nome.charAt(0)}
+                  </span>
+                )}
+                {produto.estoque === 0 && <span className={styles.esgotado}>Esgotado</span>}
+              </div>
 
               <div className={styles.slideBody}>
+                {produto.categorias?.nome && (
+                  <span className={styles.categoria}>{produto.categorias.nome}</span>
+                )}
                 <h3 className={styles.slideTitle}>{produto.nome}</h3>
-                <span className={styles.slidePreco}>
-                  {formatBRL(produto.preco_centavos)}
-                </span>
+                {produto.descricao && <p className={styles.descricao}>{produto.descricao}</p>}
+                <span className={styles.slidePreco}>{formatBRL(produto.preco_centavos)}</span>
               </div>
             </Link>
           ))}

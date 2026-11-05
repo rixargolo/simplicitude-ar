@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { getProdutosRecentes } from '@/lib/produtos';
+import { getVitrine, getCategoriasComProdutos } from '@/lib/produtos';
 import { slidesVisiveis } from '@/lib/carrossel';
 import HeroCarrossel from './components/HeroCarrossel';
 import VitrineProdutos from './components/VitrineProdutos';
@@ -35,14 +35,18 @@ const SLIDES = [
 ];
 
 export default async function HomePage() {
-  const produtos = await getProdutosRecentes();
+  const [vitrine, categorias] = await Promise.all([getVitrine(), getCategoriasComProdutos()]);
   const slides = slidesVisiveis(SLIDES);
 
   return (
     <main>
       {slides.length > 0 && <HeroCarrossel slides={slides} />}
 
-      <VitrineProdutos produtos={produtos} />
+      <VitrineProdutos
+        titulo={vitrine.titulo}
+        produtos={vitrine.produtos}
+        categorias={categorias}
+      />
 
       <section className={styles.teaser}>
         <h2 className={styles.sectionTitle}>Meditação</h2>

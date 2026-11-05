@@ -141,7 +141,8 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   categorias)
 - `/` (home) — hero em carrossel (`HeroCarrossel`, slides Loja e Bem-estar; **sem foto real
   ainda**: placeholder no preview, omitido em produção) e, logo abaixo, a vitrine de produtos
-  (carrossel com os mais recentemente cadastrados), via `VitrineProdutos`
+  em duas colunas (título derivado do critério de ordem — hoje "Novidades" —, chips de
+  categoria e carrossel de cards), via `VitrineProdutos`
 - Estoque: `produtos.estoque` é mantido pela trigger `calcular_estoque_movimentacao` a
   partir de `INSERT`s em `estoque_movimentacoes`; admin registra `reposicao`/`ajuste` em
   `/admin/estoque`; loja pública mostra selo "Esgotado" e desabilita "Comprar" quando
@@ -167,7 +168,7 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
 - **Fotos 16:9 (2400×1350, mín. 1920×1080) dos 2 slides do hero** — pendentes com a dona; as fotos
   atuais do projeto têm resolução baixa. Sem elas a home de produção fica sem hero (e sem `h1`);
   check do D2
-- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, as paletas e o carrossel do hero). Sem lint nem CI
+- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, as paletas, o carrossel do hero e o critério/título da vitrine). Sem lint nem CI
 - Admin de pedidos
 - **Admin CRUD de coleções** — a tabela `colecoes` existe e é lida (dropdown no formulário
   de produto), mas não há tela de gestão para criá-las/editá-las
@@ -327,10 +328,16 @@ Cada um com `*.module.css` co-locado.
 - **`FotoPendente`** — placeholder reutilizável de espaço de foto (prop `especificacao`; preenche o
   pai posicionado; fundo `--cor-superficie`). Usado pelo hero quando o slide não tem `imagem`; quem
   usa decide não renderizá-lo em produção.
-- **`VitrineProdutos`** (`'use client'`) — carrossel (scroll-snap horizontal, com setas)
-  dos produtos ativos mais recentemente cadastrados (imagem, nome, preço), cada um
-  linkando para `/loja/[slug]`, mais link "Ver todos" para `/loja`; usado em `app/page.js`
-  logo abaixo do hero, alimentado por `getProdutosRecentes()`
+- **`VitrineProdutos`** (`'use client'`) — vitrine da home em duas colunas. Props `titulo`,
+  `produtos`, `categorias`. Esquerda: `h2` "{titulo} *da floresta*", chips (`categorias.slug` →
+  `/loja?categoria=slug`; o filtro só funciona na loja no A6) e botão "Ver toda a loja". Direita:
+  carrossel scroll-snap que vai até a borda da tela (próximo card cortado), setas no desktop e
+  toque no celular (≤900px a intro vira cabeçalho). Card: imagem em proporção fixa 4:5 com
+  `object-fit: contain` sobre `--cor-superficie` (fotos quadradas e em retrato ficam uniformes,
+  sem corte), categoria (**sempre**, ignora `mostrar_categoria_no_titulo`), nome, `descricao`
+  em 2 linhas (`line-clamp`; vira `descricao_curta` no C2) e preço. Só papéis `--cor-*`.
+  Usado em `app/page.js` logo abaixo do hero, alimentado por `getVitrine()` e
+  `getCategoriasComProdutos()`
 - **`MeditacaoPlayer`** (`'use client'`) — player de áudio da meditação guiada
 - **`LogoutButton`** (`'use client'`) — `signOut()` + redirect para `/login`, usado dentro
   de `AdminNav` (`app/admin/AdminNav.js`, ver seção de Rotas — não faz parte de
@@ -380,8 +387,13 @@ cai no padrão — e é `null` sem `NEXT_PUBLIC_MOCKUPS=1` (então `?paleta` é 
 ### Storefront — `lib/produtos.js`
 
 - `getProdutos()` — `select('*, categorias(nome)')` onde `ativo=true`
-- `getProdutosRecentes(limite = 8)` — igual a `getProdutos()`, mas ordenado por
-  `created_at desc` e limitado; usado pela vitrine da home (`VitrineProdutos`)
+- `getVitrine(criterio = CRITERIO_VITRINE, limite = 8)` — `{ titulo, produtos }`: produtos
+  ativos ordenados pela coluna do critério e o título que deriva dele. Critérios em
+  **`lib/vitrine.js`** (`novidades`/`created_at`, `favoritos` e `maisVendidos`/`destaque_ordem`,
+  esses dois só a partir do C2); `CRITERIO_VITRINE` = Novidades. Consulta e título saem da mesma
+  entrada para não divergirem; "Mais vendidos" nunca com `created_at` (`tests/vitrine.test.js`)
+- `getCategoriasComProdutos()` — `[{ nome, slug }]` das categorias com ao menos um produto ativo
+  (join `produtos!inner`); alimenta os chips da vitrine
 - `rotuloCategoria(produto)` — retorna o nome da categoria só quando
   `mostrar_categoria_no_titulo=true` **e** há `categoria_id` vinculado; senão `null` (sem
   fallback fixo)
@@ -410,8 +422,8 @@ cai no padrão — e é `null` sem `NEXT_PUBLIC_MOCKUPS=1` (então `?paleta` é 
   `preco_centavos` (inteiro, centavos), `colecao_id` (FK, nullable), `categoria_id` (FK,
   nullable), `mostrar_categoria_no_titulo` (bool), `tem_meditacao` (bool), `audio_url`,
   `ativo` (bool), `imagem_url`, `estoque` (nullable — mantido pela trigger, nunca por
-  `UPDATE` da aplicação), `created_at` (usado por `getProdutosRecentes()` para ordenar a
-  vitrine da home pelos mais recentemente cadastrados)
+  `UPDATE` da aplicação), `created_at` (usado por `getVitrine()` para ordenar a
+  vitrine da home, critério "Novidades")
 - **`categorias`** — `id`, `nome`, `slug`, `descricao` — tipo do produto, usado como
   rótulo de exibição (ex.: "Chocolate", "Combo")
 - **`colecoes`** — `id`, `nome`, `slug`, `descricao` — linha de marketing/produto (ex.:
