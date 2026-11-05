@@ -316,8 +316,10 @@ Cada um com `*.module.css` co-locado.
   `/loja/[slug]` e `/meditacao`
 - **`HeroCarrossel`** (`'use client'`) — hero da home. Props `slides` (`{ id, rotulo, titulo,
   texto, cta: { rotulo, href }, imagem?: { src, alt } }`) e `layout` (padrão `sobreposto`: foto em
-  largura total, cartão sólido no canto inferior esquerdo, controles centralizados abaixo da foto;
-  no celular, foto em cima e cartão embaixo). **O markup é o mesmo para todo layout**; o que muda
+  largura total, cartão sólido no canto inferior esquerdo, controles numa pílula sólida
+  `--cor-fundo` **dentro da foto**, embaixo e centralizados — até ~1000px vai para o canto
+  direito, para não encostar no cartão; no celular, foto em cima, cartão embaixo e controles
+  abaixo, no fluxo). **O markup é o mesmo para todo layout**; o que muda
   fica no mapa `LAYOUTS` do componente (`sizes` da imagem e `especFoto`, a **constante única** do
   texto de especificação da foto) e em blocos `.<layout> …` do CSS — um 2º layout (ex.: tela
   dividida) é uma entrada nova no mapa + um bloco de CSS. Rolagem automática de 6 s, pausa por

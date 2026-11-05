@@ -166,7 +166,37 @@
   margin: 0 0 32px 32px;
 }
 
-/* celular: foto em cima, cartão embaixo */
+/* Controles dentro da foto (embaixo, centralizados), numa pílula sólida para o contraste não
+   depender da imagem. Assim cabem na 1ª tela mesmo em notebook baixo: antes ficavam abaixo
+   da foto e saíam da dobra. */
+@media (min-width: 641px) {
+  .sobreposto {
+    position: relative;
+  }
+
+  .sobreposto .controles {
+    position: absolute;
+    z-index: 2;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    flex-wrap: nowrap;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--cor-fundo);
+  }
+}
+
+/* até ~1000px o cartão (canto esquerdo) alcançaria o centro: a pílula vai para o canto direito */
+@media (min-width: 641px) and (max-width: 1000px) {
+  .sobreposto .controles {
+    left: auto;
+    right: 16px;
+    transform: none;
+  }
+}
+
+/* celular: foto em cima, cartão embaixo (controles seguem abaixo, no fluxo) */
 @media (max-width: 640px) {
   .sobreposto .slide {
     display: block;
