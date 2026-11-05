@@ -107,10 +107,10 @@
   scroll-snap-align: start;
 }
 
-/* setas na altura do centro da imagem (4:5 → metade de 1,25 × card) */
+/* setas na altura do centro da imagem (metade da altura do quadro: card ÷ proporção ÷ 2) */
 .arrow {
   position: absolute;
-  top: calc(var(--card) * 0.625);
+  top: calc(var(--card) / var(--proporcao-produto) / 2);
   z-index: 1;
   display: flex;
   align-items: center;

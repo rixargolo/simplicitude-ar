@@ -12,19 +12,18 @@
   transform: translateY(-4px);
 }
 
-/* proporção fixa: fotos quadradas e em retrato cabem inteiras (contain), sem corte nem distorção */
+/* quadro de proporção fixa (token em globals.css); a foto o preenche (cover) e o
+   object-position vem do ponto de foco do produto (lib/foco.js), inline no componente */
 .imgWrap {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: var(--proporcao-produto);
   background: var(--cor-superficie);
   overflow: hidden;
 }
 
 .img {
-  box-sizing: border-box;
-  padding: 10%;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .inicial {

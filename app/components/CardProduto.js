@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { slugify } from '@/lib/produtos';
+import { focoParaCss } from '@/lib/foco';
 import styles from './CardProduto.module.css';
 
 const formatBRL = (centavos) =>
@@ -9,9 +10,10 @@ const formatBRL = (centavos) =>
     currency: 'BRL',
   }).format(centavos / 100);
 
-// Card de produto compartilhado pela vitrine da home e pela /loja: imagem 4:5, categoria,
-// nome, descrição em 2 linhas e preço. `className` entra no <Link> (o pai decide o
-// dimensionamento); `Titulo` é o nível do título (h3 na home, h2 sob o h1 da loja).
+// Card de produto compartilhado pela vitrine da home e pela /loja: foto em quadro fixo
+// (--proporcao-produto) preenchido com cover e enquadrado pelo ponto de foco do produto
+// (lib/foco.js), categoria, nome, descrição em 2 linhas e preço. `className` entra no <Link>
+// (o pai decide o dimensionamento); `Titulo` é o nível do título (h3 na home, h2 sob o h1 da loja).
 export default function CardProduto({ produto, sizes, className = '', Titulo = 'h3' }) {
   return (
     <Link
@@ -26,6 +28,7 @@ export default function CardProduto({ produto, sizes, className = '', Titulo = '
             fill
             sizes={sizes}
             className={styles.img}
+            style={{ objectPosition: focoParaCss(produto.imagem_foco_x, produto.imagem_foco_y) }}
           />
         ) : (
           <span className={styles.inicial} aria-hidden="true">

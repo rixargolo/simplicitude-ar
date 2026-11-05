@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
+import { FOCO_PADRAO, normalizarFoco } from '@/lib/foco';
+import SeletorFoco from './SeletorFoco';
 import styles from './ProdutoForm.module.css';
 
 const BUCKET = 'produtos';
@@ -63,8 +64,30 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
   const [audioUrl, setAudioUrl] = useState(produto?.audio_url ?? '');
   const [ativo, setAtivo] = useState(produto?.ativo ?? true);
   const [arquivo, setArquivo] = useState(null);
+  const [previaUrl, setPreviaUrl] = useState(null);
+  const [foco, setFoco] = useState({
+    x: normalizarFoco(produto?.imagem_foco_x),
+    y: normalizarFoco(produto?.imagem_foco_y),
+  });
   const [erro, setErro] = useState('');
   const [salvando, setSalvando] = useState(false);
+
+  // prévia do arquivo escolhido (ainda não enviado) para o seletor de foco
+  useEffect(() => {
+    if (!arquivo) {
+      setPreviaUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(arquivo);
+    setPreviaUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [arquivo]);
+
+  function escolherArquivo(event) {
+    setArquivo(event.target.files?.[0] ?? null);
+    // foto nova: o foco antigo não vale mais
+    setFoco({ x: FOCO_PADRAO, y: FOCO_PADRAO });
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -95,6 +118,8 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
       tem_meditacao: temMeditacao,
       audio_url: temMeditacao ? audioUrl.trim() || null : null,
       ativo,
+      imagem_foco_x: foco.x,
+      imagem_foco_y: foco.y,
     };
 
     try {
@@ -254,24 +279,23 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
 
       <label className={styles.field}>
         <span className={styles.label}>Imagem principal</span>
-        {produto?.imagem_url && (
-          <div className={styles.imgPreviewWrap}>
-            <Image
-              src={produto.imagem_url}
-              alt={produto.nome}
-              fill
-              sizes="96px"
-              className={styles.imgPreview}
-            />
-          </div>
-        )}
         <input
           className={styles.inputFile}
           type="file"
           accept="image/*"
-          onChange={(e) => setArquivo(e.target.files?.[0] ?? null)}
+          onChange={escolherArquivo}
         />
       </label>
+
+      {(previaUrl ?? produto?.imagem_url) && (
+        <SeletorFoco
+          src={previaUrl ?? produto.imagem_url}
+          alt={nome || 'Imagem do produto'}
+          x={foco.x}
+          y={foco.y}
+          onChange={setFoco}
+        />
+      )}
 
       {erro && <p className={styles.erro}>{erro}</p>}
 

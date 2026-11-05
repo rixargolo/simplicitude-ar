@@ -27,6 +27,8 @@ body {
   --cor-borda: color-mix(in srgb, var(--cor-texto) 18%, var(--cor-fundo));
 
   --raio-botao: 999px;
+  /* proporção (largura ÷ altura) da foto do produto nos cards e na prévia do admin: 0.8 = 4:5 */
+  --proporcao-produto: 0.8;
 
   /* tipografia provisória: trocar a oficial é mexer só aqui e em app/layout.js */
   --font-display: var(--font-cinzel), serif;
