@@ -97,8 +97,8 @@ do menu, foco), `--cor-botao`/`--cor-botao-texto`, `--cor-rodape`/`--cor-rodape-
 
 **Tipografia:** provisória, centralizada em tokens (`--font-display` Cinzel, `--font-body` EB
 Garamond, `--font-accent` Cormorant Garamond, definidos em `globals.css` sobre as variáveis do
-`next/font` em `app/layout.js`). Nenhum CSS cita as famílias direto: trocar pela oficial é
-mexer só nesses dois arquivos. Dancing Script foi removida.
+`next/font/local` em `app/layout.js`, arquivos em `app/fonts/`). Nenhum CSS cita as famílias
+direto: trocar pela oficial é mexer só em `globals.css`, `app/layout.js` e `app/fonts/`. Dancing Script foi removida.
 
 **Contato vigente:** WhatsApp **(73) 9 2002-6708**; e-mail `viva@simplicitude.com.br`
 (inalterado); Instagram `@simplicitude.co`. O `Footer` já usa esses dados. **CNPJ/razão
@@ -505,8 +505,12 @@ implementado — ver pendência de segurança #3.
 - Cores: **só tokens de papel** (`--cor-*`, ver [Paleta](#paleta-e-tipografia-oficiais)); hex
   solto em componente novo é proibido. Fontes: só `--font-display/body/accent`. Os nomes
   antigos (`--bg`, `--green`…) são aliases a eliminar, não a usar.
-- Fontes via `next/font/google` em `app/layout.js`: Cinzel, EB Garamond e Cormorant Garamond
-  (`--font-cinzel`, `--font-eb-garamond`, `--font-cormorant`), só consumidas por
+- Fontes **hospedadas no projeto** (`next/font/local` em `app/layout.js`, arquivos WOFF2
+  variáveis latin em `app/fonts/`, licença OFL em `app/fonts/LEIA-ME.md`): Cinzel, EB Garamond e
+  Cormorant Garamond. **Não voltar a `next/font/google`:** em 2026-11-05 o build do Netlify quebrou
+  ao baixar a EB Garamond do Google (`Can't resolve '@vercel/turbopack-next/internal/font/google/font'`,
+  "queries have exactly one entry"), sem reproduzir localmente; o build agora não depende de rede
+  externa. Variáveis `--font-cinzel`, `--font-eb-garamond`, `--font-cormorant`, só consumidas por
   `globals.css`
 - Menu e mockups: ver `lib/navegacao.js`; mockup = `status: 'mockup'` + `exigirMockups()`
 - Preços sempre em **centavos** (inteiro) no banco; formatação BRL na exibição
