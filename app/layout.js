@@ -7,6 +7,8 @@ import './globals.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import SiteChrome from './components/SiteChrome';
+import SeletorPaleta from './components/SeletorPaleta';
+import { scriptPaleta } from '@/lib/paletas';
 
 const cinzel = Cinzel({
   subsets: ['latin'],
@@ -37,12 +39,19 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const paleta = scriptPaleta(); // null em produção (sem NEXT_PUBLIC_MOCKUPS=1)
   return (
     <html
       lang="pt-BR"
       className={`${cinzel.variable} ${ebGaramond.variable} ${cormorantGaramond.variable}`}
+      suppressHydrationWarning // scripts inline alteram style/data-/class do <html> antes da hidratação
     >
       <body>
+        {paleta && (
+          // Paleta do preview aplicada antes da 1ª pintura (sem flash), ver lib/paletas.js
+          <script dangerouslySetInnerHTML={{ __html: paleta }} />
+        )}
+        {paleta && <SeletorPaleta />}
         <script
           // Decide, antes de qualquer paint, se a logo vai animar nesta carga —
           // evita o flash do PNG estático aparecendo antes do traçado começar

@@ -79,8 +79,8 @@ qualquer dependência de plataforma** (Netlify/Supabase).
 ## Paleta e tipografia oficiais
 
 **Paleta oficial da marca:** Bege Background `#f6f3ea`, Azul Simplicitude `#272a5c`, Verde
-Musgo `#27401e`. Em `app/globals.css` vira **tokens por papel** (não por cor), para um seletor de
-presets (só no preview, próximo item) trocar a paleta inteira só por variáveis CSS:
+Musgo `#27401e`. Em `app/globals.css` vira **tokens por papel** (não por cor), para o seletor de
+presets do preview (`SeletorPaleta`, ver abaixo) trocar a paleta inteira só por variáveis CSS:
 `--cor-fundo` (bege), `--cor-texto` (azul), `--cor-destaque` (verde: nomes de produto, item ativo
 do menu, foco), `--cor-botao`/`--cor-botao-texto`, `--cor-rodape`/`--cor-rodape-texto`, mais
 `--raio-botao` (pílula). Derivados via `color-mix` (seguem o preset sozinhos): `--cor-texto-suave`,
@@ -161,7 +161,7 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   tabelas `clientes`/`enderecos` seguem prontas, sem tela
 - Schema/migrations **não estão versionados no repo** (só existem no painel do Supabase) e
   não há ambiente de staging — itens B-1/B-2 do plano
-- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview e o menu/mockups). Sem lint nem CI
+- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups e as paletas). Sem lint nem CI
 - Admin de pedidos
 - **Admin CRUD de coleções** — a tabela `colecoes` existe e é lida (dropdown no formulário
   de produto), mas não há tela de gestão para criá-las/editá-las
@@ -259,6 +259,11 @@ Cada um com `*.module.css` co-locado.
   "Menu"/"Fechar". **`Footer`** — campo `--cor-rodape` com logo, lema, contatos (WhatsApp via
   `wa.me`), links do mesmo `itensMenu()` e linha legal (CNPJ só no preview).
 - **`EmBreve`** — página mockup "Em breve" com botão pílula para `/loja`
+- **`SeletorPaleta`** (`'use client'`) — barra fina no topo com select de paleta, só com
+  `NEXT_PUBLIC_MOCKUPS=1`. Troca as variáveis no `<html>`, grava no `localStorage` e atualiza
+  `?paleta=` na URL (`replaceState`) para o link já levar a versão. A comparação com a env é
+  **literal** dentro do componente de propósito: é o que faz o Next descartar o seletor e os
+  presets do bundle de produção (verificado; chamar `mockupsLigados()` não bastava)
 - **`LogoAnimado`** (`'use client'`) — usado dentro do `<Link href="/">` do `Header` no
   lugar do `<Image>` direto da wordmark. Na **1ª carga da Home (`/`) em cada sessão do
   navegador**, toca uma animação de "escrita à mão" (traçado sequencial via
@@ -329,6 +334,16 @@ Cada um com `*.module.css` co-locado.
 Fonte única do menu (Header e Footer): array com `href`, `rotulo` e `status` (`real` ou
 `mockup`). `itensMenu()` filtra: `mockup` só com `NEXT_PUBLIC_MOCKUPS=1`. `exigirMockups()`
 (`notFound()` sem a flag) vai no topo de toda página mockup. Item novo = uma linha no array.
+
+### Paletas do preview — `lib/paletas.js`
+
+`PALETAS` (azul = padrão da dona, verde, duo): um preset por entrada, com os 7 papéis-base
+(fundo, texto, destaque, botão, botaoTexto, rodapé, rodapeTexto); preset novo = uma entrada.
+Regra: nunca azul sobre verde (1,17:1), texto de botão/rodapé sempre bege; `tests/paletas.test.js`
+exige 4,5:1 de todo preset. `variaveis(chave)` mapeia preset → variáveis CSS; `scriptPaleta()`
+devolve o script inline do `<body>` (`app/layout.js`) que aplica a paleta no `<html>` antes da
+1ª pintura — prioridade `?paleta=` → `localStorage` (`simplicitude:paleta`) → padrão, inválido
+cai no padrão — e é `null` sem `NEXT_PUBLIC_MOCKUPS=1` (então `?paleta` é ignorado em produção).
 
 ### Storefront — `lib/produtos.js`
 
