@@ -1,0 +1,197 @@
+/* Estrutura comum a todo layout. O que muda de layout para layout (posição do cartão,
+   altura da foto) fica nos blocos `.sobreposto …` abaixo; um 2º layout é um bloco novo. */
+
+.raiz {
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+}
+
+/* slides empilhados na mesma célula: a altura é a do mais alto, o texto nunca é cortado */
+.palco {
+  display: grid;
+}
+
+.slide {
+  grid-area: 1 / 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+.slideAtivo {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.foto {
+  position: relative;
+  overflow: hidden;
+  background: var(--cor-superficie);
+}
+
+.img {
+  object-fit: cover;
+}
+
+.cartao {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 32px;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+}
+
+.titulo {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  color: var(--cor-texto);
+}
+
+.texto {
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  line-height: 1.55;
+  color: var(--cor-texto);
+}
+
+.botao {
+  display: inline-block;
+  padding: 12px 28px;
+  border-radius: var(--raio-botao);
+  background: var(--cor-botao);
+  color: var(--cor-botao-texto);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.botao:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.botao:active {
+  transform: translateY(1px);
+}
+
+/* controles: setas, pontos e pausa, centralizados logo abaixo da foto */
+.controles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 16px;
+}
+
+.seta,
+.ponto,
+.pausa {
+  min-width: 44px;
+  min-height: 44px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--cor-texto);
+}
+
+.seta {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.ponto {
+  display: grid;
+  place-items: center;
+}
+
+/* ponto inativo: 3:1 sobre o fundo; o ativo é mais largo e cheio (não depende só da cor) */
+.ponto::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--cor-texto) 60%, var(--cor-fundo));
+  transition: width 0.3s ease;
+}
+
+.pontoAtivo::before {
+  width: 26px;
+  background: var(--cor-texto);
+}
+
+.pausa {
+  margin-left: 12px;
+  padding: 0 12px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.pausa:hover {
+  color: var(--cor-destaque);
+}
+
+/* ===== Layout "sobreposto": foto em largura total, cartão sólido no canto inferior esquerdo ===== */
+
+.sobreposto .slide {
+  display: grid;
+}
+
+.sobreposto .foto,
+.sobreposto .cartao {
+  grid-area: 1 / 1;
+}
+
+.sobreposto .foto {
+  height: min(80svh, 760px);
+}
+
+.sobreposto .cartao {
+  position: relative;
+  align-self: end;
+  justify-self: start;
+  max-width: 28rem;
+  margin: 0 0 32px 32px;
+}
+
+/* celular: foto em cima, cartão embaixo */
+@media (max-width: 640px) {
+  .sobreposto .slide {
+    display: block;
+  }
+
+  .sobreposto .foto {
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .sobreposto .cartao {
+    max-width: none;
+    margin: 0;
+    padding: 24px 20px;
+  }
+}
+
+/* sem rolagem automática, não há o que pausar nem o que animar */
+@media (prefers-reduced-motion: reduce) {
+  .slide,
+  .ponto::before {
+    transition: none;
+  }
+
+  .pausa {
+    display: none;
+  }
+}

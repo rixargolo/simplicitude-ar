@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { getProdutosRecentes } from '@/lib/produtos';
+import { slidesVisiveis } from '@/lib/carrossel';
+import HeroCarrossel from './components/HeroCarrossel';
 import VitrineProdutos from './components/VitrineProdutos';
 import styles from './home.module.css';
 
@@ -10,94 +12,35 @@ export const metadata = {
     'Chocolate artesanal e alimentos plant-based com ingredientes agroflorestais do Sul da Bahia.',
 };
 
-// Gerador pseudo-aleatório com seed fixa: garante o mesmo resultado no
-// render do servidor e na hidratação do cliente (Math.random() causaria
-// hydration mismatch aqui).
-function mulberry32(seed) {
-  let a = seed;
-  return function () {
-    a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-const PARTICLE_COUNT = 100;
-const rand = mulberry32(1337);
-
-const PARTICLES = Array.from({ length: PARTICLE_COUNT }, (_, i) => ({
-  left: rand() * 100,
-  top: rand() * 100,
-  size: 2 + rand() * 1.5,
-  color: i % 2 === 0 ? 'var(--gold)' : 'var(--cream)',
-  duration: 15 + rand() * 15,
-  delay: rand() * -30,
-}));
+// Slides do hero. `imagem` é opcional ({ src, alt }): sem ela o slide mostra um
+// placeholder no preview e é omitido em produção (ver slidesVisiveis). Fotos 16:9,
+// 2400×1350, pendentes com a dona; texto provisório.
+const SLIDES = [
+  {
+    id: 'loja',
+    rotulo: 'Loja',
+    titulo: 'Chocolate da floresta',
+    texto:
+      'Plant-based e feito com ingredientes agroflorestais, nutre corpo e alma — e ajuda a regenerar a Mata Atlântica.',
+    cta: { rotulo: 'Ver a loja', href: '/loja' },
+  },
+  {
+    id: 'bem-estar',
+    rotulo: 'Bem-estar',
+    titulo: 'Chocolate para meditar',
+    texto:
+      'A Coleção Inspirar une ervas e especiarias a meditações guiadas em áudio, narradas por Bruna Santos.',
+    cta: { rotulo: 'Conhecer a meditação', href: '/meditacao' },
+  },
+];
 
 export default async function HomePage() {
   const produtos = await getProdutosRecentes();
+  const slides = slidesVisiveis(SLIDES);
 
   return (
     <main>
-      <section className={styles.hero}>
-        <div className={styles.particles} aria-hidden="true">
-          {PARTICLES.map((p, i) => (
-            <span
-              key={i}
-              className={styles.particle}
-              style={{
-                left: `${p.left}%`,
-                top: `${p.top}%`,
-                width: `${p.size}px`,
-                height: `${p.size}px`,
-                background: p.color,
-                animationDuration: `${p.duration}s`,
-                animationDelay: `${p.delay}s`,
-              }}
-            />
-          ))}
-        </div>
-        <div className={styles.vignette} aria-hidden="true" />
-
-        <div className={styles.heroInner}>
-          <div className={styles.heroImageWrap}>
-            <div className={styles.heroGlow} aria-hidden="true" />
-            <Image
-              src="/home/composicao_chocolate.png"
-              alt="Composição de chocolate Simplicitude sobre folha e prato"
-              width={662}
-              height={984}
-              sizes="(max-width: 900px) 70vw, 45vw"
-              className={styles.heroImage}
-              priority
-            />
-            <div className={styles.heroImageOverlay} aria-hidden="true" />
-          </div>
-
-          <div className={styles.heroContent}>
-            <Image
-              src="/marca/s_estilizado.png"
-              alt="Simplicitude"
-              width={110}
-              height={93}
-              className={styles.heroSeal}
-              priority
-            />
-            <h1 className={styles.heroTitle}>We Are Forest to Factory</h1>
-            <p className={styles.heroText}>
-              Somos um negócio de impacto positivo, com origem no Sul da
-              Bahia, Terra do Cacau.
-            </p>
-            <p className={styles.heroText}>
-              Fabricamos <strong>chocolates e alimentos plant-based</strong>{' '}
-              com ingredientes agroflorestais, que ajudam a manter a floresta
-              em pé e geram renda para produtores locais.
-            </p>
-          </div>
-        </div>
-      </section>
+      {slides.length > 0 && <HeroCarrossel slides={slides} />}
 
       <VitrineProdutos produtos={produtos} />
 

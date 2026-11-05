@@ -68,7 +68,8 @@ qualquer dependência de plataforma** (Netlify/Supabase).
   (branch `v1`, ver [Env / deploy / scripts](#env--deploy--scripts)): branch deploy da `v1`
   ativo e envs configuradas no Netlify (`NEXT_PUBLIC_MOCKUPS=1` só nos contextos
   branch-deploy/deploy-preview), verificado em produção e na `v1`. **A2 (tokens + Header/Footer)
-  está no código.** Mockups existentes: só `/bem-fazer` e `/assinaturas` ("Em breve"); os de
+  está no código. A3 (hero da home em carrossel) está no código, com os slides ainda sem foto
+  real (placeholder no preview; ver `HeroCarrossel`).** Mockups existentes: só `/bem-fazer` e `/assinaturas` ("Em breve"); os de
   carrinho/checkout vêm depois — ver a lista priorizada no plano.
 - **Ordem do front:** A1 (preview) → A2 (tokens, header/footer) → A3/A4 (home) → A6/A7 (loja,
   produto, só leitura) → mostrar o preview à dona; só depois o contrato de dados (A0) e
@@ -89,9 +90,10 @@ do menu, foco), `--cor-botao`/`--cor-botao-texto`, `--cor-rodape`/`--cor-rodape-
 > ⚠️ **Aliases temporários:** `--bg`, `--green`, `--green-nav`, `--brown`, `--caramel`,
 > `--border`, `--cream`, `--cream-name` seguem existindo em `globals.css` só como aliases dos
 > papéis (as páginas ainda não refeitas já pegam a paleta nova); `--gold` é o único hex antigo
-> (admin + home antiga). Cada item do plano (A3–A7, A12) troca pelos papéis nos arquivos que
-> reescreve; o bloco some quando ninguém usar. Hex soltos remanescentes: admin e scrims pretos
-> dos heroes (refeitos no A3).
+> (só o admin usa). Cada item do plano (A4–A7, A12) troca pelos papéis nos arquivos que
+> reescreve; o bloco some quando ninguém usar. Hex soltos remanescentes: admin e os scrims
+> pretos do teaser duotone da home, de `/quem-somos` e de `/meditacao`. O hero da home (A3) já
+> usa só papéis.
 
 **Tipografia:** provisória, centralizada em tokens (`--font-display` Cinzel, `--font-body` EB
 Garamond, `--font-accent` Cormorant Garamond, definidos em `globals.css` sobre as variáveis do
@@ -137,8 +139,9 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   estoque)
 - Loja conectada ao Supabase (produtos reais, imagens via Storage, preços, coleções,
   categorias)
-- `/` (home) — vitrine de produtos (carrossel com os mais recentemente cadastrados) logo
-  abaixo do hero, via `VitrineProdutos`
+- `/` (home) — hero em carrossel (`HeroCarrossel`, slides Loja e Bem-estar; **sem foto real
+  ainda**: placeholder no preview, omitido em produção) e, logo abaixo, a vitrine de produtos
+  (carrossel com os mais recentemente cadastrados), via `VitrineProdutos`
 - Estoque: `produtos.estoque` é mantido pela trigger `calcular_estoque_movimentacao` a
   partir de `INSERT`s em `estoque_movimentacoes`; admin registra `reposicao`/`ajuste` em
   `/admin/estoque`; loja pública mostra selo "Esgotado" e desabilita "Comprar" quando
@@ -161,7 +164,10 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   tabelas `clientes`/`enderecos` seguem prontas, sem tela
 - Schema/migrations **não estão versionados no repo** (só existem no painel do Supabase) e
   não há ambiente de staging — itens B-1/B-2 do plano
-- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups e as paletas). Sem lint nem CI
+- **Fotos 16:9 (2400×1350, mín. 1920×1080) dos 2 slides do hero** — pendentes com a dona; as fotos
+  atuais do projeto têm resolução baixa. Sem elas a home de produção fica sem hero (e sem `h1`);
+  check do D2
+- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, as paletas e o carrossel do hero). Sem lint nem CI
 - Admin de pedidos
 - **Admin CRUD de coleções** — a tabela `colecoes` existe e é lida (dropdown no formulário
   de produto), mas não há tela de gestão para criá-las/editá-las
@@ -202,7 +208,9 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
 ## Rotas (`app/`)
 
 Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
-- **`/`** (`app/page.js`) — Home
+- **`/`** (`app/page.js`) — Home: `HeroCarrossel` (array `SLIDES` no próprio arquivo, filtrado
+  por `slidesVisiveis()`; sem slide com foto o hero não renderiza), `VitrineProdutos`, teaser
+  de meditação e teaser duotone de Quem Somos
 - **`/quem-somos`** — institucional
 - **`/meditacao`** — hero (faixa de imagem + duotone + listras diagonais + título, no
   padrão de `/quem-somos`) e bloco de introdução da Coleção Inspirar, seguidos da lista de
@@ -305,6 +313,20 @@ Cada um com `*.module.css` co-locado.
 - **`ApresentacaoProduto`** — bloco de apresentação de produto (galeria de fotos, rótulo
   de categoria via `rotuloCategoria()`, nome, atributos, descrição); usado em
   `/loja/[slug]` e `/meditacao`
+- **`HeroCarrossel`** (`'use client'`) — hero da home. Props `slides` (`{ id, rotulo, titulo,
+  texto, cta: { rotulo, href }, imagem?: { src, alt } }`) e `layout` (padrão `sobreposto`: foto em
+  largura total, cartão sólido no canto inferior esquerdo, controles centralizados abaixo da foto;
+  no celular, foto em cima e cartão embaixo). **O markup é o mesmo para todo layout**; o que muda
+  fica no mapa `LAYOUTS` do componente (`sizes` da imagem e `especFoto`, a **constante única** do
+  texto de especificação da foto) e em blocos `.<layout> …` do CSS — um 2º layout (ex.: tela
+  dividida) é uma entrada nova no mapa + um bloco de CSS. Rolagem automática de 6 s, pausa por
+  hover, foco de teclado (`:focus-visible`), toque e botão Pausar/Continuar; sem rolagem com
+  `prefers-reduced-motion` (e o botão some). Só o slide 0 usa `preload` na imagem; título do 1º
+  slide é `h1`, os demais `h2`. Cartão e botão só usam papéis (`--cor-fundo`/`--cor-texto`/
+  `--cor-botao*`: pares já testados em `tests/paletas.test.js`).
+- **`FotoPendente`** — placeholder reutilizável de espaço de foto (prop `especificacao`; preenche o
+  pai posicionado; fundo `--cor-superficie`). Usado pelo hero quando o slide não tem `imagem`; quem
+  usa decide não renderizá-lo em produção.
 - **`VitrineProdutos`** (`'use client'`) — carrossel (scroll-snap horizontal, com setas)
   dos produtos ativos mais recentemente cadastrados (imagem, nome, preço), cada um
   linkando para `/loja/[slug]`, mais link "Ver todos" para `/loja`; usado em `app/page.js`
@@ -336,6 +358,14 @@ Cada um com `*.module.css` co-locado.
 Fonte única do menu (Header e Footer): array com `href`, `rotulo` e `status` (`real` ou
 `mockup`). `itensMenu()` filtra: `mockup` só com `NEXT_PUBLIC_MOCKUPS=1`. `exigirMockups()`
 (`notFound()` sem a flag) vai no topo de toda página mockup. Item novo = uma linha no array.
+
+### Carrossel do hero — `lib/carrossel.js`
+
+`reducer(estado, acao)` puro (`{ indice, total, pausado, interagindo }`; ações `avancar`, `voltar`,
+`ir`, `tick`, `alternarPausa`, `interagir`): só `tick` respeita `pausado` (botão/toque) e
+`interagindo` (hover/foco); navegar à mão sempre funciona. `slidesVisiveis(slides)` devolve todos
+com `NEXT_PUBLIC_MOCKUPS=1` e, sem a flag, só os que têm `imagem`. Cobertos em
+`tests/carrossel.test.js`.
 
 ### Paletas do preview — `lib/paletas.js`
 
