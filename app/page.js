@@ -32,6 +32,22 @@ const SLIDES = [
       'A Coleção Inspirar une ervas e especiarias a meditações guiadas em áudio, narradas por Bruna Santos.',
     cta: { rotulo: 'Conhecer a meditação', href: '/meditacao' },
   },
+  {
+    id: 'quem-somos',
+    rotulo: 'Quem somos',
+    titulo: 'Da floresta à fábrica',
+    texto:
+      'Cacau de agrofloresta, cultivado por quatro gerações no Sul da Bahia, dentro da Mata Atlântica.',
+    cta: { rotulo: 'Conheça nossa história', href: '/quem-somos' },
+  },
+  {
+    id: 'presentes',
+    rotulo: 'Presentes',
+    titulo: 'Chocolate para presentear',
+    texto:
+      'Chocolates artesanais para dar de presente a quem você quer bem — ou para se dar um momento de calma.',
+    cta: { rotulo: 'Escolher um presente', href: '/loja' },
+  },
 ];
 
 export default async function HomePage() {

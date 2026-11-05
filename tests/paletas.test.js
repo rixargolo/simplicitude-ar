@@ -37,24 +37,6 @@ describe('contraste', () => {
     }
   });
 
-  it('texto sobre --cor-superficie (placeholder de foto) cumpre 4,5:1 em todo preset', async () => {
-    // mesma conta do color-mix(in srgb, texto 6%, fundo) de globals.css
-    const mistura = (a, b, pct) =>
-      '#' +
-      [1, 3, 5]
-        .map((i) => {
-          const x = parseInt(a.slice(i, i + 2), 16);
-          const y = parseInt(b.slice(i, i + 2), 16);
-          return Math.round(x * pct + y * (1 - pct)).toString(16).padStart(2, '0');
-        })
-        .join('');
-    const { PALETAS } = await carregar('1');
-    for (const [chave, p] of Object.entries(PALETAS)) {
-      const superficie = mistura(p.texto, p.fundo, 0.06);
-      expect(contraste(p.texto, superficie), `${chave}: texto/superfície`).toBeGreaterThanOrEqual(4.5);
-    }
-  });
-
   it('o padrão existe', async () => {
     const { PALETAS, PALETA_PADRAO } = await carregar('1');
     expect(PALETAS[PALETA_PADRAO]).toBeDefined();

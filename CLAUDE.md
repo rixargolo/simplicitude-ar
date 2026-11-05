@@ -139,7 +139,7 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   estoque)
 - Loja conectada ao Supabase (produtos reais, imagens via Storage, preços, coleções,
   categorias)
-- `/` (home) — hero em carrossel (`HeroCarrossel`, slides Loja e Bem-estar; **sem foto real
+- `/` (home) — hero em carrossel (`HeroCarrossel`, 4 slides: Loja, Bem-estar, Quem somos, Presentes; **sem foto real
   ainda**: placeholder no preview, omitido em produção) e, logo abaixo, a vitrine de produtos
   em duas colunas (título derivado do critério de ordem — hoje "Novidades" —, chips de
   categoria e carrossel de cards), via `VitrineProdutos`
@@ -165,7 +165,7 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   tabelas `clientes`/`enderecos` seguem prontas, sem tela
 - Schema/migrations **não estão versionados no repo** (só existem no painel do Supabase) e
   não há ambiente de staging — itens B-1/B-2 do plano
-- **Fotos 16:9 (2400×1350, mín. 1920×1080) dos 2 slides do hero** — pendentes com a dona; as fotos
+- **Fotos 16:9 (2400×1350, mín. 1920×1080) dos 4 slides do hero** — pendentes com a dona; as fotos
   atuais do projeto têm resolução baixa. Sem elas a home de produção fica sem hero (e sem `h1`);
   check do D2
 - Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, as paletas, o carrossel do hero e o critério/título da vitrine). Sem lint nem CI
@@ -326,7 +326,8 @@ Cada um com `*.module.css` co-locado.
   slide é `h1`, os demais `h2`. Cartão e botão só usam papéis (`--cor-fundo`/`--cor-texto`/
   `--cor-botao*`: pares já testados em `tests/paletas.test.js`).
 - **`FotoPendente`** — placeholder reutilizável de espaço de foto (prop `especificacao`; preenche o
-  pai posicionado; fundo `--cor-superficie`). Usado pelo hero quando o slide não tem `imagem`; quem
+  pai posicionado; fundo `--cor-destaque` com texto `--cor-fundo`, para contrastar com o cartão
+  claro do hero; par já testado a 4,5:1 por preset). Usado pelo hero quando o slide não tem `imagem`; quem
   usa decide não renderizá-lo em produção.
 - **`VitrineProdutos`** (`'use client'`) — vitrine da home em duas colunas. Props `titulo`,
   `produtos`, `categorias`. Esquerda: `h2` "{titulo} *da floresta*", chips (`categorias.slug` →
