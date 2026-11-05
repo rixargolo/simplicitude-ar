@@ -355,9 +355,9 @@ Cada um com `*.module.css` co-locado.
 - **`CardProduto`** (server-safe, sem `'use client'`) — card de produto compartilhado por `VitrineProdutos` e
   `/loja`. Props `produto`, `sizes`, `className` (no `<Link>`), `Titulo` (`h3` padrão; a loja passa `h2`). Foto em
   quadro de proporção fixa (`--proporcao-produto` em `globals.css`, 0.8 = 4:5; é o único lugar da proporção, a
-  seta da vitrine também a usa) preenchido com `object-fit: cover` e enquadrado por `object-position` =
-  `focoParaCss(produto.imagem_foco_x, produto.imagem_foco_y)` (ponto de foco por produto; sem foco = centro). A página de
-  produto (A7) deve usar o mesmo `focoParaCss`. Selo "Esgotado" (`estoque === 0`), categoria (**sempre**, ignora
+  seta da vitrine também a usa) preenchido com `object-fit: cover` e enquadrado por
+  `style={estiloFoto(produto.imagem_foco_x, produto.imagem_foco_y, produto.imagem_zoom)}` (ponto de foco + zoom por
+  produto; sem ajuste = centro e 100%). A página de produto (A7) deve usar o mesmo `estiloFoto`. Selo "Esgotado" (`estoque === 0`), categoria (**sempre**, ignora
   `mostrar_categoria_no_titulo`), nome, `descricao` em 2 linhas (`line-clamp`; vira `descricao_curta` no C2) e preço.
   Link para `/loja/[slug]`. Só papéis `--cor-*`
   Usado em `app/page.js` logo abaixo do hero, alimentado por `getVitrine()` e
@@ -441,11 +441,15 @@ cai no padrão — e é `null` sem `NEXT_PUBLIC_MOCKUPS=1` (então `?paleta` é 
 
 ### Foco da foto — `lib/foco.js`
 
-`normalizarFoco(v)` (inteiro 0–100; nulo/vazio/NaN/texto → 50, fora da faixa é limitado), `focoParaCss(x, y)`
-(`"30% 70%"`) e `FOCO_PADRAO`. Porta única do `object-position` das fotos de produto. No admin, o
-`SeletorFoco` (`app/admin/produtos/SeletorFoco.js`, dentro do `ProdutoForm`) edita o ponto: clique/arrasto na foto
-(ponteiro, funciona com o dedo), dois deslizantes (teclado), "Centralizar" e prévia no quadro do card; foto nova volta
-ao centro. Cobertos em `tests/foco.test.js`.
+`normalizarFoco(v)` (inteiro 0–100; nulo/vazio/NaN/texto → 50, fora da faixa é limitado), `normalizarZoom(v)`
+(inteiro 100–200; inválido → 100), `focoParaCss(x, y)` (`"30% 70%"`) e **`estiloFoto(x, y, zoom)`**, a porta única
+do enquadramento das fotos de produto: devolve `object-position` e, com zoom > 100, `transform: scale(z)` com
+`transform-origin` no próprio ponto de foco (o ponto fica parado e o resto se aproxima; nunca sobra vazio, o quadro
+corta com `overflow: hidden`). Rotação foi descartada de propósito (cantos vazios; endireitar a foto antes do
+upload). No admin, o `SeletorFoco` (`app/admin/produtos/SeletorFoco.js`, dentro do `ProdutoForm`) edita foco e zoom:
+clique/arrasto na foto (ponteiro, funciona com o dedo), três deslizantes (Horizontal, Vertical, Zoom; teclado),
+"Centralizar" (só a posição) e prévia no quadro do card; foto nova volta ao centro e 100%. Cobertos em
+`tests/foco.test.js`.
 
 ### Admin — `lib/admin/produtos.js`, `lib/admin/categorias.js`, `lib/admin/estoque.js`
 
@@ -469,7 +473,8 @@ ao centro. Cobertos em `tests/foco.test.js`.
   `preco_centavos` (inteiro, centavos), `colecao_id` (FK, nullable), `categoria_id` (FK,
   nullable), `mostrar_categoria_no_titulo` (bool), `tem_meditacao` (bool), `audio_url`,
   `ativo` (bool), `imagem_url`, `imagem_foco_x`/`imagem_foco_y` (smallint 0–100, default 50, `check`;
-  ponto de foco da foto — **migration aplicada à mão no painel do Supabase**, ver `lib/foco.js`), `estoque` (nullable — mantido pela trigger, nunca por
+  ponto de foco da foto), `imagem_zoom` (smallint 100–200, default 100, `check`) — **migrations aplicadas à mão no
+  painel do Supabase**, ver `lib/foco.js` —, `estoque` (nullable — mantido pela trigger, nunca por
   `UPDATE` da aplicação), `created_at` (usado por `getVitrine()` para ordenar a
   vitrine da home, critério "Novidades")
 - **`categorias`** — `id`, `nome`, `slug`, `descricao` — tipo do produto, usado como

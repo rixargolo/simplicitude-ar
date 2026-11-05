@@ -1,13 +1,14 @@
 'use client';
 
 import { useRef } from 'react';
-import { focoParaCss, normalizarFoco, FOCO_PADRAO } from '@/lib/foco';
+import { estiloFoto, normalizarFoco, normalizarZoom, FOCO_PADRAO, ZOOM_PADRAO, ZOOM_MAX } from '@/lib/foco';
 import styles from './SeletorFoco.module.css';
 
-// Define o ponto de foco da foto do produto (0–100 em x e y). Clique/arrasto na foto (mouse ou
-// dedo), dois controles deslizantes (teclado e ajuste fino) e "Centralizar". A prévia usa o
-// mesmo quadro (--proporcao-produto) e o mesmo focoParaCss() dos cards da home e da loja.
-export default function SeletorFoco({ src, alt, x, y, onChange }) {
+// Define o enquadramento da foto do produto: ponto de foco (0–100 em x e y) e zoom (100–200%).
+// Clique/arrasto na foto (mouse ou dedo), três controles deslizantes (teclado e ajuste fino) e
+// "Centralizar" (só a posição). `onChange` recebe { x, y, zoom }. A prévia usa o mesmo quadro
+// (--proporcao-produto) e o mesmo estiloFoto() dos cards da home e da loja.
+export default function SeletorFoco({ src, alt, x, y, zoom, onChange }) {
   const areaRef = useRef(null);
 
   function moverPara(event) {
@@ -15,6 +16,7 @@ export default function SeletorFoco({ src, alt, x, y, onChange }) {
     onChange({
       x: normalizarFoco(((event.clientX - caixa.left) / caixa.width) * 100),
       y: normalizarFoco(((event.clientY - caixa.top) / caixa.height) * 100),
+      zoom,
     });
   }
 
@@ -29,7 +31,7 @@ export default function SeletorFoco({ src, alt, x, y, onChange }) {
 
   return (
     <div className={styles.seletor}>
-      <p className={styles.dica}>Toque ou arraste na foto para escolher o que fica em destaque no card.</p>
+      <p className={styles.dica}>Toque ou arraste na foto para escolher o que fica em destaque no card; use o zoom para aproximar.</p>
 
       <div
         ref={areaRef}
@@ -47,7 +49,7 @@ export default function SeletorFoco({ src, alt, x, y, onChange }) {
           <span className={styles.previaRotulo}>Prévia no card</span>
           <div className={styles.quadro}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={src} alt="" className={styles.quadroFoto} style={{ objectPosition: focoParaCss(x, y) }} />
+            <img src={src} alt="" className={styles.quadroFoto} style={estiloFoto(x, y, zoom)} />
           </div>
         </div>
 
@@ -59,7 +61,7 @@ export default function SeletorFoco({ src, alt, x, y, onChange }) {
               min="0"
               max="100"
               value={x}
-              onChange={(e) => onChange({ x: normalizarFoco(e.target.value), y })}
+              onChange={(e) => onChange({ x: normalizarFoco(e.target.value), y, zoom })}
             />
           </label>
           <label className={styles.controle}>
@@ -69,13 +71,24 @@ export default function SeletorFoco({ src, alt, x, y, onChange }) {
               min="0"
               max="100"
               value={y}
-              onChange={(e) => onChange({ x, y: normalizarFoco(e.target.value) })}
+              onChange={(e) => onChange({ x, y: normalizarFoco(e.target.value), zoom })}
+            />
+          </label>
+          <label className={styles.controle}>
+            <span>Zoom ({zoom}%)</span>
+            <input
+              type="range"
+              min={ZOOM_PADRAO}
+              max={ZOOM_MAX}
+              step="5"
+              value={zoom}
+              onChange={(e) => onChange({ x, y, zoom: normalizarZoom(e.target.value) })}
             />
           </label>
           <button
             type="button"
             className={styles.centralizar}
-            onClick={() => onChange({ x: FOCO_PADRAO, y: FOCO_PADRAO })}
+            onClick={() => onChange({ x: FOCO_PADRAO, y: FOCO_PADRAO, zoom })}
           >
             Centralizar
           </button>

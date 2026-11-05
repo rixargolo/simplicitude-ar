@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { FOCO_PADRAO, normalizarFoco } from '@/lib/foco';
+import { FOCO_PADRAO, ZOOM_PADRAO, normalizarFoco, normalizarZoom } from '@/lib/foco';
 import SeletorFoco from './SeletorFoco';
 import styles from './ProdutoForm.module.css';
 
@@ -68,6 +68,7 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
   const [foco, setFoco] = useState({
     x: normalizarFoco(produto?.imagem_foco_x),
     y: normalizarFoco(produto?.imagem_foco_y),
+    zoom: normalizarZoom(produto?.imagem_zoom),
   });
   const [erro, setErro] = useState('');
   const [salvando, setSalvando] = useState(false);
@@ -86,7 +87,7 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
   function escolherArquivo(event) {
     setArquivo(event.target.files?.[0] ?? null);
     // foto nova: o foco antigo não vale mais
-    setFoco({ x: FOCO_PADRAO, y: FOCO_PADRAO });
+    setFoco({ x: FOCO_PADRAO, y: FOCO_PADRAO, zoom: ZOOM_PADRAO });
   }
 
   async function handleSubmit(event) {
@@ -120,6 +121,7 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
       ativo,
       imagem_foco_x: foco.x,
       imagem_foco_y: foco.y,
+      imagem_zoom: foco.zoom,
     };
 
     try {
@@ -293,6 +295,7 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
           alt={nome || 'Imagem do produto'}
           x={foco.x}
           y={foco.y}
+          zoom={foco.zoom}
           onChange={setFoco}
         />
       )}
