@@ -145,7 +145,7 @@ Seguro, porque o cadastro está desligado, as fatias visuais não escrevem dados
 escreve pelo servidor com service role sem criar policy para anon. Riscos que sobram:
 1. Alguém religar o cadastro no painel → vigia diário (B7).
 2. Policies de anon mal configuradas nas tabelas de pedido/cliente (hoje invisível, tabelas
-   vazias) → conferência de `pg_policies` em B-1 🔒.
+   vazias) → conferência de `pg_policies` em B-1b 🔒.
 3. Criar um 3º usuário no Auth (vira admin pleno) → não criar antes do `is_admin()`.
 4. Senha de admin comprometida → senha forte + MFA, se o plano permitir.
 5. Login de admin pelo preview → `/admin` e `/login` devolvem 404 com a flag de mockups (B4).
@@ -191,7 +191,7 @@ Consequências:
 | A3 | Home: hero em carrossel (auto, setas/pontos, pausa, `prefers-reduced-motion`) com slides de Loja e Meditação | real | 🔒 | ✅ **No código (2026-11-04).** `HeroCarrossel` (layout "sobreposto"; 2º layout "dividido" é uma entrada em `LAYOUTS` + um bloco de CSS) e `lib/carrossel.js` com Vitest. **Fotos (2026-11-05):** as 4 fotos da dona estão ligadas aos slides (`public/home/hero_slide_{1..4}.webp`, WebP q85 nas dimensões originais, de ~15 MB de PNG para ~1,7 MB; receita no CLAUDE.md). Slide sem foto continua virando placeholder `FotoPendente` no preview e sendo omitido em produção (sem nenhum, o hero não renderiza e a home fica sem `h1`). Check no D2 mantido, para o caso de a dona trocar alguma foto |
 | A4 | Home: vitrine de produtos no layout da dona (B6) com produtos reais | real | 🔒 | **o título depende do critério de ordem (regra de nomes abaixo): com `created_at` a seção se chama "Novidades", nunca "Mais vendidos".** Descrição com fallback `line-clamp` | ✅ **No código (2026-11-04).** `VitrineProdutos` em duas colunas; `lib/vitrine.js` (critério → título) + `getVitrine()`; chips levam a `/loja?categoria=slug` (filtro é o A6) |
 | A5 | Home: seção de categorias logo abaixo da vitrine (substitui o teaser antigo de meditação, já coberto pelo slide do hero e pelo item "Bem-estar" do menu) | real | 🔒 | ✅ **No código (2026-11-05).** Reativado (antes era cortar-se-atrasar). `GradeCategorias`: cartões claros e arredondados no estilo do cartão do hero, tom levemente variado por posição (nome em serifa itálica moderada, descrição de 2 linhas, nº de produtos, pílula "Ver produtos"; 1/2/4 colunas) com dados reais, só de categorias com ≥1 produto ativo de `getCategoriasComProdutos()`, cada um levando a `/loja?categoria=slug` (o filtro é o A6). Só tokens de papel; contraste do texto sobre cada tom testado a 4,5:1 por preset em `tests/paletas.test.js`. **Sem foto por enquanto:** `categorias` não tem `imagem_url`. O componente já aceita `imagem_url` opcional (faixa 16:9 no topo do cartão); **a coluna `categorias.imagem_url` (+ upload no `CategoriaForm`) pertence ao grupo da migration C2** e, criada, basta incluí-la no `select` de `getCategoriasComProdutos()`. A foto em si depende da dona (seção 5). design-taste-frontend |
-| A6b | Enquadramento das fotos de produto: card em quadro fixo (`--proporcao-produto`) com `cover` + ponto de foco e zoom por produto (`produtos.imagem_foco_x/y`, `imagem_zoom`, `SeletorFoco` no admin, `lib/foco.js`) | real | 🔒 | ✅ **No código (2026-11-05).** Substitui o `contain` + padding do A4. Exige a migration das 3 colunas aplicada no Supabase antes de salvar produto pelo admin novo. A7 reusa `estiloFoto` |
+| A6b | Enquadramento das fotos de produto: card em quadro fixo (`--proporcao-produto`) com `cover` + ponto de foco e zoom por produto (`produtos.imagem_foco_x/y`, `imagem_zoom`, `SeletorFoco` no admin, `lib/foco.js`) | real | 🔒 | ✅ **No código (2026-11-05).** Substitui o `contain` + padding do A4. Migrations das 3 colunas em [`supabase/migrations/`](../supabase/migrations/) (`..._produtos_foco_imagem.sql`, `..._produtos_zoom_imagem.sql`), já aplicadas em produção (2026-11-05). A7 reusa `estiloFoto` |
 | A6 | `/loja` com filtro por chip (`?categoria=slug`) | real | 🔒 | ✅ **No código (2026-11-05).** Card compartilhado com a vitrine (`CardProduto`); slug desconhecido = "Todas" (link antigo nunca cai em página vazia); página dinâmica por causa do `searchParams` |
 | A7 | Produto: ficha, preço, estoque, selo de meditação. **Quantidade e "Adicionar ao carrinho" só entram com o A8** | real | 🔒 | rota segue com `slugify` até a coluna `slug` (C2); o backfill gera os mesmos slugs |
 | A8 | Carrinho (`localStorage`, formato do A0, preços lidos do banco) + quantidade/"Adicionar ao carrinho" no A7 | real | 🔒 | depende do A0. Só cliente. tdd |
@@ -225,81 +225,14 @@ fábrica pedir entram neste backlog "X" (X1, X2…), cada um uma fatia pequena, 
 fizer sentido.
 
 **Nova ordem:** A1 → A2 → A3/A4/A5 → A6 → **X1** → A7 (Comprar → WhatsApp) → ✋ dona → A11 (legais + Open
-Graph) → D (go-live sem pagamento) → depois: C, A0, A8–A10 (carrinho/checkout). B-1/B-2 seguem em
+Graph) → D (go-live sem pagamento) → depois: C, A0, A8–A10 (carrinho/checkout). B-1b/B-2 seguem em
 paralelo. Do D2 sai, por ora, o "pagamento real baixo + estorno" (volta quando o C existir).
 
 | # | Item | Situação | Marca | Notas |
 |---|---|---|---|---|
-| X1 | Várias fotos por produto | real | 🔒 | ✅ **No código (2026-11-05).** Tabela `produto_imagens` (ordem, foco/zoom e texto alternativo por foto; a primeira é a principal); `produtos.imagem_url`/`imagem_foco_x/y`/`imagem_zoom` seguem como **cópia da principal** (a `main` e o admin atual só leem/gravam isso, e preview e produção dividem o banco). Admin: `FotosProduto` (enviar várias, subir/descer por botão, tornar principal, excluir também do Storage, ajustar com o `SeletorFoco`). Limites: 8 fotos, JPEG/PNG/WebP, 5 MB (também no bucket). `getFotosDoProduto()` pronta para o A7; **a galeria não entra aqui**. Exige o SQL abaixo rodado antes de abrir a edição de produto no admin |
+| X1 | Várias fotos por produto | real | 🔒 | ✅ **No código (2026-11-05).** Tabela `produto_imagens` (ordem, foco/zoom e texto alternativo por foto; a primeira é a principal); `produtos.imagem_url`/`imagem_foco_x/y`/`imagem_zoom` seguem como **cópia da principal** (a `main` e o admin atual só leem/gravam isso, e preview e produção dividem o banco). Admin: `FotosProduto` (enviar várias, subir/descer por botão, tornar principal, excluir também do Storage, ajustar com o `SeletorFoco`). Limites: 8 fotos, JPEG/PNG/WebP, 5 MB (também no bucket). `getFotosDoProduto()` pronta para o A7; **a galeria não entra aqui**. SQL já aplicado em produção (2026-11-05), ver abaixo |
 
-**SQL do X1** (rodar no SQL Editor do Supabase; idempotente — **rodar de novo no D2**, porque até o
-go-live a dona edita fotos pelo admin da `main`, que só grava em `produtos`):
-
-```sql
--- X1: várias fotos por produto. Aditiva: produtos.imagem_url/foco/zoom ficam como cópia da principal.
-create table if not exists public.produto_imagens (
-  id uuid primary key default gen_random_uuid(),
-  produto_id uuid not null references public.produtos(id) on delete cascade,
-  caminho text not null,                       -- caminho no bucket "produtos", sem URL nem ?v=
-  ordem integer not null default 0,            -- menor = antes; a primeira é a principal
-  foco_x smallint not null default 50 check (foco_x between 0 and 100),
-  foco_y smallint not null default 50 check (foco_y between 0 and 100),
-  zoom smallint not null default 100 check (zoom between 100 and 200),
-  alt text,
-  created_at timestamptz not null default now(),
-  unique (produto_id, caminho)
-);
-create index if not exists produto_imagens_produto_ordem_idx
-  on public.produto_imagens (produto_id, ordem);
-
-alter table public.produto_imagens enable row level security;
-
-grant select on public.produto_imagens to anon, authenticated;
-grant insert, update, delete on public.produto_imagens to authenticated;
-
-drop policy if exists "produto_imagens leitura publica" on public.produto_imagens;
-create policy "produto_imagens leitura publica" on public.produto_imagens
-  for select to anon
-  using (exists (select 1 from public.produtos p where p.id = produto_id and p.ativo));
-
--- mesmo modelo das demais tabelas: authenticated = admin (pendência de segurança #1)
-drop policy if exists "produto_imagens admin" on public.produto_imagens;
-create policy "produto_imagens admin" on public.produto_imagens
-  for all to authenticated using (true) with check (true);
-
--- Preenchimento e reconciliação com produtos.imagem_url (também é rodado de novo no D2, porque até
--- o go-live a dona edita fotos pelo admin da main, que só grava em produtos).
--- 1) principal antiga trocada de extensão pelo admin da main: arquivo apagado, linha sai
-delete from public.produto_imagens i using public.produtos p
- where i.produto_id = p.id
-   and i.caminho like p.id::text || '/principal.%'
-   and i.caminho is distinct from
-       split_part(substring(p.imagem_url from '/object/public/produtos/(.+)$'), '?', 1);
--- 2) principal de produtos que ainda não está na tabela entra como primeira
-insert into public.produto_imagens (produto_id, caminho, ordem, foco_x, foco_y, zoom)
-select p.id, c.caminho,
-       coalesce((select min(i.ordem) from public.produto_imagens i where i.produto_id = p.id) - 1, 0),
-       coalesce(p.imagem_foco_x, 50), coalesce(p.imagem_foco_y, 50), coalesce(p.imagem_zoom, 100)
-  from public.produtos p
- cross join lateral (select split_part(substring(p.imagem_url from '/object/public/produtos/(.+)$'), '?', 1) as caminho) c
- where c.caminho <> ''
-on conflict (produto_id, caminho) do nothing;
--- 3) foco/zoom da principal seguem produtos (o admin da main só edita ali)
-update public.produto_imagens i
-   set foco_x = coalesce(p.imagem_foco_x, 50), foco_y = coalesce(p.imagem_foco_y, 50), zoom = coalesce(p.imagem_zoom, 100)
-  from public.produtos p
- where i.produto_id = p.id
-   and i.caminho = split_part(substring(p.imagem_url from '/object/public/produtos/(.+)$'), '?', 1);
-
--- Limite no servidor (Storage)
-update storage.buckets
-   set file_size_limit = 5242880, allowed_mime_types = array['image/jpeg','image/png','image/webp']
- where id = 'produtos';
-
--- Conferência: deve listar 1 linha por produto com foto, ordem 0
-select p.nome, i.caminho, i.ordem, i.foco_x, i.foco_y, i.zoom
-  from public.produtos p left join public.produto_imagens i on i.produto_id = p.id order by p.nome, i.ordem;
-```
+**SQL do X1** (aplicado em produção em 2026-11-05): migration [`supabase/migrations/20261105181330_produto_imagens.sql`](../supabase/migrations/20261105181330_produto_imagens.sql) (tabela, RLS, limite do bucket) e script de reconciliação [`supabase/scripts/x1_reconciliar_produto_imagens.sql`](../supabase/scripts/x1_reconciliar_produto_imagens.sql) (**rodar de novo no D2**, porque até o go-live a dona edita fotos pelo admin da `main`, que só grava em `produtos`).
 
 **Fora do X1:** galeria em `/loja/[slug]` e Comprar → WhatsApp (A7); arrastar para reordenar; recorte
 ou compressão no navegador; HEIC; apagar a cópia em `produtos.imagem_*`; limite de 8 no banco.
@@ -308,7 +241,8 @@ ou compressão no navegador; HEIC; apagar a cópia em `produtos.imagem_*`; limit
 
 | # | Item | Marca | Notas |
 |---|---|---|---|
-| B-1 | Migrations versionadas (`supabase db pull` → `supabase/migrations/0000_baseline.sql`); conferir `pg_policies`: **anon negado em `pedidos`/`pagamentos`/`clientes`/`enderecos`**, além do storage | 🔒🧩 (token Supabase) | wizard |
+| B-1a | Pasta de migrations: `supabase/migrations/` (A6b, A6c, X1) e `supabase/scripts/` (SQL de dados que se repete) + regra no README | — | ✅ **Pronto (2026-11-05).** A6b/A6c reconstruídos (tipo/not null/default conferidos no banco); o resto do schema não tem SQL no repo e fica para o B-1b |
+| B-1b | Baseline do schema (`supabase db pull` → `supabase/migrations/0000_baseline.sql`, precisa de Docker); conferir `pg_policies`: **anon negado em `pedidos`/`pagamentos`/`clientes`/`enderecos`**, além do storage | 🔒🧩 (token Supabase) | wizard |
 | B-2 | Staging: 2º projeto Supabase + baseline + cópia de `produtos`/`categorias`/`colecoes` (dados públicos) | 🔒🧩 | o preview passa a apontar para cá quando o checkout real começar (B4) |
 | B-3 | Vigia do `disable_signup` no GitHub Actions, fora do build (B7) | 🧩 (Actions) | não bloqueia deploy |
 
@@ -328,7 +262,7 @@ ou compressão no navegador; HEIC; apagar a cópia em `produtos.imagem_*`; limit
 | # | Item | Marca | Notas |
 |---|---|---|---|
 | D1 | Preparar o domínio: adicionar no Netlify sem apontar; Resend em `send.simplicitude.com.br` | 🔒🧩 (acesso DNS GoDaddy) | não toca o SPF raiz |
-| D2 | Virada: env de produção, migrations em produção, **inventário físico + `ajuste`**, **rodar de novo o SQL do X1 (reconcilia `produto_imagens` com as fotos editadas pela `main`)**, merge `v1`→`main` (flag desligada; o build falha se algum mockup ficar ligado), **conferir o título da vitrine da home (regra de nomes: nada de "Mais vendidos" sem ordem real da dona)**, **conferir CNPJ/razão social reais no rodapé (a linha "a confirmar" só aparece no preview)**, **conferir que todos os slides do hero têm foto real (hoje têm; se alguma for removida, o slide some em produção e, sem nenhuma, o hero some e a home perde o `h1`)**, `SITE_INDEXAVEL=1`, DNS (B5), SSL, pagamento real baixo + estorno, smoke | 🔒🧩 | security-review |
+| D2 | Virada: env de produção, migrations em produção, **inventário físico + `ajuste`**, **rodar de novo `supabase/scripts/x1_reconciliar_produto_imagens.sql` (reconcilia `produto_imagens` com as fotos editadas pela `main`)**, merge `v1`→`main` (flag desligada; o build falha se algum mockup ficar ligado), **conferir o título da vitrine da home (regra de nomes: nada de "Mais vendidos" sem ordem real da dona)**, **conferir CNPJ/razão social reais no rodapé (a linha "a confirmar" só aparece no preview)**, **conferir que todos os slides do hero têm foto real (hoje têm; se alguma for removida, o slide some em produção e, sem nenhuma, o hero some e a home perde o `h1`)**, `SITE_INDEXAVEL=1`, DNS (B5), SSL, pagamento real baixo + estorno, smoke | 🔒🧩 | security-review |
 
 ### Pós-go-live (ordem sugerida)
 1. `admins` + `is_admin()` + policies + storage só admin. Obrigatório antes de contas de cliente e
@@ -343,7 +277,7 @@ ou compressão no navegador; HEIC; apagar a cópia em `produtos.imagem_*`; limit
 
 ### Skills por fase
 `design-taste-frontend` (A2–A7, A9–A11) · `tdd` (A0, A8, C2, C3) · `research` (C1) ·
-`codebase-design` (C3) · `security-review` (C3, D2) · `wizard` (B-1, B-2, D1, D2) ·
+`codebase-design` (C3) · `security-review` (C3, D2) · `wizard` (B-1b, B-2, D1, D2) ·
 `grilling` (regras de frete e checkout com a dona) · `code-review`/`ponytail-review` ao fim de
 cada bloco.
 

@@ -167,8 +167,9 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
 - Checkout de **convidado**: exige migration (`pedidos.cliente_id` nullable, campos
   `comprador_*`, `token_acesso`). Cadastro/login de cliente fica para depois da v1; as
   tabelas `clientes`/`enderecos` seguem prontas, sem tela
-- Schema/migrations **não estão versionados no repo** (só existem no painel do Supabase) e
-  não há ambiente de staging — itens B-1/B-2 do plano
+- Baseline do schema (`supabase db pull`, B-1b) **ainda não existe**: o resto do schema só está no
+  painel do Supabase; no repo há só as mudanças desde o A6b, em `supabase/migrations/` (B-1a). Sem
+  ambiente de staging — B-2 do plano
 - **Fotos do hero:** as 4 de `public/home/hero_slide_{1..4}.webp` já estão ligadas aos slides
   (ordem 1→4 = Loja, Bem-estar, Quem somos, Presentes). Se a dona trocar alguma, **receita de
   otimização**: WebP `quality: 85` (`effort: 6`, `smartSubsample: true`) com `sharp` (já está em
@@ -176,7 +177,7 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   mín. 1920×1080, ideal 2400×1350, sem upscale), PSNR ≥ ~38 dB contra o original (a foto 3, com céu,
   precisou de q90). Os PNGs originais ficam em `_DOCS/originais-hero/` (fora do git). Mantém o
   check do D2: todo slide do hero com foto real
-- **X1 (várias fotos): SQL a rodar no Supabase** (em `docs/plano-v1.md`, Backlog X) **antes de abrir a edição de produto no admin** (`getProdutoById` consulta `produto_imagens`). Rodar de novo no D2. Falta a galeria em `/loja/[slug]` (A7)
+- **X1 (várias fotos):** SQL aplicado em produção em 2026-11-05 (`supabase/migrations/20261105181330_produto_imagens.sql`). **Rodar de novo no D2** o script de reconciliação `supabase/scripts/x1_reconciliar_produto_imagens.sql` (a `main` só grava em `produtos`). Falta a galeria em `/loja/[slug]` (A7)
 - **Foto de categoria:** `categorias` não tem `imagem_url`. A coluna (+ upload no `CategoriaForm`) pertence ao grupo da migration C2 do plano; `GradeCategorias` já renderiza a foto quando o campo vier, falta incluí-lo no `select` de `getCategoriasComProdutos()`. A foto em si depende da dona
 - Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, as paletas (inclusive o contraste dos cartões de categoria), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `filtrarPorCategoria`, `lib/foco.js` e `lib/fotos.js`). Sem lint nem CI
 - Admin de pedidos
@@ -491,12 +492,12 @@ então apaga do Storage as excluídas.
 - **`produtos`** — `id`, `nome`, `descricao`, `atributos`, `peso_gramas`,
   `preco_centavos` (inteiro, centavos), `colecao_id` (FK, nullable), `categoria_id` (FK,
   nullable), `mostrar_categoria_no_titulo` (bool), `tem_meditacao` (bool), `audio_url`,
-  `ativo` (bool), `imagem_url`, `imagem_foco_x`/`imagem_foco_y` (smallint 0–100, default 50, `check`;
-  ponto de foco da foto), `imagem_zoom` (smallint 100–200, default 100, `check`) — **migrations aplicadas à mão no
-  painel do Supabase**, ver `lib/foco.js` —, `estoque` (nullable — mantido pela trigger, nunca por
+  `ativo` (bool), `imagem_url`, `imagem_foco_x`/`imagem_foco_y` (smallint not null, 0–100, default 50, `check`;
+  ponto de foco da foto), `imagem_zoom` (smallint not null, 100–200, default 100, `check`) — migrations em
+  `supabase/migrations/` (`..._produtos_foco_imagem.sql`, `..._produtos_zoom_imagem.sql`), ver `lib/foco.js` —, `estoque` (nullable — mantido pela trigger, nunca por
   `UPDATE` da aplicação), `created_at` (usado por `getVitrine()` para ordenar a
   vitrine da home, critério "Novidades")
-- **`produto_imagens`** (X1; criada à mão no SQL Editor, SQL em `docs/plano-v1.md`) — `id` (uuid), `produto_id` (FK
+- **`produto_imagens`** (X1; migration `supabase/migrations/20261105181330_produto_imagens.sql`) — `id` (uuid), `produto_id` (FK
   `produtos`, `on delete cascade`), `caminho` (no bucket `produtos`, `unique (produto_id, caminho)`), `ordem`
   (menor = antes; a primeira é a principal), `foco_x`/`foco_y` (0–100, default 50), `zoom` (100–200, default
   100), `alt` (opcional), `created_at`. RLS: leitura pública (`anon`) só de produto ativo; escrita para
@@ -588,6 +589,11 @@ implementado — ver pendência de segurança #3.
   comparação estrita — `estoque` é nullable e `null` significa "não controlado", não deve
   virar "Esgotado"
 - **Sem TypeScript** — projeto é JavaScript puro
+- **Mudança de banco = arquivo novo em `supabase/migrations/`** (`AAAAMMDDHHMMSS_descricao.sql`, com
+  cabeçalho "o que faz, fatia, já aplicado em produção em <data>", reexecutável). **Nunca editar um
+  arquivo já aplicado**; o Code entrega o SQL nesse formato junto com a fatia. SQL de dados que se
+  repete (ex.: reconciliação do X1 no D2) vai em `supabase/scripts/`, não é migration. Regras em
+  `supabase/migrations/README.md`
 - **Sem server actions / API routes** para as operações de admin atuais — escrita direto
   nas tabelas via client browser autenticado, protegida por RLS. **Exceção já prevista:**
   quando o checkout for implementado, criação de registros em `pagamentos` e
