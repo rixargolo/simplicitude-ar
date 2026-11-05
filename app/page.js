@@ -25,6 +25,8 @@ const SLIDES = [
     cta: { rotulo: 'Ver a loja', href: '/loja' },
     imagem: {
       src: '/home/hero_slide_1.webp',
+      // cabeça no topo e cacau na base: 70% mostra o rosto (óculos) e o cacau inteiro na mão
+      posicao: '50% 70%',
       alt: 'Homem de camisa jeans abrindo um fruto de cacau com uma faca, entre cacaueiros na agrofloresta',
     },
   },

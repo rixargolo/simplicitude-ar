@@ -320,8 +320,9 @@ Cada um com `*.module.css` co-locado.
   `/loja/[slug]` e `/meditacao`
 - **`HeroCarrossel`** (`'use client'`) — hero da home. Props `slides` (`{ id, rotulo, titulo,
   texto, cta: { rotulo, href }, imagem?: { src, alt, posicao? } }`; `posicao` = `object-position`
-  para enquadrar a foto quando a tela larga corta o 16:9 em cima e embaixo — ex.: slide 3 com
-  `'50% 0%'` para não cortar as cabeças) e `layout` (padrão `sobreposto`: foto em
+  para enquadrar a foto quando a tela larga corta o 16:9 em cima e embaixo — slide 3 com
+  `'50% 0%'` para não cortar as cabeças; slide 1 com `'50% 70%'` (cabeça no topo e cacau na base:
+  mostra o rosto com os óculos e o cacau inteiro; em notebook bem baixo o rosto corta na boca)) e `layout` (padrão `sobreposto`: foto em
   largura total, cartão **translúcido** (82% de `--cor-fundo` + blur, cantos de 24px; no celular
   volta a sólido, fora da foto) no canto inferior esquerdo — o teste de paletas lê esse 82% do
   CSS e exige 4,5:1 do texto com foto preta ou branca por trás —, controles numa pílula sólida
