@@ -68,8 +68,8 @@ qualquer dependência de plataforma** (Netlify/Supabase).
   (branch `v1`, ver [Env / deploy / scripts](#env--deploy--scripts)): branch deploy da `v1`
   ativo e envs configuradas no Netlify (`NEXT_PUBLIC_MOCKUPS=1` só nos contextos
   branch-deploy/deploy-preview), verificado em produção e na `v1`. **A2 (tokens + Header/Footer)
-  está no código. A3 (hero da home em carrossel) está no código, com os slides ainda sem foto
-  real (placeholder no preview; ver `HeroCarrossel`).** Mockups existentes: só `/bem-fazer` e `/assinaturas` ("Em breve"); os de
+  está no código. A3 (hero da home em carrossel) está no código, com as 4 fotos reais ligadas
+  (ver `HeroCarrossel`).** Mockups existentes: só `/bem-fazer` e `/assinaturas` ("Em breve"); os de
   carrinho/checkout vêm depois — ver a lista priorizada no plano.
 - **Ordem do front:** A1 (preview) → A2 (tokens, header/footer) → A3/A4 (home) → A6/A7 (loja,
   produto, só leitura) → mostrar o preview à dona; só depois o contrato de dados (A0) e
@@ -139,8 +139,8 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   estoque)
 - Loja conectada ao Supabase (produtos reais, imagens via Storage, preços, coleções,
   categorias)
-- `/` (home) — hero em carrossel (`HeroCarrossel`, 4 slides: Loja, Bem-estar, Quem somos, Presentes; **sem foto real
-  ainda**: placeholder no preview, omitido em produção) e, logo abaixo, a vitrine de produtos
+- `/` (home) — hero em carrossel (`HeroCarrossel`, 4 slides: Loja, Bem-estar, Quem somos, Presentes, todos com
+  foto real; slide sem foto vira placeholder no preview e é omitido em produção) e, logo abaixo, a vitrine de produtos
   em duas colunas (título derivado do critério de ordem — hoje "Novidades" —, chips de
   categoria e carrossel de cards), via `VitrineProdutos`
 - Estoque: `produtos.estoque` é mantido pela trigger `calcular_estoque_movimentacao` a
@@ -165,9 +165,13 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   tabelas `clientes`/`enderecos` seguem prontas, sem tela
 - Schema/migrations **não estão versionados no repo** (só existem no painel do Supabase) e
   não há ambiente de staging — itens B-1/B-2 do plano
-- **Fotos 16:9 (2400×1350, mín. 1920×1080) dos 4 slides do hero** — pendentes com a dona; as fotos
-  atuais do projeto têm resolução baixa. Sem elas a home de produção fica sem hero (e sem `h1`);
-  check do D2
+- **Fotos do hero:** as 4 de `public/home/hero_slide_{1..4}.webp` já estão ligadas aos slides
+  (ordem 1→4 = Loja, Bem-estar, Quem somos, Presentes). Se a dona trocar alguma, **receita de
+  otimização**: WebP `quality: 85` (`effort: 6`, `smartSubsample: true`) com `sharp` (já está em
+  `node_modules`, vem do Next; comando avulso, sem script no repo), **mesmas dimensões** (16:9,
+  mín. 1920×1080, ideal 2400×1350, sem upscale), PSNR ≥ ~38 dB contra o original (a foto 3, com céu,
+  precisou de q90). Os PNGs originais ficam em `_DOCS/originais-hero/` (fora do git). Mantém o
+  check do D2: todo slide do hero com foto real
 - Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, as paletas, o carrossel do hero e o critério/título da vitrine). Sem lint nem CI
 - Admin de pedidos
 - **Admin CRUD de coleções** — a tabela `colecoes` existe e é lida (dropdown no formulário

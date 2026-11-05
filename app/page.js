@@ -13,8 +13,8 @@ export const metadata = {
 };
 
 // Slides do hero. `imagem` é opcional ({ src, alt }): sem ela o slide mostra um
-// placeholder no preview e é omitido em produção (ver slidesVisiveis). Fotos 16:9,
-// 2400×1350, pendentes com a dona; texto provisório.
+// placeholder no preview e é omitido em produção (ver slidesVisiveis). Fotos 16:9 em
+// WebP (receita no CLAUDE.md); o texto dos slides é provisório.
 const SLIDES = [
   {
     id: 'loja',
@@ -23,6 +23,10 @@ const SLIDES = [
     texto:
       'Plant-based e feito com ingredientes agroflorestais, nutre corpo e alma — e ajuda a regenerar a Mata Atlântica.',
     cta: { rotulo: 'Ver a loja', href: '/loja' },
+    imagem: {
+      src: '/home/hero_slide_1.webp',
+      alt: 'Homem de camisa jeans abrindo um fruto de cacau com uma faca, entre cacaueiros na agrofloresta',
+    },
   },
   {
     id: 'bem-estar',
@@ -31,6 +35,10 @@ const SLIDES = [
     texto:
       'A Coleção Inspirar une ervas e especiarias a meditações guiadas em áudio, narradas por Bruna Santos.',
     cta: { rotulo: 'Conhecer a meditação', href: '/meditacao' },
+    imagem: {
+      src: '/home/hero_slide_2.webp',
+      alt: 'Barra de chocolate escuro sobre uma travessa branca, cercada de folhas de cacau, laranja desidratada e cardamomo',
+    },
   },
   {
     id: 'quem-somos',
@@ -39,6 +47,10 @@ const SLIDES = [
     texto:
       'Cacau de agrofloresta, cultivado por quatro gerações no Sul da Bahia, dentro da Mata Atlântica.',
     cta: { rotulo: 'Conheça nossa história', href: '/quem-somos' },
+    imagem: {
+      src: '/home/hero_slide_3.webp',
+      alt: 'Produtor e uma mulher espalhando cacau para secar num secador de madeira, com colinas ao fundo',
+    },
   },
   {
     id: 'presentes',
@@ -47,6 +59,10 @@ const SLIDES = [
     texto:
       'Chocolates artesanais para dar de presente a quem você quer bem — ou para se dar um momento de calma.',
     cta: { rotulo: 'Escolher um presente', href: '/loja' },
+    imagem: {
+      src: '/home/hero_slide_4.webp',
+      alt: 'Pacotes de nibs de cacau Simplicitude ao lado de uma xícara de café e um jogo de chá, sobre azulejos azuis e brancos',
+    },
   },
 ];
 
