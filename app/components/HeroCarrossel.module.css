@@ -166,9 +166,10 @@
   margin: 0 0 32px 32px;
 }
 
-/* Controles dentro da foto (embaixo, centralizados), numa pílula sólida para o contraste não
-   depender da imagem. Assim cabem na 1ª tela mesmo em notebook baixo: antes ficavam abaixo
-   da foto e saíam da dobra. */
+/* Controles dentro da foto, numa pílula sólida para o contraste não depender da imagem. Assim
+   cabem na 1ª tela mesmo em notebook baixo (antes ficavam abaixo da foto e saíam da dobra).
+   A pílula é ESCURA (papéis do rodapé, par testado a 4,5:1 por preset): clara, ela se
+   emendava ao cartão claro vizinho. */
 @media (min-width: 641px) {
   .sobreposto {
     position: relative;
@@ -178,21 +179,47 @@
     position: absolute;
     z-index: 2;
     bottom: 16px;
-    left: 50%;
-    transform: translateX(-50%);
+    right: 16px;
     flex-wrap: nowrap;
     padding: 2px 8px;
     border-radius: 999px;
-    background: var(--cor-fundo);
+    background: var(--cor-rodape);
+    color: var(--cor-rodape-texto);
+  }
+
+  .sobreposto .seta,
+  .sobreposto .pausa {
+    color: var(--cor-rodape-texto);
+  }
+
+  /* largura fixa: "Continuar" é mais largo que "Pausar" e a pílula não pode pular */
+  .sobreposto .pausa {
+    min-width: 8rem;
+  }
+
+  .sobreposto .pausa:hover {
+    color: var(--cor-rodape-texto);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .sobreposto .ponto::before {
+    background: color-mix(in srgb, var(--cor-rodape-texto) 60%, var(--cor-rodape));
+  }
+
+  .sobreposto .pontoAtivo::before {
+    background: var(--cor-rodape-texto);
   }
 }
 
-/* até ~1000px o cartão (canto esquerdo) alcançaria o centro: a pílula vai para o canto direito */
-@media (min-width: 641px) and (max-width: 1000px) {
+/* Centralizada só quando sobra espaço: a pílula (~450px) precisa caber à direita do cartão
+   (32px + 28rem) com folga. Abaixo disso fica no canto direito. Se mudar o nº de slides ou o
+   tamanho do cartão, rever este corte. */
+@media (min-width: 1440px) {
   .sobreposto .controles {
-    left: auto;
-    right: 16px;
-    transform: none;
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
 
