@@ -69,7 +69,7 @@ qualquer dependência de plataforma** (Netlify/Supabase).
   ativo e envs configuradas no Netlify (`NEXT_PUBLIC_MOCKUPS=1` só nos contextos
   branch-deploy/deploy-preview), verificado em produção e na `v1`. **A2 (tokens + Header/Footer)
   está no código. A3 (hero da home em carrossel) está no código, com as 4 fotos reais ligadas
-  (ver `HeroCarrossel`). A5 (categorias na home) está no código, sem fotos (ver `GradeCategorias`).** Mockups existentes: só `/bem-fazer` e `/assinaturas` ("Em breve"); os de
+  (ver `HeroCarrossel`). A5 (categorias na home) está no código, sem fotos (ver `GradeCategorias`). A6 (`/loja` com filtro por categoria) está no código (ver `CardProduto`).** Mockups existentes: só `/bem-fazer` e `/assinaturas` ("Em breve"); os de
   carrinho/checkout vêm depois — ver a lista priorizada no plano.
 - **Ordem do front:** A1 (preview) → A2 (tokens, header/footer) → A3/A4/A5 (home) → A6/A7 (loja,
   produto, só leitura) → mostrar o preview à dona; só depois o contrato de dados (A0) e
@@ -174,7 +174,7 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   precisou de q90). Os PNGs originais ficam em `_DOCS/originais-hero/` (fora do git). Mantém o
   check do D2: todo slide do hero com foto real
 - **Foto de categoria:** `categorias` não tem `imagem_url`. A coluna (+ upload no `CategoriaForm`) pertence ao grupo da migration C2 do plano; `GradeCategorias` já renderiza a foto quando o campo vier, falta incluí-lo no `select` de `getCategoriasComProdutos()`. A foto em si depende da dona
-- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, as paletas (inclusive o contraste dos cartões de categoria), o carrossel do hero, o critério/título da vitrine e `getCategoriasComProdutos`). Sem lint nem CI
+- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, as paletas (inclusive o contraste dos cartões de categoria), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos` e `filtrarPorCategoria`). Sem lint nem CI
 - Admin de pedidos
 - **Admin CRUD de coleções** — a tabela `colecoes` existe e é lida (dropdown no formulário
   de produto), mas não há tela de gestão para criá-las/editá-las
@@ -225,7 +225,7 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
 - **`/meditacao`** — hero (faixa de imagem + duotone + listras diagonais + título, no
   padrão de `/quem-somos`) e bloco de introdução da Coleção Inspirar, seguidos da lista de
   produtos com `tem_meditacao=true` via `ApresentacaoProduto` + `MeditacaoPlayer`
-- **`/loja`** — grade de produtos ativos
+- **`/loja`** — `h1` (nome da categoria ativa ou "Loja") + frase, chips de categoria ("Todas" + só categorias com ≥1 produto ativo, `getCategoriasComProdutos()`; rolam na horizontal no celular, quebram linha a partir de 900px) e grade de `CardProduto` (2 colunas no celular). Filtro por `?categoria=slug`, no servidor (`searchParams`, links `<Link>`, funciona sem JS). **Slug desconhecido, vazio ou repetido = "Todas"** (`filtrarPorCategoria`), nunca página vazia. Zero produtos ativos → frase de estado vazio com link para `/quem-somos`. A página é dinâmica (`ƒ`) por causa do `searchParams`
 - **`/loja/[slug]`** — detalhe do produto (slug calculado em memória, não é coluna do
   banco)
 - **`/bem-fazer`**, **`/assinaturas`** — mockups "Em breve" (`EmBreve`); só existem com
@@ -348,12 +348,16 @@ Cada um com `*.module.css` co-locado.
   usa decide não renderizá-lo em produção.
 - **`VitrineProdutos`** (`'use client'`) — vitrine da home em duas colunas. Props `titulo`,
   `produtos`, `categorias`. Esquerda: `h2` "{titulo} *da floresta*", chips (`categorias.slug` →
-  `/loja?categoria=slug`; o filtro só funciona na loja no A6) e botão "Ver toda a loja". Direita:
+  `/loja?categoria=slug`) e botão "Ver toda a loja". Direita:
   carrossel scroll-snap que vai até a borda da tela (próximo card cortado), setas no desktop e
-  toque no celular (≤900px a intro vira cabeçalho). Card: imagem em proporção fixa 4:5 com
-  `object-fit: contain` sobre `--cor-superficie` (fotos quadradas e em retrato ficam uniformes,
-  sem corte), categoria (**sempre**, ignora `mostrar_categoria_no_titulo`), nome, `descricao`
-  em 2 linhas (`line-clamp`; vira `descricao_curta` no C2) e preço. Só papéis `--cor-*`.
+  toque no celular (≤900px a intro vira cabeçalho). Cada card é um `CardProduto`
+  (`className={styles.slide}` só dimensiona no trilho). Só papéis `--cor-*`.
+- **`CardProduto`** (server-safe, sem `'use client'`) — card de produto compartilhado por `VitrineProdutos` e
+  `/loja`. Props `produto`, `sizes`, `className` (no `<Link>`), `Titulo` (`h3` padrão; a loja passa `h2`). Imagem em
+  proporção fixa 4:5 com `object-fit: contain` sobre `--cor-superficie` (fotos quadradas e em retrato ficam
+  uniformes, sem corte), selo "Esgotado" (`estoque === 0`), categoria (**sempre**, ignora
+  `mostrar_categoria_no_titulo`), nome, `descricao` em 2 linhas (`line-clamp`; vira `descricao_curta` no C2) e preço.
+  Link para `/loja/[slug]`. Só papéis `--cor-*`
   Usado em `app/page.js` logo abaixo do hero, alimentado por `getVitrine()` e
   `getCategoriasComProdutos()`
 - **`GradeCategorias`** (server component) — seção "Escolha por categoria" da home, abaixo da
@@ -416,7 +420,9 @@ cai no padrão — e é `null` sem `NEXT_PUBLIC_MOCKUPS=1` (então `?paleta` é 
 
 ### Storefront — `lib/produtos.js`
 
-- `getProdutos()` — `select('*, categorias(nome)')` onde `ativo=true`
+- `getProdutos()` — `select('*, categorias(nome, slug)')` onde `ativo=true`
+- `filtrarPorCategoria(produtos, categorias, slug)` — `{ ativa, produtos }`; `slug` que não esteja em
+  `categorias` (desconhecido, vazio, array) → `ativa: null` e todos os produtos ("Todas"). Usada em `/loja`
 - `getVitrine(criterio = CRITERIO_VITRINE, limite = 8)` — `{ titulo, produtos }`: produtos
   ativos ordenados pela coluna do critério e o título que deriva dele. Critérios em
   **`lib/vitrine.js`** (`novidades`/`created_at`, `favoritos` e `maisVendidos`/`destaque_ordem`,
