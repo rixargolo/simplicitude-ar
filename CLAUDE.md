@@ -263,7 +263,9 @@ Cada um com `*.module.css` co-locado.
   `NEXT_PUBLIC_MOCKUPS=1`. Troca as variáveis no `<html>`, grava no `localStorage` e atualiza
   `?paleta=` na URL (`replaceState`) para o link já levar a versão. A comparação com a env é
   **literal** dentro do componente de propósito: é o que faz o Next descartar o seletor e os
-  presets do bundle de produção (verificado; chamar `mockupsLigados()` não bastava)
+  presets do bundle de produção. Só funciona porque `next.config.mjs` fixa `env.NEXT_PUBLIC_MOCKUPS`
+  (`''` se ausente): sem a env definida o Next não inlina e o código vaza para o bundle (verificado;
+  chamar `mockupsLigados()` também não bastava). Conferir com `grep -rF rodapeTexto .next/static` num build sem a flag
 - **`LogoAnimado`** (`'use client'`) — usado dentro do `<Link href="/">` do `Header` no
   lugar do `<Image>` direto da wordmark. Na **1ª carga da Home (`/`) em cada sessão do
   navegador**, toca uma animação de "escrita à mão" (traçado sequencial via
@@ -337,7 +339,7 @@ Fonte única do menu (Header e Footer): array com `href`, `rotulo` e `status` (`
 
 ### Paletas do preview — `lib/paletas.js`
 
-`PALETAS` (azul = padrão da dona, verde, duo): um preset por entrada, com os 7 papéis-base
+`PALETAS` (azul = padrão da dona; verde, monocromático; mix1 e mix2, inversos entre si): um preset por entrada, com os 7 papéis-base
 (fundo, texto, destaque, botão, botaoTexto, rodapé, rodapeTexto); preset novo = uma entrada.
 Regra: nunca azul sobre verde (1,17:1), texto de botão/rodapé sempre bege; `tests/paletas.test.js`
 exige 4,5:1 de todo preset. `variaveis(chave)` mapeia preset → variáveis CSS; `scriptPaleta()`

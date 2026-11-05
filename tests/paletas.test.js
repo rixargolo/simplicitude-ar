@@ -72,20 +72,29 @@ describe('script anti-flash', () => {
   });
 
   it('?paleta válido vence o lembrado e é lembrado', async () => {
-    const r = await rodar({ busca: '?paleta=verde', lembrado: 'duo' });
+    const r = await rodar({ busca: '?paleta=verde', lembrado: 'mix1' });
     expect(r.aplicadas).toEqual(r.variaveis('verde'));
     expect(r.dataset.paleta).toBe('verde');
     expect(r.guardado[r.CHAVE_PALETA]).toBe('verde');
   });
 
   it('sem URL, usa a escolha lembrada', async () => {
-    const r = await rodar({ lembrado: 'duo' });
-    expect(r.aplicadas).toEqual(r.variaveis('duo'));
+    const r = await rodar({ lembrado: 'mix1' });
+    expect(r.aplicadas).toEqual(r.variaveis('mix1'));
   });
 
   it('valor inválido cai no padrão', async () => {
     const r = await rodar({ busca: '?paleta=xyz', lembrado: 'toString' });
     expect(r.aplicadas).toEqual(r.variaveis('azul'));
     expect(r.guardado).toEqual({});
+  });
+});
+
+describe('bundle de produção', () => {
+  it('next.config fixa NEXT_PUBLIC_MOCKUPS (vazio se ausente) para o Next descartar o código de preview', async () => {
+    vi.resetModules();
+    vi.stubEnv('NEXT_PUBLIC_MOCKUPS', undefined);
+    const config = (await import('../next.config.mjs')).default;
+    expect(config.env.NEXT_PUBLIC_MOCKUPS).toBe('');
   });
 });

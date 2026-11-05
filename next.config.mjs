@@ -53,6 +53,9 @@ const securityHeaders = [
 
 const nextConfig = {
   poweredByHeader: false,
+  // Sem a env definida o Next não inlina o valor no client e o minificador não descarta o
+  // código de preview (SeletorPaleta, presets). Definir '' garante a eliminação em produção.
+  env: { NEXT_PUBLIC_MOCKUPS: process.env.NEXT_PUBLIC_MOCKUPS ?? '' },
   images: {
     remotePatterns: [
       {
