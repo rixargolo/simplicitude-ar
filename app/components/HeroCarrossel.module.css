@@ -159,8 +159,8 @@
 }
 
 /* Cartão translúcido sobre a foto, cantos arredondados. 70% de --cor-fundo é o piso: mesmo com
-   uma foto preta por baixo o texto mantém ≥ 4,5:1 (no preset verde dá 4,9; a 65% cairia para
-   4,3). tests/paletas.test.js lê este percentual e confere em todo preset. O blur separa o
+   uma foto preta por baixo o texto mantém ≥ 4,5:1 (na paleta verde dá 4,9; a 65% cairia para
+   4,3). tests/paletas.test.js lê este percentual e confere. O blur separa o
    cartão da foto e segura o contraste em fotos agitadas. */
 .sobreposto .cartao {
   position: relative;

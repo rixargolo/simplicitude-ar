@@ -9,12 +9,13 @@ body {
   height: 100%;
 }
 
-/* Tokens por PAPEL, não por cor: um preset de paleta troca só os papéis-base
-   (aplicado no <html>) e tudo o que deriva deles acompanha. */
+/* Tokens por PAPEL, não por cor: trocar a paleta é mexer só nos papéis-base e tudo o que
+   deriva deles acompanha. Paleta de uso (X2): verde. O azul (cor padrão da paleta da marca,
+   não usada por enquanto) está documentado em docs/paleta-azul.md. */
 :root {
   /* papéis-base */
   --cor-fundo: #f6f3ea;          /* Bege Background */
-  --cor-texto: #272a5c;          /* Azul Simplicitude */
+  --cor-texto: #27401e;          /* Verde Musgo */
   --cor-destaque: #27401e;       /* Verde Musgo: nomes de produto, item ativo, foco */
   --cor-botao: var(--cor-texto);
   --cor-botao-texto: var(--cor-fundo);

@@ -139,7 +139,7 @@ export default function LogoAnimado() {
   return (
     <span className={styles.wrap} onClick={replay}>
       {/* Wordmark como máscara do PNG: pega a cor do texto (currentColor), então
-          acompanha a paleta/presets. Quem carrega o nome acessível é o role="img". */}
+          acompanha a paleta. Quem carrega o nome acessível é o role="img". */}
       <span
         role="img"
         aria-label="Simplicitude"

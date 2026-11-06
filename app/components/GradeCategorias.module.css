@@ -3,7 +3,7 @@
    em pílula), cada um com um tom levemente diferente derivado dos papéis. A vitrine acima já
    deixa 72/120px embaixo, então a seção começa colada (padding-top 0).
    Contraste: o texto é sempre --cor-texto sobre --cartao-fundo; tests/paletas.test.js lê as
-   misturas daqui e exige 4,5:1 em todo preset — variante nova usa só papéis-base de lib/paletas.js. */
+   misturas daqui e exige 4,5:1 — variante nova usa só papéis-base de app/globals.css. */
 .section {
   padding: 0 20px 72px;
   background: var(--cor-fundo);
