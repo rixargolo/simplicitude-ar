@@ -33,34 +33,6 @@
   font-weight: 400;
 }
 
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding: 0 20px;
-  border-radius: var(--raio-botao);
-  background: var(--cor-superficie);
-  color: var(--cor-texto);
-  font-family: var(--font-body);
-  font-size: var(--tam-pequeno);
-  text-decoration: none;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.chip:hover {
-  background: var(--cor-botao);
-  color: var(--cor-botao-texto);
-}
-
 .botao {
   display: inline-block;
   padding: 12px 28px;
@@ -165,7 +137,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .chip,
   .arrow {
     transition: none;
   }

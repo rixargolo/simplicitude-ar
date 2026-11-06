@@ -81,8 +81,11 @@ describe('contraste', () => {
 
   it('texto do cartão translúcido do hero cumpre 4,5:1 mesmo com foto preta ou branca por trás', () => {
     // o percentual vem do próprio CSS: mudar a opacidade lá é conferido aqui
+    // ancorado no bloco do cartão: a pílula dos controles também usa um color-mix translúcido
     const css = ler('../app/components/HeroCarrossel.module.css');
-    const m = css.match(/color-mix\(in srgb, var\(--cor-fundo\) (\d+)%, transparent\)/);
+    const m = css.match(
+      /\.sobreposto \.cartao\s*\{[^}]*?color-mix\(in srgb, var\(--cor-fundo\) (\d+)%, transparent\)/,
+    );
     expect(m, 'cartão sem color-mix de --cor-fundo').not.toBeNull();
     const alfa = Number(m[1]) / 100;
     const t = tokens();

@@ -82,7 +82,7 @@
   transform: translateY(1px);
 }
 
-/* controles: setas, pontos e pausa, centralizados logo abaixo da foto */
+/* controles: setas e pontos, centralizados logo abaixo da foto */
 .controles {
   display: flex;
   flex-wrap: wrap;
@@ -93,8 +93,7 @@
 }
 
 .seta,
-.ponto,
-.pausa {
+.ponto {
   min-width: 44px;
   min-height: 44px;
   background: none;
@@ -126,20 +125,6 @@
 .pontoAtivo::before {
   width: 26px;
   background: var(--cor-texto);
-}
-
-.pausa {
-  margin-left: 12px;
-  padding: 0 12px;
-  font-family: var(--font-body);
-  font-size: var(--tam-pequeno);
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.pausa:hover {
-  color: var(--cor-destaque);
 }
 
 /* ===== Layout "sobreposto": foto em largura total, cartão sólido no canto inferior esquerdo ===== */
@@ -174,10 +159,10 @@
   backdrop-filter: blur(14px); /* taste-skill-ignore: pedido explícito do usuário */
 }
 
-/* Controles dentro da foto, numa pílula sólida para o contraste não depender da imagem. Assim
-   cabem na 1ª tela mesmo em notebook baixo (antes ficavam abaixo da foto e saíam da dobra).
-   A pílula é ESCURA (papéis do rodapé, par testado a 4,5:1 por preset): clara, ela se
-   emendava ao cartão claro vizinho. */
+/* Controles dentro da foto, numa pílula translúcida (30% de --cor-fundo + blur, mais leve que o
+   cartão de 70%). Assim cabem na 1ª tela mesmo em notebook baixo. Setas e pontos usam as cores
+   base (--cor-texto). O contraste depende da foto por trás: não é coberto por teste, conferir
+   a olho ao trocar uma foto; se ficar fraco, subir o percentual. */
 @media (min-width: 641px) {
   .sobreposto {
     position: relative;
@@ -191,36 +176,13 @@
     flex-wrap: nowrap;
     padding: 2px 8px;
     border-radius: 999px;
-    background: var(--cor-rodape);
-    color: var(--cor-rodape-texto);
-  }
-
-  .sobreposto .seta,
-  .sobreposto .pausa {
-    color: var(--cor-rodape-texto);
-  }
-
-  /* largura fixa: "Continuar" é mais largo que "Pausar" e a pílula não pode pular */
-  .sobreposto .pausa {
-    min-width: 8rem;
-  }
-
-  .sobreposto .pausa:hover {
-    color: var(--cor-rodape-texto);
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
-
-  .sobreposto .ponto::before {
-    background: color-mix(in srgb, var(--cor-rodape-texto) 60%, var(--cor-rodape));
-  }
-
-  .sobreposto .pontoAtivo::before {
-    background: var(--cor-rodape-texto);
+    background: color-mix(in srgb, var(--cor-fundo) 30%, transparent);
+    -webkit-backdrop-filter: blur(14px); /* taste-skill-ignore: pedido explícito do usuário */
+    backdrop-filter: blur(14px); /* taste-skill-ignore: pedido explícito do usuário */
   }
 }
 
-/* Centralizada só quando sobra espaço: a pílula (~450px) precisa caber à direita do cartão
+/* Centralizada só quando sobra espaço: a pílula (~310px) precisa caber à direita do cartão
    (32px + 28rem) com folga. Abaixo disso fica no canto direito. Se mudar o nº de slides ou o
    tamanho do cartão, rever este corte. */
 @media (min-width: 1440px) {
@@ -254,14 +216,10 @@
   }
 }
 
-/* sem rolagem automática, não há o que pausar nem o que animar */
+/* sem rolagem automática, não há o que animar */
 @media (prefers-reduced-motion: reduce) {
   .slide,
   .ponto::before {
     transition: none;
-  }
-
-  .pausa {
-    display: none;
   }
 }

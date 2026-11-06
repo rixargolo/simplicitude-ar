@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { slugify } from '@/lib/produtos';
 import { estiloFoto } from '@/lib/foco';
 import styles from './CardProduto.module.css';
 
@@ -17,7 +16,7 @@ const formatBRL = (centavos) =>
 export default function CardProduto({ produto, sizes, className = '', Titulo = 'h3' }) {
   return (
     <Link
-      href={`/loja/${slugify(produto.nome)}`}
+      href={`/loja/${produto.slug}`}
       className={`${styles.card} ${className}`}
     >
       <div className={styles.imgWrap}>

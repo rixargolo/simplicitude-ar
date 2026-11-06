@@ -1,7 +1,7 @@
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import Link from 'next/link';
-import { getProdutoBySlug, getFotosDoProduto } from '@/lib/produtos';
+import { getProdutoBySlug, getSlugAtual, getFotosDoProduto } from '@/lib/produtos';
 import ApresentacaoProduto from '../../components/ApresentacaoProduto';
 import BotaoComprar from '../../components/BotaoComprar';
 import styles from './produto.module.css';
@@ -36,6 +36,9 @@ export default async function ProdutoPage({ params }) {
   const produto = await getProdutoBySlug(slug);
 
   if (!produto) {
+    // slug antigo (o produto foi renomeado no endereço): 308 para o atual, preservando links já divulgados
+    const atual = await getSlugAtual(slug);
+    if (atual) permanentRedirect(`/loja/${atual}`);
     notFound();
   }
 

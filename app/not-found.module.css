@@ -1,0 +1,64 @@
+.main {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 20px;
+  padding: 64px 32px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.rotulo {
+  font-family: var(--font-body);
+  font-size: var(--tam-rotulo);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cor-texto-suave);
+}
+
+.titulo {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: var(--tam-titulo-pagina);
+  line-height: 1.1;
+  color: var(--cor-texto);
+}
+
+.texto {
+  font-size: var(--tam-chamada);
+  color: var(--cor-texto);
+  max-width: 36em;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 24px;
+}
+
+.botao {
+  display: inline-block;
+  padding: 12px 28px;
+  border-radius: var(--raio-botao);
+  background: var(--cor-botao);
+  color: var(--cor-botao-texto);
+  font-family: var(--font-body);
+  font-size: var(--tam-pequeno);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.secundario {
+  font-family: var(--font-body);
+  font-size: var(--tam-texto);
+  color: var(--cor-texto);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

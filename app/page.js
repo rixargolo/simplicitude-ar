@@ -1,8 +1,13 @@
+import Link from 'next/link';
+import Image from 'next/image';
 import { getVitrine, getCategoriasComProdutos } from '@/lib/produtos';
 import { slidesVisiveis } from '@/lib/carrossel';
+import { mockupsLigados } from '@/lib/navegacao';
 import HeroCarrossel from './components/HeroCarrossel';
 import VitrineProdutos from './components/VitrineProdutos';
 import GradeCategorias from './components/GradeCategorias';
+import FotoPendente from './components/FotoPendente';
+import styles from './home.module.css';
 
 export const metadata = {
   title: 'Simplicitude — Da Floresta à Fábrica',
@@ -68,6 +73,9 @@ const SLIDES = [
   },
 ];
 
+// A home é pré-renderizada; sem isso a curadoria do admin (X6) só apareceria no próximo build.
+export const revalidate = 60;
+
 export default async function HomePage() {
   const [vitrine, categorias] = await Promise.all([getVitrine(), getCategoriasComProdutos()]);
   const slides = slidesVisiveis(SLIDES);
@@ -76,13 +84,72 @@ export default async function HomePage() {
     <main>
       {slides.length > 0 && <HeroCarrossel slides={slides} />}
 
-      <VitrineProdutos
-        titulo={vitrine.titulo}
-        produtos={vitrine.produtos}
-        categorias={categorias}
-      />
+      <VitrineProdutos titulo={vitrine.titulo} produtos={vitrine.produtos} />
 
       <GradeCategorias categorias={categorias} />
+
+      <div className={styles.marca}>
+        <section className={`${styles.cartao} ${styles.fotoDireita}`} aria-labelledby="home-meditacao">
+          <div className={styles.foto}>
+            <Image
+              src="/meditacao/hero.png"
+              alt="Três chocolates da Coleção Inspirar dispostos sobre uma tábua de madeira"
+              fill
+              sizes="(min-width: 768px) 50vw, 100vw"
+              className={styles.fotoImg}
+            />
+          </div>
+          <div className={styles.texto}>
+            <h2 id="home-meditacao" className={styles.titulo}>Meditação</h2>
+            <p className={styles.paragrafo}>
+              A Simplicitude traz uma linha especial de chocolates para meditação. A Coleção
+              Inspirar apresenta chocolates com ervas e especiarias que promovem bem estar. Cada
+              blend tem a intenção de despertar uma emoção, através das propriedades de seus
+              ingredientes. São três sabores que, associados à práticas de meditação e atenção
+              plena, inspiram bons sentimentos e uma deliciosa sensação de Simplicitude.
+            </p>
+            <Link href="/meditacao" className={styles.cta}>
+              Acesse a meditação guiada <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+        </section>
+
+        {/* Placeholder: texto e foto ainda não existem (X5); só no preview */}
+        {mockupsLigados() && (
+          <section className={styles.cartao} aria-labelledby="home-nova">
+            <div className={styles.texto}>
+              <h2 id="home-nova" className={styles.titulo}>Título a definir</h2>
+              <p className={styles.paragrafo}>
+                Texto curto desta seção, a definir com a dona da fábrica. Reserva o espaço de uma
+                ideia nova entre a meditação e a nossa história.
+              </p>
+            </div>
+            <div className={styles.foto}>
+              <FotoPendente especificacao="Foto da seção: a definir com a dona (4:3, mín. 1600×1200)" />
+            </div>
+          </section>
+        )}
+
+        <section className={`${styles.cartao} ${styles.fotoMenor}`} aria-labelledby="home-quem-somos">
+          <div className={styles.foto}>
+            <Image
+              src="/quem-somos/cabruca.jpg"
+              alt="Plantio de cacau em sistema Cabruca, dentro da Mata Atlântica"
+              fill
+              sizes="(min-width: 768px) 40vw, 100vw"
+              className={styles.fotoImg}
+            />
+          </div>
+          <div className={styles.texto}>
+            <h2 id="home-quem-somos" className={styles.frase}>
+              Da floresta à fábrica — cacau de agrofloresta, cultivado por quatro gerações.
+            </h2>
+            <Link href="/quem-somos" className={styles.cta}>
+              Conheça nossa história <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+        </section>
+      </div>
     </main>
   );
 }

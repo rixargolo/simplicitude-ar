@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { slugify, slugValido } from '@/lib/produtos';
 import { caminhoDaUrl, fotosDoProduto } from '@/lib/fotos';
 import FotosProduto from './FotosProduto';
 import styles from './ProdutoForm.module.css';
@@ -27,6 +28,11 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
   const router = useRouter();
 
   const [nome, setNome] = useState(produto?.nome ?? '');
+  // Endereço (slug): na criação acompanha o nome até ser editado à mão; na edição nunca acompanha (X8).
+  const [slug, setSlug] = useState(produto?.slug ?? '');
+  const [slugTocado, setSlugTocado] = useState(false);
+  const [origem, setOrigem] = useState('');
+  useEffect(() => setOrigem(window.location.origin), []);
   const [descricao, setDescricao] = useState(produto?.descricao ?? '');
   const [atributos, setAtributos] = useState(produto?.atributos ?? '');
   const [pesoGramas, setPesoGramas] = useState(
@@ -69,6 +75,10 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
       setErro('Informe o nome do produto.');
       return;
     }
+    if (!slugValido(slug)) {
+      setErro('Endereço inválido: use só letras minúsculas sem acento, números e hífen (até 80 caracteres).');
+      return;
+    }
     if (Number.isNaN(centavos) || centavos <= 0) {
       setErro('Informe um preço válido, ex.: 10,00.');
       return;
@@ -79,6 +89,7 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
 
     const payload = {
       nome: nome.trim(),
+      slug,
       descricao: descricao.trim() || null,
       atributos: atributos.trim() || null,
       peso_gramas: pesoGramas ? Number(pesoGramas) : null,
@@ -103,7 +114,11 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
       router.refresh();
     } catch (err) {
       console.error(err);
-      setErro('Não foi possível salvar o produto. Tente novamente.');
+      setErro(
+        err.code === '23505'
+          ? 'Esse endereço já é (ou já foi) de outro produto. Escolha outro.'
+          : 'Não foi possível salvar o produto. Tente novamente.',
+      );
       setSalvando(false);
     }
   }
@@ -120,10 +135,47 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
           className={styles.input}
           type="text"
           value={nome}
-          onChange={(e) => setNome(e.target.value)}
+          onChange={(e) => {
+            setNome(e.target.value);
+            if (mode === 'create' && !slugTocado) setSlug(slugify(e.target.value));
+          }}
           required
         />
       </label>
+
+      <div className={styles.field}>
+        <label htmlFor="produto-slug" className={styles.label}>Endereço na loja</label>
+        <input
+          id="produto-slug"
+          className={styles.input}
+          type="text"
+          value={slug}
+          onChange={(e) => {
+            setSlug(e.target.value);
+            setSlugTocado(true);
+          }}
+          onBlur={() => setSlug(slugify(slug))}
+          aria-describedby="slug-ajuda"
+          autoCapitalize="none"
+          spellCheck={false}
+          required
+        />
+        <span id="slug-ajuda" className={styles.ajuda}>
+          {origem}/loja/<strong>{slug || '…'}</strong>
+        </span>
+        {mode === 'edit' && (
+          <span className={styles.ajuda}>
+            Mudar o nome do produto não muda o endereço.
+          </span>
+        )}
+        {mode === 'edit' && slug !== produto.slug && (
+          <span className={styles.aviso} role="status">
+            Atenção: mudar o endereço pode afetar links já compartilhados (Instagram, QR codes,
+            WhatsApp). O endereço antigo, /loja/{produto.slug}, continua funcionando e leva ao novo,
+            mas não poderá ser usado por outro produto.
+          </span>
+        )}
+      </div>
 
       <label className={styles.field}>
         <span className={styles.label}>Descrição</span>
@@ -265,7 +317,7 @@ async function criarProduto(supabase, payload) {
     .select('id')
     .single();
 
-  if (error) throw new Error(error.message);
+  if (error) throw Object.assign(new Error(error.message), { code: error.code });
   return data.id;
 }
 
@@ -276,7 +328,7 @@ async function atualizarProduto(supabase, id, payload) {
     .update(payload)
     .eq('id', id);
 
-  if (error) throw new Error(error.message);
+  if (error) throw Object.assign(new Error(error.message), { code: error.code });
   return id;
 }
 

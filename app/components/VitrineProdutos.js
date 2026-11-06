@@ -6,9 +6,9 @@ import CardProduto from './CardProduto';
 import styles from './VitrineProdutos.module.css';
 
 // Vitrine da home: à esquerda título (derivado do critério de ordem, ver lib/vitrine.js),
-// chips de categoria e link para a loja; à direita, carrossel scroll-snap que vai até a
-// borda da tela (o próximo card aparece cortado) com setas no desktop.
-export default function VitrineProdutos({ titulo, produtos, categorias = [] }) {
+// e link para a loja; à direita, carrossel scroll-snap que vai até a borda da tela (o próximo
+// card aparece cortado) com setas no desktop. As categorias ficam na GradeCategorias, logo abaixo (X10).
+export default function VitrineProdutos({ titulo, produtos }) {
   const trackRef = useRef(null);
 
   if (!produtos || produtos.length === 0) return null;
@@ -27,18 +27,6 @@ export default function VitrineProdutos({ titulo, produtos, categorias = [] }) {
         <h2 id="vitrine-titulo" className={styles.titulo}>
           {titulo} <em className={styles.enfase}>da floresta</em>
         </h2>
-
-        {categorias.length > 0 && (
-          <ul className={styles.chips}>
-            {categorias.map((c) => (
-              <li key={c.slug}>
-                <Link href={`/loja?categoria=${c.slug}`} className={styles.chip}>
-                  {c.nome}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
 
         <Link href="/loja" className={styles.botao}>
           Ver toda a loja

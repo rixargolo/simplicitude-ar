@@ -56,15 +56,34 @@
   transform: translateY(-3px);
 }
 
-/* foto opcional (categorias.imagem_url, C2): faixa no topo, o texto segue embaixo */
+/* foto opcional (categorias.imagem_url, X7): faixa no topo, o texto segue embaixo */
 .foto {
   position: relative;
   aspect-ratio: 16 / 9;
+  overflow: hidden; /* o zoom de estiloFoto() cresce além da faixa */
   background: var(--cor-superficie);
 }
 
 .fotoImg {
   object-fit: cover;
+}
+
+/* Desfoque que esmaece no hover/foco. Só onde há hover de verdade: em tela de toque não existe
+   "por cima" (o toque já navega), então lá a foto fica sempre nítida. */
+@media (hover: hover) {
+  .foto::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    transition: opacity 0.3s ease;
+  }
+
+  .cartao:hover .foto::after,
+  .cartao:has(.link:focus-visible) .foto::after {
+    opacity: 0;
+  }
 }
 
 .corpo {
@@ -184,7 +203,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .cartao,
-  .seta {
+  .seta,
+  .foto::after {
     transition: none;
   }
 

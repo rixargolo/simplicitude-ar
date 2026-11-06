@@ -1,11 +1,13 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { estiloFoto } from '@/lib/foco';
 import styles from './GradeCategorias.module.css';
 
 // Grade de categorias da home: cartão claro e arredondado por categoria (estilo do cartão do
 // hero), nome em serifa itálica, descrição de 2 linhas, contagem e pílula "Ver produtos".
-// `categoria.imagem_url` é opcional (a coluna só nasce no C2): quando vier, a foto entra no
-// topo do cartão sem mexer no resto.
+// `categoria.imagem_url` é opcional (X7): quando vier, a foto entra como faixa 16:9 no topo do
+// cartão, enquadrada por foco/zoom (estiloFoto). Com mouse ou foco de teclado o desfoque some; em
+// tela de toque não há desfoque (ver .foto::after no CSS). Sem foto, o cartão é o de sempre.
 export default function GradeCategorias({ categorias = [] }) {
   if (!categorias || categorias.length === 0) return null;
 
@@ -24,8 +26,9 @@ export default function GradeCategorias({ categorias = [] }) {
                   src={c.imagem_url}
                   alt=""
                   fill
-                  sizes="(max-width: 720px) 100vw, 50vw"
+                  sizes="(max-width: 639px) 100vw, (max-width: 1099px) 50vw, 25vw"
                   className={styles.fotoImg}
+                  style={estiloFoto(c.imagem_foco_x, c.imagem_foco_y, c.imagem_zoom)}
                 />
               </div>
             )}
