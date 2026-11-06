@@ -26,11 +26,14 @@ const assistant = localFont({
   adjustFontFallback: 'Arial',
 });
 
+// Amsterdam One: carregada mas sem uso por enquanto (`--font-accent`); a dona vai indicar onde
+// entra. preload:false evita baixar 45 KB à toa; o arquivo só é buscado se algum CSS a usar.
 const amsterdam = localFont({
   src: './fonts/amsterdam-one-latin.woff2',
   weight: '400',
   variable: '--font-amsterdam',
   display: 'swap',
+  preload: false,
 });
 
 export const metadata = {

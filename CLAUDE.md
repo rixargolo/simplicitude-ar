@@ -120,11 +120,16 @@ licenças em `app/fonts/LEIA-ME.md`). Nenhum CSS cita as famílias direto.
   normal**, sem `uppercase` nem tracking largo; peso 500 nos títulos.
 - **`--font-body` = Assistant** (400 e 600 estáticas, sem itálico): texto, botões, chips, menu, preços, rótulos.
   Rótulos pequenos seguem em caixa alta, tracking ≤ 0.12em. Itálico em texto de Assistant = usar Fraunces itálico.
-- **`--font-accent` = Amsterdam One** (só 400, sem Slant e sem itálico; fallback Fraunces): **somente destaque
-  curto em tamanho grande** (`--tam-destaque`), nunca texto de leitura, nomes, preços nem rótulos. Hoje em 3
-  lugares: "da floresta" na vitrine, lema do rodapé e "Em breve"; `tests/paletas.test.js` falha se aparecer em
-  outro CSS. O pacote recebido **não trouxe licença**: uso por orientação da dona/criador do projeto (registrado
-  no LEIA-ME das fontes; confirmar se a marca for publicada mais amplamente).
+- **`--font-accent` = Amsterdam One** (só 400, sem Slant e sem itálico; fallback Fraunces): **no projeto, mas
+  SEM USO por enquanto** (decisão de 2026-11-06; o dono vai indicar pontualmente onde entra). Fica o arquivo
+  `app/fonts/amsterdam-one-latin.woff2`, carregada em `app/layout.js` com `preload: false` (só baixa se algum CSS
+  usar), o token `--font-accent` e `--tam-destaque`. Quando entrar: **somente destaque curto em tamanho grande**,
+  nunca texto de leitura, nomes, preços nem rótulos; ela não tem itálico, então em `<em>` usar `font-style: normal`.
+  `tests/paletas.test.js` falha se algum CSS usar `--font-accent`: ao autorizar um uso, atualizar a lista do teste
+  e registrar o lugar aqui. O pacote recebido **não trouxe licença**: uso por orientação da dona/criador do
+  projeto (registrado no LEIA-ME das fontes; confirmar se a marca for publicada mais amplamente).
+- **Mote do rodapé** ("Da Floresta à Fábrica", ao lado da logo): Fraunces itálico em `--tam-texto` (16px).
+  "da floresta" na vitrine e "Em breve" também são Fraunces itálico.
 - **Escala por papel** (`--tam-*` em `globals.css`, menor que a anterior; **código novo usa só esses, nunca
   px/rem soltos**): `rotulo` 0.75rem, `pequeno` 0.875rem, `texto` 1rem, `chamada` 1.06–1.19rem, `nome-card`
   1.0625rem, `subtitulo` 1.25–1.5rem, `titulo-secao` 1.5–2.125rem, `titulo-pagina` 1.75–2.75rem,
@@ -208,7 +213,7 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   check do D2: todo slide do hero com foto real
 - **X1 (várias fotos):** SQL aplicado em produção em 2026-11-05 (`supabase/migrations/20261105181330_produto_imagens.sql`). **Rodar de novo no D2** o script de reconciliação `supabase/scripts/x1_reconciliar_produto_imagens.sql` (a `main` só grava em `produtos`). Falta a galeria em `/loja/[slug]` (A7)
 - **Foto de categoria:** `categorias` não tem `imagem_url`. A coluna (+ upload no `CategoriaForm`) pertence ao grupo da migration C2 do plano; `GradeCategorias` já renderiza a foto quando o campo vier, falta incluí-lo no `select` de `getCategoriasComProdutos()`. A foto em si depende da dona
-- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive hero e cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam só nos 3 CSS autorizados), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `filtrarPorCategoria`, `lib/foco.js` e `lib/fotos.js`). Sem lint nem CI
+- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive hero e cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam sem uso até autorização), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `filtrarPorCategoria`, `lib/foco.js` e `lib/fotos.js`). Sem lint nem CI
 - Admin de pedidos
 - **Admin CRUD de coleções** — a tabela `colecoes` existe e é lida (dropdown no formulário
   de produto), mas não há tela de gestão para criá-las/editá-las

@@ -123,7 +123,7 @@ describe('tipografia (X3)', () => {
     expect(css).not.toMatch(/opacity\s*:/);
   });
 
-  it('a fonte de destaque (Amsterdam One) só aparece onde foi autorizada: vitrine, rodapé e Em breve', () => {
+  it('a fonte de destaque (Amsterdam One) não é usada em nenhum CSS até a dona indicar onde entra', () => {
     const pasta = new URL('../app/', import.meta.url);
     const achados = [];
     const varrer = (dir) => {
@@ -135,7 +135,8 @@ describe('tipografia (X3)', () => {
       }
     };
     varrer(pasta);
-    expect(achados.sort()).toEqual(['EmBreve.module.css', 'Footer.module.css', 'VitrineProdutos.module.css']);
+    // ao autorizar um uso, listar aqui o arquivo e registrar o lugar no CLAUDE.md
+    expect(achados.sort()).toEqual([]);
   });
 });
 

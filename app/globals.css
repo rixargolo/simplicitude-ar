@@ -34,7 +34,8 @@ body {
   /* tipografia da marca (X3): trocar é mexer só aqui, em app/layout.js e em app/fonts/ */
   --font-display: var(--font-fraunces), Georgia, serif;     /* títulos, nomes de produto, itálico de leitura */
   --font-body: var(--font-assistant), Arial, sans-serif;    /* texto, botões, preços, rótulos */
-  /* só destaque curto em tamanho grande (--tam-destaque); nunca leitura, nomes, preços ou rótulos */
+  /* Amsterdam One, SEM USO por enquanto (a dona vai indicar onde entra). Quando entrar: só destaque
+     curto em tamanho grande (--tam-destaque); nunca leitura, nomes, preços ou rótulos */
   --font-accent: var(--font-amsterdam), var(--font-fraunces), Georgia, serif;
 
   /* escala por papel (X3): código novo usa estes, nunca px/rem soltos */

@@ -8,7 +8,7 @@ carregada por `next/font/local` em `app/layout.js`. Os zips originais ficam em `
 |---|---|---|
 | `fraunces-latin.woff2`, `fraunces-italic-latin.woff2` | Fraunces (variável) | `--font-display`: títulos e nomes de produto |
 | `assistant-400-latin.woff2`, `assistant-600-latin.woff2` | Assistant Regular e SemiBold (estáticas) | `--font-body`: texto, botões, preços, rótulos |
-| `amsterdam-one-latin.woff2` | Amsterdam One 400 (sem o Slant) | `--font-accent`: **só** destaque curto em tamanho grande |
+| `amsterdam-one-latin.woff2` | Amsterdam One 400 (sem o Slant) | `--font-accent`: **sem uso por enquanto**; quando entrar, só destaque curto em tamanho grande (o dono indicará onde) |
 
 **Licenças.** Fraunces e Assistant: SIL Open Font License 1.1 (`OFL-Fraunces.txt`, `OFL-Assistant.txt`;
 uso e redistribuição livres, desde que a licença acompanhe as fontes). **Amsterdam One: o pacote
