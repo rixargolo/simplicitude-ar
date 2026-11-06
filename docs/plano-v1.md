@@ -145,7 +145,7 @@ Seguro, porque o cadastro está desligado, as fatias visuais não escrevem dados
 escreve pelo servidor com service role sem criar policy para anon. Riscos que sobram:
 1. Alguém religar o cadastro no painel → vigia diário (B7).
 2. Policies de anon mal configuradas nas tabelas de pedido/cliente (hoje invisível, tabelas
-   vazias) → conferência de `pg_policies` em B-1 🔒.
+   vazias) → conferência de `pg_policies` em B-1b 🔒.
 3. Criar um 3º usuário no Auth (vira admin pleno) → não criar antes do `is_admin()`.
 4. Senha de admin comprometida → senha forte + MFA, se o plano permitir.
 5. Login de admin pelo preview → `/admin` e `/login` devolvem 404 com a flag de mockups (B4).
@@ -187,11 +187,12 @@ Consequências:
 | A0 | *(depois do ✋)* **Contrato de dados** do carrinho, cotação, checkout e pedido público (seção 4) + Vitest | real | 🔒 | `lib/checkout/contrato.js` com JSDoc, fixtures e `validar*()` usados pelo mock e pela API futura. tdd |
 | A1 | **Infra de preview**: branch `v1`, branch deploy, flag `NEXT_PUBLIC_MOCKUPS`, `noindex`, `/admin` e `/login` em 404 no preview (B3, B4) | real | 🔒 | nenhuma escrita em dados reais. ✅ **Concluído (2026-11-04):** branch deploy da `v1` ativo, envs configuradas no Netlify, verificado em produção e na `v1` |
 | A2 | Tokens por papel (cor + fonte) + Header/Footer: menu **Loja, Bem-estar** (`/meditacao`, rótulo a confirmar), **Bem-fazer, Quem somos, Assinaturas** (logo leva à home; itens definidos em `lib/navegacao.js` com status real/mockup; Bem-fazer e Assinaturas são páginas "Em breve" só no preview, 404 e fora do menu em produção), WhatsApp novo, e-mail, Instagram, **CNPJ, razão social, endereço**; remove `/contato` | real | 🔒🧩 (CNPJ) | ✅ **No código (2026-11-04).** Tokens por papel (`--cor-fundo/texto/destaque/botao/rodape`) preparam o seletor de presets do preview; nomes antigos viram aliases até cada página ser refeita. No preview aparece "CNPJ a confirmar"; em produção a linha some até o dado chegar. Referência vaga da dona (Canva), não especificação. design-taste-frontend |
-| A2b | **Seletor de paleta** do preview: barra no topo (só com `NEXT_PUBLIC_MOCKUPS=1`), presets Azul/Verde/Mix 1/Mix 2 em `lib/paletas.js`, escolha em `?paleta=` + `localStorage`, aplicada antes da 1ª pintura | real | 🔒 | ✅ **No código (2026-11-04).** Fora do bundle de produção (verificado); contraste ≥ 4,5:1 testado por preset. Vitest |
+| A2b | ~~**Seletor de paleta** do preview: barra no topo, presets Azul/Verde/Mix 1/Mix 2 em `lib/paletas.js`, `?paleta=` + `localStorage`~~ | — | — | **Substituído pelo X2 (2026-11-05):** o seletor, os presets e o script inline saíram; a paleta de uso é a verde, direto em `globals.css` |
 | A3 | Home: hero em carrossel (auto, setas/pontos, pausa, `prefers-reduced-motion`) com slides de Loja e Meditação | real | 🔒 | ✅ **No código (2026-11-04).** `HeroCarrossel` (layout "sobreposto"; 2º layout "dividido" é uma entrada em `LAYOUTS` + um bloco de CSS) e `lib/carrossel.js` com Vitest. **Fotos (2026-11-05):** as 4 fotos da dona estão ligadas aos slides (`public/home/hero_slide_{1..4}.webp`, WebP q85 nas dimensões originais, de ~15 MB de PNG para ~1,7 MB; receita no CLAUDE.md). Slide sem foto continua virando placeholder `FotoPendente` no preview e sendo omitido em produção (sem nenhum, o hero não renderiza e a home fica sem `h1`). Check no D2 mantido, para o caso de a dona trocar alguma foto |
 | A4 | Home: vitrine de produtos no layout da dona (B6) com produtos reais | real | 🔒 | **o título depende do critério de ordem (regra de nomes abaixo): com `created_at` a seção se chama "Novidades", nunca "Mais vendidos".** Descrição com fallback `line-clamp` | ✅ **No código (2026-11-04).** `VitrineProdutos` em duas colunas; `lib/vitrine.js` (critério → título) + `getVitrine()`; chips levam a `/loja?categoria=slug` (filtro é o A6) |
 | A5 | Home: seção de categorias logo abaixo da vitrine (substitui o teaser antigo de meditação, já coberto pelo slide do hero e pelo item "Bem-estar" do menu) | real | 🔒 | ✅ **No código (2026-11-05).** Reativado (antes era cortar-se-atrasar). `GradeCategorias`: cartões claros e arredondados no estilo do cartão do hero, tom levemente variado por posição (nome em serifa itálica moderada, descrição de 2 linhas, nº de produtos, pílula "Ver produtos"; 1/2/4 colunas) com dados reais, só de categorias com ≥1 produto ativo de `getCategoriasComProdutos()`, cada um levando a `/loja?categoria=slug` (o filtro é o A6). Só tokens de papel; contraste do texto sobre cada tom testado a 4,5:1 por preset em `tests/paletas.test.js`. **Sem foto por enquanto:** `categorias` não tem `imagem_url`. O componente já aceita `imagem_url` opcional (faixa 16:9 no topo do cartão); **a coluna `categorias.imagem_url` (+ upload no `CategoriaForm`) pertence ao grupo da migration C2** e, criada, basta incluí-la no `select` de `getCategoriasComProdutos()`. A foto em si depende da dona (seção 5). design-taste-frontend |
-| A6 | `/loja` com filtro por chip (`?categoria=slug`) | real | 🔒 | |
+| A6b | Enquadramento das fotos de produto: card em quadro fixo (`--proporcao-produto`) com `cover` + ponto de foco e zoom por produto (`produtos.imagem_foco_x/y`, `imagem_zoom`, `SeletorFoco` no admin, `lib/foco.js`) | real | 🔒 | ✅ **No código (2026-11-05).** Substitui o `contain` + padding do A4. Migrations das 3 colunas em [`supabase/migrations/`](../supabase/migrations/) (`..._produtos_foco_imagem.sql`, `..._produtos_zoom_imagem.sql`), já aplicadas em produção (2026-11-05). A7 reusa `estiloFoto` |
+| A6 | `/loja` com filtro por chip (`?categoria=slug`) | real | 🔒 | ✅ **No código (2026-11-05).** Card compartilhado com a vitrine (`CardProduto`); slug desconhecido = "Todas" (link antigo nunca cai em página vazia); página dinâmica por causa do `searchParams` |
 | A7 | Produto: ficha, preço, estoque, selo de meditação. **Quantidade e "Adicionar ao carrinho" só entram com o A8** | real | 🔒 | rota segue com `slugify` até a coluna `slug` (C2); o backfill gera os mesmos slugs |
 | A8 | Carrinho (`localStorage`, formato do A0, preços lidos do banco) + quantidade/"Adicionar ao carrinho" no A7 | real | 🔒 | depende do A0. Só cliente. tdd |
 | A9 | Checkout (contato, CEP, retirada/regional/transportadora, opções de frete, resumo) | mockup → real em C5 | 🔒 | o submit vai para o mock e abre o pedido falso |
@@ -216,11 +217,39 @@ consumidor, então o título sai do critério de ordem realmente usado, e nunca 
   a ordem sem dado de venda). Isso não bloqueia a virada, só o nome.
 - `destaque_ordem` é criado no C2; antes disso só "Novidades" existe.
 
+### Backlog X — ajustes vindos do feedback da dona (ajuste de 2026-11-05)
+
+**Mudança de rota:** o site vai ao ar primeiro com o botão **Comprar levando ao WhatsApp**; o
+checkout automático (bloco C, A0, A8–A10) fica **para depois do go-live**. Os ajustes que a dona da
+fábrica pedir entram neste backlog "X" (X1, X2…), cada um uma fatia pequena, encaixada na ordem onde
+fizer sentido.
+
+**Nova ordem (ajuste de 2026-11-05):** A1 → A2 → A3/A4/A5 → A6 → **X1 → X2 → X3** → A7 (Comprar →
+WhatsApp) → **X4 → X5 → X6 → X7** → ✋ dona → A11 (legais + Open Graph) → D (go-live sem pagamento) →
+depois: C, A0, A8–A10 (carrinho/checkout). B-1b/B-2 seguem em paralelo. Do D2 sai, por ora, o "pagamento
+real baixo + estorno" (volta quando o C existir).
+
+| # | Item | Situação | Marca | Notas |
+|---|---|---|---|---|
+| X1 | Várias fotos por produto | real | 🔒 | ✅ **No código (2026-11-05).** Tabela `produto_imagens` (ordem, foco/zoom e texto alternativo por foto; a primeira é a principal); `produtos.imagem_url`/`imagem_foco_x/y`/`imagem_zoom` seguem como **cópia da principal** (a `main` e o admin atual só leem/gravam isso, e preview e produção dividem o banco). Admin: `FotosProduto` (enviar várias, subir/descer por botão, tornar principal, excluir também do Storage, ajustar com o `SeletorFoco`). Limites: 8 fotos, JPEG/PNG/WebP, 5 MB (também no bucket). `getFotosDoProduto()` pronta para o A7; **a galeria não entra aqui**. SQL já aplicado em produção (2026-11-05), ver abaixo |
+| X2 | Paleta verde como padrão, sem seletor | real | 🔒 | ✅ **No código (2026-11-05).** `--cor-texto` passa a `#27401e` em `app/globals.css` (verde em texto, destaque, botão e rodapé); o azul fica só como referência em [`docs/paleta-azul.md`](paleta-azul.md) (valores completos, contrastes e a regra nunca azul sobre verde, 1,17:1). **Removido:** `SeletorPaleta` (JS + CSS), `lib/paletas.js` (presets Azul/Verde/Mix 1/Mix 2, `variaveis`, `scriptPaleta`), o script inline e o `?paleta=`/`localStorage` (`simplicitude:paleta`; a chave que ficou no navegador de quem usou o preview é órfã e inofensiva), e os testes do script anti-flash. **Ficou:** build lock `SITE_INDEXAVEL`+`NEXT_PUBLIC_MOCKUPS`, `noindex`, 404 de `/admin`/`/login` no preview e `env.NEXT_PUBLIC_MOCKUPS` fixado em `next.config.mjs`. **Fora:** fontes, tamanhos, layout, seções novas. `tests/paletas.test.js` agora lê os tokens do próprio `globals.css` e exige 4,5:1 em texto/fundo, texto/superfície, destaque/fundo, botão, rodapé e texto suave/fundo. **Exceção aceita pelo dono:** texto suave sobre superfície dá 4,22:1 (selo do admin e letra grande do placeholder de `ApresentacaoProduto`); ajuste mínimo se mudar de ideia: suave a 76% (`#596b4f`, 5,20 e 4,70). `.emBreve` do `MeditacaoPlayer` (suave com `opacity: 0.65`) está em ~2,5:1, já era fraco no azul (2,65:1); revisar no X3/A12 |
+| X3 | Tipografia da marca (Fraunces + Assistant) e escala de tamanhos menor | real | 🔒 | Troca só em `globals.css`, `app/layout.js` e `app/fonts/` (tokens `--font-*`); fontes hospedadas no projeto (não voltar a `next/font/google`). **Vem antes do A7** |
+| X4 | Controle do slider da home: sem pausar/continuar e fundo translúcido | real | 🔒 | `HeroCarrossel`: sai o botão Pausar/Continuar (a pausa por hover, foco e toque fica) e a pílula de controles passa a translúcida; rever o teste de contraste que lê o CSS do hero |
+| X5 | Home: voltar "Quem somos" e "Meditação" e uma seção nova de placeholder entre elas (texto à esquerda, imagem à direita); seções com menos altura | real | 🔒🧩 (texto e imagem do placeholder) | Recuperar as seções do git (o teaser duotone removido em 2026-11-05 ainda está em `app/home.module.css`, sem uso) |
+| X6 | "Novidades" permanente, com curadoria manual no admin | real | 🔒 | Pede coluna/ordem curada (migration em `supabase/migrations/`); respeita a regra de nomes da vitrine (título deriva do critério) |
+| X7 | Categorias com imagem (admin + hover com blur que esmaece) | real | 🔒🧩 (fotos) | `categorias.imagem_url` + upload no `CategoriaForm` (migration; é a coluna prevista no C2) e incluí-la no `select` de `getCategoriasComProdutos()`; `GradeCategorias` já renderiza `imagem_url` |
+
+**SQL do X1** (aplicado em produção em 2026-11-05): migration [`supabase/migrations/20261105181330_produto_imagens.sql`](../supabase/migrations/20261105181330_produto_imagens.sql) (tabela, RLS, limite do bucket) e script de reconciliação [`supabase/scripts/x1_reconciliar_produto_imagens.sql`](../supabase/scripts/x1_reconciliar_produto_imagens.sql) (**rodar de novo no D2**, porque até o go-live a dona edita fotos pelo admin da `main`, que só grava em `produtos`).
+
+**Fora do X1:** galeria em `/loja/[slug]` e Comprar → WhatsApp (A7); arrastar para reordenar; recorte
+ou compressão no navegador; HEIC; apagar a cópia em `produtos.imagem_*`; limite de 8 no banco.
+
 ### Bloco B — Fundação do backend (pode correr em paralelo à aprovação)
 
 | # | Item | Marca | Notas |
 |---|---|---|---|
-| B-1 | Migrations versionadas (`supabase db pull` → `supabase/migrations/0000_baseline.sql`); conferir `pg_policies`: **anon negado em `pedidos`/`pagamentos`/`clientes`/`enderecos`**, além do storage | 🔒🧩 (token Supabase) | wizard |
+| B-1a | Pasta de migrations: `supabase/migrations/` (A6b, A6c, X1) e `supabase/scripts/` (SQL de dados que se repete) + regra no README | — | ✅ **Pronto (2026-11-05).** A6b/A6c reconstruídos (tipo/not null/default conferidos no banco); o resto do schema não tem SQL no repo e fica para o B-1b |
+| B-1b | Baseline do schema (`supabase db pull` → `supabase/migrations/0000_baseline.sql`, precisa de Docker); conferir `pg_policies`: **anon negado em `pedidos`/`pagamentos`/`clientes`/`enderecos`**, além do storage | 🔒🧩 (token Supabase) | wizard |
 | B-2 | Staging: 2º projeto Supabase + baseline + cópia de `produtos`/`categorias`/`colecoes` (dados públicos) | 🔒🧩 | o preview passa a apontar para cá quando o checkout real começar (B4) |
 | B-3 | Vigia do `disable_signup` no GitHub Actions, fora do build (B7) | 🧩 (Actions) | não bloqueia deploy |
 
@@ -240,7 +269,7 @@ consumidor, então o título sai do critério de ordem realmente usado, e nunca 
 | # | Item | Marca | Notas |
 |---|---|---|---|
 | D1 | Preparar o domínio: adicionar no Netlify sem apontar; Resend em `send.simplicitude.com.br` | 🔒🧩 (acesso DNS GoDaddy) | não toca o SPF raiz |
-| D2 | Virada: env de produção, migrations em produção, **inventário físico + `ajuste`**, merge `v1`→`main` (flag desligada; o build falha se algum mockup ficar ligado), **conferir o título da vitrine da home (regra de nomes: nada de "Mais vendidos" sem ordem real da dona)**, **conferir CNPJ/razão social reais no rodapé (a linha "a confirmar" só aparece no preview)**, **conferir que todos os slides do hero têm foto real (hoje têm; se alguma for removida, o slide some em produção e, sem nenhuma, o hero some e a home perde o `h1`)**, `SITE_INDEXAVEL=1`, DNS (B5), SSL, pagamento real baixo + estorno, smoke | 🔒🧩 | security-review |
+| D2 | Virada: env de produção, migrations em produção, **inventário físico + `ajuste`**, **rodar de novo `supabase/scripts/x1_reconciliar_produto_imagens.sql` (reconcilia `produto_imagens` com as fotos editadas pela `main`)**, merge `v1`→`main` (flag desligada; o build falha se algum mockup ficar ligado), **conferir o título da vitrine da home (regra de nomes: nada de "Mais vendidos" sem ordem real da dona)**, **conferir CNPJ/razão social reais no rodapé (a linha "a confirmar" só aparece no preview)**, **conferir que todos os slides do hero têm foto real (hoje têm; se alguma for removida, o slide some em produção e, sem nenhuma, o hero some e a home perde o `h1`)**, `SITE_INDEXAVEL=1`, DNS (B5), SSL, pagamento real baixo + estorno, smoke | 🔒🧩 | security-review |
 
 ### Pós-go-live (ordem sugerida)
 1. `admins` + `is_admin()` + policies + storage só admin. Obrigatório antes de contas de cliente e
@@ -248,14 +277,14 @@ consumidor, então o título sai do critério de ordem realmente usado, e nunca 
 2. Transições de `/admin/pedidos` + e-mail de "enviado" + cancelamento (movimentação `cancelamento`).
 3. `/admin/frete`.
 4. Redesign de `/meditacao`.
-5. Galeria do produto 🧩 (a grade de categorias, A5, já está no código; só as fotos esperam a coluna do C2 e a dona).
+5. Galeria do produto 🧩 (várias fotos: X1 no código; a galeria em si é do A7. A grade de categorias, A5, já está no código; só as fotos dela esperam a coluna do C2 e a dona).
 6. ESLint + CI no GitHub Actions.
 7. **Migração do DNS e do e-mail para fora da GoDaddy** (B5), como mudança separada.
 8. Melhor Envio, WhatsApp, contas de cliente, institucional, NF-e, B2B.
 
 ### Skills por fase
 `design-taste-frontend` (A2–A7, A9–A11) · `tdd` (A0, A8, C2, C3) · `research` (C1) ·
-`codebase-design` (C3) · `security-review` (C3, D2) · `wizard` (B-1, B-2, D1, D2) ·
+`codebase-design` (C3) · `security-review` (C3, D2) · `wizard` (B-1b, B-2, D1, D2) ·
 `grilling` (regras de frete e checkout com a dona) · `code-review`/`ponytail-review` ao fim de
 cada bloco.
 

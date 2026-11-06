@@ -53,9 +53,16 @@ qualquer dependência de plataforma** (Netlify/Supabase).
   não decide meio por faixa de valor.
 - **Entrega:** rota regional (de carro), Bahia toda, Brasil via Correios/transportadora, mais
   retirada. Produção tem ociosidade; já há quem separe e envie.
-- **Marco da 1ª versão pública:** loja completa com checkout InfinitePay no domínio próprio,
-  com CNPJ/endereço no rodapé, privacidade, entrega/trocas e Open Graph. Escopo: Home, Loja,
-  Meditação (o redesign de `/meditacao` fica para depois do go-live).
+- **Marco da 1ª versão pública (rota mudada em 2026-11-05):** loja no domínio próprio com o botão
+  **Comprar levando ao WhatsApp**, CNPJ/endereço no rodapé, privacidade, entrega/trocas e Open
+  Graph. O **checkout InfinitePay (bloco C, A0, A8–A10) fica para depois do go-live**. Escopo: Home,
+  Loja, Meditação (o redesign de `/meditacao` fica para depois do go-live).
+- **Backlog X:** ajustes vindos do feedback da dona da fábrica, em fatias pequenas (X1, X2…), na seção
+  "Backlog X" de [`docs/plano-v1.md`](docs/plano-v1.md). **X1 (várias fotos por produto) e X2 (paleta verde
+  padrão, sem seletor) estão no código.** Próximos, nesta ordem: X3 tipografia da marca (Fraunces +
+  Assistant) e escala menor → A7 → X4 slider da home sem pausar/continuar e com fundo translúcido → X5 home
+  com "Quem somos" e "Meditação" de volta + seção placeholder entre elas → X6 Novidades permanente com
+  curadoria no admin → X7 categorias com imagem (admin + hover com blur).
 - **Decisões vigentes:** checkout como **convidado** (a decisão antiga de login obrigatório
   está superada); vitrine da home com título derivado do critério de ordem — `created_at` = "Novidades",
   `destaque_ordem` curado sem dado de venda = "Favoritos", só ordem real da dona ou histórico de
@@ -69,23 +76,32 @@ qualquer dependência de plataforma** (Netlify/Supabase).
   ativo e envs configuradas no Netlify (`NEXT_PUBLIC_MOCKUPS=1` só nos contextos
   branch-deploy/deploy-preview), verificado em produção e na `v1`. **A2 (tokens + Header/Footer)
   está no código. A3 (hero da home em carrossel) está no código, com as 4 fotos reais ligadas
-  (ver `HeroCarrossel`). A5 (categorias na home) está no código, sem fotos (ver `GradeCategorias`).** Mockups existentes: só `/bem-fazer` e `/assinaturas` ("Em breve"); os de
+  (ver `HeroCarrossel`). A5 (categorias na home) está no código, sem fotos (ver `GradeCategorias`). A6 (`/loja` com filtro por categoria) está no código (ver `CardProduto`).** Mockups existentes: só `/bem-fazer` e `/assinaturas` ("Em breve"); os de
   carrinho/checkout vêm depois — ver a lista priorizada no plano.
-- **Ordem do front:** A1 (preview) → A2 (tokens, header/footer) → A3/A4/A5 (home) → A6/A7 (loja,
-  produto, só leitura) → mostrar o preview à dona; só depois o contrato de dados (A0) e
-  carrinho/checkout/pedido (A8–A10). Na 1ª rodada o produto não tem botão de compra.
+- **Ordem do front:** A1 (preview) → A2 (tokens, header/footer) → A3/A4/A5 (home) → A6 → **X1 (fotos)** →
+  **X2 (paleta verde)** → **X3 (tipografia)** → A7 (produto, Comprar → WhatsApp) → **X4 → X5 → X6 → X7** →
+  mostrar o preview à dona → A11 → go-live (D); o contrato de dados
+  (A0) e carrinho/checkout/pedido (A8–A10, bloco C) ficam para depois do go-live.
 
 ---
 
 ## Paleta e tipografia oficiais
 
 **Paleta oficial da marca:** Bege Background `#f6f3ea`, Azul Simplicitude `#272a5c`, Verde
-Musgo `#27401e`. Em `app/globals.css` vira **tokens por papel** (não por cor), para o seletor de
-presets do preview (`SeletorPaleta`, ver abaixo) trocar a paleta inteira só por variáveis CSS:
-`--cor-fundo` (bege), `--cor-texto` (azul), `--cor-destaque` (verde: nomes de produto, item ativo
-do menu, foco), `--cor-botao`/`--cor-botao-texto`, `--cor-rodape`/`--cor-rodape-texto`, mais
-`--raio-botao` (pílula). Derivados via `color-mix` (seguem o preset sozinhos): `--cor-texto-suave`,
-`--cor-superficie`, `--cor-borda`. **Código novo usa só esses papéis.**
+Musgo `#27401e`. **Paleta de uso (X2, 2026-11-05): a VERDE** — bege de fundo, verde em texto,
+destaque, botão e rodapé. O azul (cor padrão da paleta da marca) **não é usado por enquanto** e
+fica documentado, com todos os valores, em [`docs/paleta-azul.md`](docs/paleta-azul.md). Não há
+seletor de paleta nem troca em tempo de execução: os valores moram direto nos **tokens por papel**
+(não por cor) de `app/globals.css`: `--cor-fundo` (bege), `--cor-texto` (verde), `--cor-destaque`
+(verde: nomes de produto, item ativo do menu, foco), `--cor-botao`/`--cor-botao-texto`,
+`--cor-rodape`/`--cor-rodape-texto`, mais `--raio-botao` (pílula). Derivados via `color-mix`
+(seguem `--cor-texto` sozinhos): `--cor-texto-suave`, `--cor-superficie`, `--cor-borda`. **Código
+novo usa só esses papéis.** Regra de contraste: **nunca azul sobre verde (1,17:1)**; texto de
+botão/rodapé sempre bege. `tests/paletas.test.js` lê os tokens do próprio `globals.css` e exige
+4,5:1 em texto/fundo, texto/superfície, destaque/fundo, botão, rodapé e texto suave/fundo.
+**Exceção conhecida:** `--cor-texto-suave` sobre `--cor-superficie` dá 4,22:1 na verde (só o selo do
+admin e a letra grande do placeholder de `ApresentacaoProduto`), e o `.emBreve` do `MeditacaoPlayer`
+(suave com `opacity: 0.65`) fica em ~2,5:1; decisão de manter o 72% do suave, revisar no X3/A12.
 
 > ⚠️ **Aliases temporários:** `--bg`, `--green`, `--green-nav`, `--brown`, `--caramel`,
 > `--border`, `--cream`, `--cream-name` seguem existindo em `globals.css` só como aliases dos
@@ -164,8 +180,9 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
 - Checkout de **convidado**: exige migration (`pedidos.cliente_id` nullable, campos
   `comprador_*`, `token_acesso`). Cadastro/login de cliente fica para depois da v1; as
   tabelas `clientes`/`enderecos` seguem prontas, sem tela
-- Schema/migrations **não estão versionados no repo** (só existem no painel do Supabase) e
-  não há ambiente de staging — itens B-1/B-2 do plano
+- Baseline do schema (`supabase db pull`, B-1b) **ainda não existe**: o resto do schema só está no
+  painel do Supabase; no repo há só as mudanças desde o A6b, em `supabase/migrations/` (B-1a). Sem
+  ambiente de staging — B-2 do plano
 - **Fotos do hero:** as 4 de `public/home/hero_slide_{1..4}.webp` já estão ligadas aos slides
   (ordem 1→4 = Loja, Bem-estar, Quem somos, Presentes). Se a dona trocar alguma, **receita de
   otimização**: WebP `quality: 85` (`effort: 6`, `smartSubsample: true`) com `sharp` (já está em
@@ -173,8 +190,9 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   mín. 1920×1080, ideal 2400×1350, sem upscale), PSNR ≥ ~38 dB contra o original (a foto 3, com céu,
   precisou de q90). Os PNGs originais ficam em `_DOCS/originais-hero/` (fora do git). Mantém o
   check do D2: todo slide do hero com foto real
+- **X1 (várias fotos):** SQL aplicado em produção em 2026-11-05 (`supabase/migrations/20261105181330_produto_imagens.sql`). **Rodar de novo no D2** o script de reconciliação `supabase/scripts/x1_reconciliar_produto_imagens.sql` (a `main` só grava em `produtos`). Falta a galeria em `/loja/[slug]` (A7)
 - **Foto de categoria:** `categorias` não tem `imagem_url`. A coluna (+ upload no `CategoriaForm`) pertence ao grupo da migration C2 do plano; `GradeCategorias` já renderiza a foto quando o campo vier, falta incluí-lo no `select` de `getCategoriasComProdutos()`. A foto em si depende da dona
-- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, as paletas (inclusive o contraste dos cartões de categoria), o carrossel do hero, o critério/título da vitrine e `getCategoriasComProdutos`). Sem lint nem CI
+- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive hero e cartões de categoria), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `filtrarPorCategoria`, `lib/foco.js` e `lib/fotos.js`). Sem lint nem CI
 - Admin de pedidos
 - **Admin CRUD de coleções** — a tabela `colecoes` existe e é lida (dropdown no formulário
   de produto), mas não há tela de gestão para criá-las/editá-las
@@ -225,7 +243,7 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
 - **`/meditacao`** — hero (faixa de imagem + duotone + listras diagonais + título, no
   padrão de `/quem-somos`) e bloco de introdução da Coleção Inspirar, seguidos da lista de
   produtos com `tem_meditacao=true` via `ApresentacaoProduto` + `MeditacaoPlayer`
-- **`/loja`** — grade de produtos ativos
+- **`/loja`** — `h1` (nome da categoria ativa ou "Loja") + frase, chips de categoria ("Todas" + só categorias com ≥1 produto ativo, `getCategoriasComProdutos()`; rolam na horizontal no celular, quebram linha a partir de 900px) e grade de `CardProduto` (2 colunas no celular). Filtro por `?categoria=slug`, no servidor (`searchParams`, links `<Link>`, funciona sem JS). **Slug desconhecido, vazio ou repetido = "Todas"** (`filtrarPorCategoria`), nunca página vazia. Zero produtos ativos → frase de estado vazio com link para `/quem-somos`. A página é dinâmica (`ƒ`) por causa do `searchParams`
 - **`/loja/[slug]`** — detalhe do produto (slug calculado em memória, não é coluna do
   banco)
 - **`/bem-fazer`**, **`/assinaturas`** — mockups "Em breve" (`EmBreve`); só existem com
@@ -277,13 +295,6 @@ Cada um com `*.module.css` co-locado.
   "Menu"/"Fechar". **`Footer`** — campo `--cor-rodape` com logo, lema, contatos (WhatsApp via
   `wa.me`), links do mesmo `itensMenu()` e linha legal (CNPJ só no preview).
 - **`EmBreve`** — página mockup "Em breve" com botão pílula para `/loja`
-- **`SeletorPaleta`** (`'use client'`) — barra fina no topo com select de paleta, só com
-  `NEXT_PUBLIC_MOCKUPS=1`. Troca as variáveis no `<html>`, grava no `localStorage` e atualiza
-  `?paleta=` na URL (`replaceState`) para o link já levar a versão. A comparação com a env é
-  **literal** dentro do componente de propósito: é o que faz o Next descartar o seletor e os
-  presets do bundle de produção. Só funciona porque `next.config.mjs` fixa `env.NEXT_PUBLIC_MOCKUPS`
-  (`''` se ausente): sem a env definida o Next não inlina e o código vaza para o bundle (verificado;
-  chamar `mockupsLigados()` também não bastava). Conferir com `grep -rF rodapeTexto .next/static` num build sem a flag
 - **`LogoAnimado`** (`'use client'`) — usado dentro do `<Link href="/">` do `Header` no
   lugar do `<Image>` direto da wordmark. Na **1ª carga da Home (`/`) em cada sessão do
   navegador**, toca uma animação de "escrita à mão" (traçado sequencial via
@@ -294,8 +305,8 @@ Cada um com `*.module.css` co-locado.
   os paths estão embutidos no componente); ao terminar, faz crossfade para a wordmark estática, que é a base já
   renderizada por baixo o tempo todo. **A base é um `<span role="img" aria-label="Simplicitude">`
   com `mask` do `/marca/logo-simplicitude-677w.png` + `background: currentColor`** (o PNG tem
-  alpha), e os traços do SVG usam `stroke="currentColor"`: a logo acompanha `--cor-texto` e os
-  presets de paleta. O `Footer` usa a mesma máscara. Decide
+  alpha), e os traços do SVG usam `stroke="currentColor"`: a logo acompanha `--cor-texto`.
+  O `Footer` usa a mesma máscara. Decide
   se anima checando, nessa ordem, `pathname !== '/'`,
   `matchMedia('(prefers-reduced-motion: reduce)')` e a chave de
   **`sessionStorage`** `simplicitude:logoAnimada` (**primeiro uso de `sessionStorage` no
@@ -344,16 +355,22 @@ Cada um com `*.module.css` co-locado.
   `--cor-botao*`: pares já testados em `tests/paletas.test.js`).
 - **`FotoPendente`** — placeholder reutilizável de espaço de foto (prop `especificacao`; preenche o
   pai posicionado; fundo `--cor-destaque` com texto `--cor-fundo`, para contrastar com o cartão
-  claro do hero; par já testado a 4,5:1 por preset). Usado pelo hero quando o slide não tem `imagem`; quem
+  claro do hero; par já testado a 4,5:1). Usado pelo hero quando o slide não tem `imagem`; quem
   usa decide não renderizá-lo em produção.
 - **`VitrineProdutos`** (`'use client'`) — vitrine da home em duas colunas. Props `titulo`,
   `produtos`, `categorias`. Esquerda: `h2` "{titulo} *da floresta*", chips (`categorias.slug` →
-  `/loja?categoria=slug`; o filtro só funciona na loja no A6) e botão "Ver toda a loja". Direita:
+  `/loja?categoria=slug`) e botão "Ver toda a loja". Direita:
   carrossel scroll-snap que vai até a borda da tela (próximo card cortado), setas no desktop e
-  toque no celular (≤900px a intro vira cabeçalho). Card: imagem em proporção fixa 4:5 com
-  `object-fit: contain` sobre `--cor-superficie` (fotos quadradas e em retrato ficam uniformes,
-  sem corte), categoria (**sempre**, ignora `mostrar_categoria_no_titulo`), nome, `descricao`
-  em 2 linhas (`line-clamp`; vira `descricao_curta` no C2) e preço. Só papéis `--cor-*`.
+  toque no celular (≤900px a intro vira cabeçalho). Cada card é um `CardProduto`
+  (`className={styles.slide}` só dimensiona no trilho). Só papéis `--cor-*`.
+- **`CardProduto`** (server-safe, sem `'use client'`) — card de produto compartilhado por `VitrineProdutos` e
+  `/loja`. Props `produto`, `sizes`, `className` (no `<Link>`), `Titulo` (`h3` padrão; a loja passa `h2`). Foto em
+  quadro de proporção fixa (`--proporcao-produto` em `globals.css`, 0.8 = 4:5; é o único lugar da proporção, a
+  seta da vitrine também a usa) preenchido com `object-fit: cover` e enquadrado por
+  `style={estiloFoto(produto.imagem_foco_x, produto.imagem_foco_y, produto.imagem_zoom)}` (ponto de foco + zoom por
+  produto; sem ajuste = centro e 100%). A página de produto (A7) deve usar o mesmo `estiloFoto`. Selo "Esgotado" (`estoque === 0`), categoria (**sempre**, ignora
+  `mostrar_categoria_no_titulo`), nome, `descricao` em 2 linhas (`line-clamp`; vira `descricao_curta` no C2) e preço.
+  Link para `/loja/[slug]`. Só papéis `--cor-*`
   Usado em `app/page.js` logo abaixo do hero, alimentado por `getVitrine()` e
   `getCategoriasComProdutos()`
 - **`GradeCategorias`** (server component) — seção "Escolha por categoria" da home, abaixo da
@@ -364,8 +381,8 @@ Cada um com `*.module.css` co-locado.
   `::after` cobrindo o cartão (foco por `:has(.link:focus-visible)`). Celular primeiro: 1 coluna;
   ≥640px 2; ≥1100px 4. O tom de fundo varia por posição (`--cartao-fundo` = `color-mix` de
   `--cor-texto`/`--cor-destaque` sobre `--cor-fundo`, 4 tons); **`tests/paletas.test.js` lê essas
-  misturas do CSS e exige 4,5:1 de `--cor-texto` sobre cada tom em todo preset** — tom novo precisa
-  usar papéis-base de `lib/paletas.js`. Só aparece categoria com ≥1 produto ativo (join
+  misturas do CSS e exige 4,5:1 de `--cor-texto` sobre cada tom** — tom novo precisa
+  usar papéis-base de `app/globals.css`. Só aparece categoria com ≥1 produto ativo (join
   `produtos!inner` em `getCategoriasComProdutos()`). `imagem_url` opcional vira faixa 16:9 no topo do
   cartão (hoje nunca vem; ver pendência de foto de categoria/C2)
 - **`MeditacaoPlayer`** (`'use client'`) — player de áudio da meditação guiada
@@ -404,19 +421,11 @@ Fonte única do menu (Header e Footer): array com `href`, `rotulo` e `status` (`
 com `NEXT_PUBLIC_MOCKUPS=1` e, sem a flag, só os que têm `imagem`. Cobertos em
 `tests/carrossel.test.js`.
 
-### Paletas do preview — `lib/paletas.js`
-
-`PALETAS` (azul = padrão da dona; verde, monocromático; mix1 e mix2, inversos entre si): um preset por entrada, com os 7 papéis-base
-(fundo, texto, destaque, botão, botaoTexto, rodapé, rodapeTexto); preset novo = uma entrada.
-Regra: nunca azul sobre verde (1,17:1), texto de botão/rodapé sempre bege; `tests/paletas.test.js`
-exige 4,5:1 de todo preset. `variaveis(chave)` mapeia preset → variáveis CSS; `scriptPaleta()`
-devolve o script inline do `<body>` (`app/layout.js`) que aplica a paleta no `<html>` antes da
-1ª pintura — prioridade `?paleta=` → `localStorage` (`simplicitude:paleta`) → padrão, inválido
-cai no padrão — e é `null` sem `NEXT_PUBLIC_MOCKUPS=1` (então `?paleta` é ignorado em produção).
-
 ### Storefront — `lib/produtos.js`
 
-- `getProdutos()` — `select('*, categorias(nome)')` onde `ativo=true`
+- `getProdutos()` — `select('*, categorias(nome, slug)')` onde `ativo=true`
+- `filtrarPorCategoria(produtos, categorias, slug)` — `{ ativa, produtos }`; `slug` que não esteja em
+  `categorias` (desconhecido, vazio, array) → `ativa: null` e todos os produtos ("Todas"). Usada em `/loja`
 - `getVitrine(criterio = CRITERIO_VITRINE, limite = 8)` — `{ titulo, produtos }`: produtos
   ativos ordenados pela coluna do critério e o título que deriva dele. Critérios em
   **`lib/vitrine.js`** (`novidades`/`created_at`, `favoritos` e `maisVendidos`/`destaque_ordem`,
@@ -431,9 +440,36 @@ cai no padrão — e é `null` sem `NEXT_PUBLIC_MOCKUPS=1` (então `?paleta` é 
 - `slugify(nome)`, `getProdutoBySlug(slug)` — não há coluna `slug` em `produtos`; o match
   é feito em memória sobre `getProdutos()`
 
+### Foco da foto — `lib/foco.js`
+
+`normalizarFoco(v)` (inteiro 0–100; nulo/vazio/NaN/texto → 50, fora da faixa é limitado), `normalizarZoom(v)`
+(inteiro 100–200; inválido → 100), `focoParaCss(x, y)` (`"30% 70%"`) e **`estiloFoto(x, y, zoom)`**, a porta única
+do enquadramento das fotos de produto: devolve `object-position` e, com zoom > 100, `transform: scale(z)` com
+`transform-origin` no próprio ponto de foco (o ponto fica parado e o resto se aproxima; nunca sobra vazio, o quadro
+corta com `overflow: hidden`). Rotação foi descartada de propósito (cantos vazios; endireitar a foto antes do
+upload). No admin, o `SeletorFoco` (`app/admin/produtos/SeletorFoco.js`, dentro do `ProdutoForm`) edita foco e zoom:
+clique/arrasto na foto (ponteiro, funciona com o dedo), três deslizantes (Horizontal, Vertical, Zoom; teclado),
+"Centralizar" (só a posição) e prévia no quadro do card; foto nova volta ao centro e 100%. Cobertos em
+`tests/foco.test.js`.
+
+### Fotos do produto (X1) — `lib/fotos.js`
+
+Várias fotos por produto na tabela `produto_imagens`; a primeira por `ordem` é a principal. Funções puras
+(testadas em `tests/fotos.test.js`): `ordenarFotos`, `fotosDoProduto(produto, linhas, urlDe)` (sem linhas cai em
+`produtos.imagem_url`, então produto nunca fica sem foto), `mover`, `tornarPrincipal`, `validarArquivos`
+(limites `MAX_FOTOS = 8`, `TAMANHO_MAX` 5 MB, `TIPOS_ACEITOS` JPEG/PNG/WebP; o bucket impõe o mesmo) e
+`caminhoDaUrl`. **`getFotosDoProduto(produto)`** (`lib/produtos.js`) entrega `[{ caminho, url, alt, foco_x, foco_y,
+zoom }]` para a galeria do A7 (usar `estiloFoto(foco_x, foco_y, zoom)`). **`produtos.imagem_url` /
+`imagem_foco_x/y` / `imagem_zoom` continuam como CÓPIA da principal**, regravada pelo `ProdutoForm` a cada
+salvar: o card da home/loja, `/meditacao`, a lista do admin e a branch `main` (que só conhece essas colunas)
+seguem funcionando sem mudança. No admin, `FotosProduto` (`app/admin/produtos/`) lista as fotos com botões
+Subir/Descer/Tornar principal/Ajustar/Excluir (teclado e celular, sem arrastar) e reusa o `SeletorFoco` por
+foto; `salvarFotos()` (no `ProdutoForm`) envia para `{produto_id}/{uuid}.{ext}`, grava as linhas, atualiza a cópia e só
+então apaga do Storage as excluídas.
+
 ### Admin — `lib/admin/produtos.js`, `lib/admin/categorias.js`, `lib/admin/estoque.js`
 
-- `getAllProdutos()`, `getProdutoById(id)`, `getColecoes()`, `getCategorias()`
+- `getAllProdutos()`, `getProdutoById(id)` (com `produto_imagens(*)`), `getColecoes()`, `getCategorias()`
 - `getAllCategorias()`, `getCategoriaById(id)`
 - `getProdutosComEstoque()` — `{ produtos, colecoes }`, todos os produtos (ativos e
   inativos) com estoque atual + coleções para exibir o nome
@@ -452,9 +488,16 @@ cai no padrão — e é `null` sem `NEXT_PUBLIC_MOCKUPS=1` (então `?paleta` é 
 - **`produtos`** — `id`, `nome`, `descricao`, `atributos`, `peso_gramas`,
   `preco_centavos` (inteiro, centavos), `colecao_id` (FK, nullable), `categoria_id` (FK,
   nullable), `mostrar_categoria_no_titulo` (bool), `tem_meditacao` (bool), `audio_url`,
-  `ativo` (bool), `imagem_url`, `estoque` (nullable — mantido pela trigger, nunca por
+  `ativo` (bool), `imagem_url`, `imagem_foco_x`/`imagem_foco_y` (smallint not null, 0–100, default 50, `check`;
+  ponto de foco da foto), `imagem_zoom` (smallint not null, 100–200, default 100, `check`) — migrations em
+  `supabase/migrations/` (`..._produtos_foco_imagem.sql`, `..._produtos_zoom_imagem.sql`), ver `lib/foco.js` —, `estoque` (nullable — mantido pela trigger, nunca por
   `UPDATE` da aplicação), `created_at` (usado por `getVitrine()` para ordenar a
   vitrine da home, critério "Novidades")
+- **`produto_imagens`** (X1; migration `supabase/migrations/20261105181330_produto_imagens.sql`) — `id` (uuid), `produto_id` (FK
+  `produtos`, `on delete cascade`), `caminho` (no bucket `produtos`, `unique (produto_id, caminho)`), `ordem`
+  (menor = antes; a primeira é a principal), `foco_x`/`foco_y` (0–100, default 50), `zoom` (100–200, default
+  100), `alt` (opcional), `created_at`. RLS: leitura pública (`anon`) só de produto ativo; escrita para
+  `authenticated` (mesmo modelo das demais, ver pendência de segurança #1). `produtos.imagem_*` é a cópia da principal
 - **`categorias`** — `id`, `nome`, `slug`, `descricao` — tipo do produto, usado como
   rótulo de exibição (ex.: "Chocolate", "Combo"). Sem `imagem_url` ainda (planejada no C2)
 - **`colecoes`** — `id`, `nome`, `slug`, `descricao` — linha de marketing/produto (ex.:
@@ -500,8 +543,9 @@ checkout):**
   a linha vigente é a mais recente por `created_at`. Ver pendência de segurança #3 sobre
   como isso deve ser escrito quando o checkout existir.
 
-- **Storage**: bucket `produtos`, caminho `{produto_id}/principal.{ext}`, URL pública com
-  cache-buster `?v={timestamp}`
+- **Storage**: bucket `produtos` (limite de 5 MB e só JPEG/PNG/WebP, definido no SQL do X1), caminho
+  `{produto_id}/{uuid}.{ext}` nas fotos novas (nome único, sem cache-buster); fotos antigas ficam em
+  `{produto_id}/principal.{ext}` (com `?v=` em `imagem_url`). URL pública
 
 ---
 
@@ -541,6 +585,11 @@ implementado — ver pendência de segurança #3.
   comparação estrita — `estoque` é nullable e `null` significa "não controlado", não deve
   virar "Esgotado"
 - **Sem TypeScript** — projeto é JavaScript puro
+- **Mudança de banco = arquivo novo em `supabase/migrations/`** (`AAAAMMDDHHMMSS_descricao.sql`, com
+  cabeçalho "o que faz, fatia, já aplicado em produção em <data>", reexecutável). **Nunca editar um
+  arquivo já aplicado**; o Code entrega o SQL nesse formato junto com a fatia. SQL de dados que se
+  repete (ex.: reconciliação do X1 no D2) vai em `supabase/scripts/`, não é migration. Regras em
+  `supabase/migrations/README.md`
 - **Sem server actions / API routes** para as operações de admin atuais — escrita direto
   nas tabelas via client browser autenticado, protegida por RLS. **Exceção já prevista:**
   quando o checkout for implementado, criação de registros em `pagamentos` e
@@ -563,7 +612,9 @@ implementado — ver pendência de segurança #3.
   `noindex`). **O build aborta se as duas estiverem juntas** (trava em `next.config.mjs`).
   Sem `SITE_INDEXAVEL=1` toda rota sai com `X-Robots-Tag: noindex, nofollow`.
 - `next.config.mjs` — `images.remotePatterns` liberando o host do Storage do Supabase;
-  `poweredByHeader: false`; headers de segurança em todas as rotas (CSP com
+  `poweredByHeader: false`; `env.NEXT_PUBLIC_MOCKUPS` **fixado** (`''` se ausente, coberto em
+  `tests/paletas.test.js`): sem isso o Next não inlina a env no client e o código de mockup não é
+  descartado do bundle de produção; headers de segurança em todas as rotas (CSP com
   `frame-ancestors 'none'`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy`,
   `nosniff`) — a CSP libera só o Storage do Supabase e precisará liberar a InfinitePay quando
   o checkout existir

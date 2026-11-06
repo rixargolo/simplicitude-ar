@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import Image from 'next/image';
-import { getProdutos, slugify, rotuloCategoria } from '@/lib/produtos';
+import { getProdutos, getCategoriasComProdutos, filtrarPorCategoria } from '@/lib/produtos';
+import CardProduto from '../components/CardProduto';
 import styles from './loja.module.css';
 
 export const metadata = {
@@ -9,79 +9,69 @@ export const metadata = {
     'Chocolates artesanais Simplicitude — Da Floresta à Fábrica.',
 };
 
-const formatBRL = (centavos) =>
-  new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  }).format(centavos / 100);
+const FRASE_PADRAO = 'Chocolate da floresta, feito à mão no Sul da Bahia.';
 
-export default async function LojaPage() {
-  const produtos = await getProdutos();
+export default async function LojaPage({ searchParams }) {
+  const { categoria } = await searchParams;
+  const [todos, categorias] = await Promise.all([getProdutos(), getCategoriasComProdutos()]);
+  // slug desconhecido cai em "Todas" (ver filtrarPorCategoria)
+  const { ativa, produtos } = filtrarPorCategoria(todos, categorias, categoria);
 
   return (
-    <main>
-      <section className={styles.section}>
-        <h1 className={styles.sectionTitle}>Loja</h1>
+    <main className={styles.section}>
+      <header className={styles.cabecalho}>
+        <h1 className={styles.titulo}>{ativa ? ativa.nome : 'Loja'}</h1>
+        <p className={styles.frase}>{ativa?.descricao || FRASE_PADRAO}</p>
+      </header>
 
-        {produtos.length === 0 ? (
-          <p className={styles.empty}>
-            Nenhum produto disponível no momento.
-          </p>
-        ) : (
-          <div className={styles.grid}>
-            {produtos.map((produto) => {
-              const rotulo = rotuloCategoria(produto);
-              return (
+      {categorias.length > 0 && (
+        <nav aria-label="Categorias" className={styles.filtro}>
+          <ul className={styles.chips}>
+            <li>
+              <Link
+                href="/loja"
+                className={styles.chip}
+                aria-current={ativa ? undefined : 'page'}
+              >
+                Todas
+              </Link>
+            </li>
+            {categorias.map((c) => (
+              <li key={c.slug}>
                 <Link
-                  key={produto.id}
-                  href={`/loja/${slugify(produto.nome)}`}
-                  className={styles.card}
+                  href={`/loja?categoria=${c.slug}`}
+                  className={styles.chip}
+                  aria-current={ativa?.slug === c.slug ? 'page' : undefined}
                 >
-                  {produto.imagem_url ? (
-                    <div className={styles.cardImgWrap}>
-                      <Image
-                        src={produto.imagem_url}
-                        alt={produto.nome}
-                        fill
-                        sizes="(max-width: 640px) 100vw, 300px"
-                        className={styles.cardImg}
-                      />
-                      {produto.estoque === 0 && (
-                        <span className={styles.esgotado}>Esgotado</span>
-                      )}
-                    </div>
-                  ) : (
-                    <div className={styles.imgPlaceholder} aria-hidden="true">
-                      {produto.nome.charAt(0)}
-                      {produto.estoque === 0 && (
-                        <span className={styles.esgotado}>Esgotado</span>
-                      )}
-                    </div>
-                  )}
-
-                  <div className={styles.cardBody}>
-                    {rotulo && (
-                      <span className={styles.cardColecao}>{rotulo}</span>
-                    )}
-                    <h2 className={styles.cardTitle}>{produto.nome}</h2>
-                    <p className={styles.cardDescricao}>
-                      {produto.descricao}
-                    </p>
-                    <div className={styles.cardMeta}>
-                      <span className={styles.cardPeso}>
-                        {produto.peso_gramas} g
-                      </span>
-                      <span className={styles.cardPreco}>
-                        {formatBRL(produto.preco_centavos)}
-                      </span>
-                    </div>
-                  </div>
+                  {c.nome}
                 </Link>
-              );
-            })}
-          </div>
-        )}
-      </section>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
+
+      {produtos.length === 0 ? (
+        <p className={styles.vazio}>
+          A floresta está preparando a próxima colheita. Volte em breve — ou{' '}
+          <Link href="/quem-somos" className={styles.vazioLink}>
+            conheça a nossa história
+          </Link>
+          .
+        </p>
+      ) : (
+        <ul className={styles.grade}>
+          {produtos.map((produto) => (
+            <li key={produto.id}>
+              <CardProduto
+                produto={produto}
+                Titulo="h2"
+                sizes="(max-width: 640px) 50vw, (max-width: 1100px) 33vw, 18rem"
+              />
+            </li>
+          ))}
+        </ul>
+      )}
     </main>
   );
 }

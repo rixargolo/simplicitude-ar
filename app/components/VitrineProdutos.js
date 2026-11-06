@@ -2,15 +2,8 @@
 
 import { useRef } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { slugify } from '@/lib/produtos';
+import CardProduto from './CardProduto';
 import styles from './VitrineProdutos.module.css';
-
-const formatBRL = (centavos) =>
-  new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  }).format(centavos / 100);
 
 // Vitrine da home: à esquerda título (derivado do critério de ordem, ver lib/vitrine.js),
 // chips de categoria e link para a loja; à direita, carrossel scroll-snap que vai até a
@@ -64,37 +57,12 @@ export default function VitrineProdutos({ titulo, produtos, categorias = [] }) {
 
         <div className={styles.track} ref={trackRef}>
           {produtos.map((produto) => (
-            <Link
+            <CardProduto
               key={produto.id}
-              href={`/loja/${slugify(produto.nome)}`}
+              produto={produto}
               className={styles.slide}
-            >
-              <div className={styles.slideImgWrap}>
-                {produto.imagem_url ? (
-                  <Image
-                    src={produto.imagem_url}
-                    alt={produto.nome}
-                    fill
-                    sizes="(max-width: 900px) 70vw, 18rem"
-                    className={styles.slideImg}
-                  />
-                ) : (
-                  <span className={styles.inicial} aria-hidden="true">
-                    {produto.nome.charAt(0)}
-                  </span>
-                )}
-                {produto.estoque === 0 && <span className={styles.esgotado}>Esgotado</span>}
-              </div>
-
-              <div className={styles.slideBody}>
-                {produto.categorias?.nome && (
-                  <span className={styles.categoria}>{produto.categorias.nome}</span>
-                )}
-                <h3 className={styles.slideTitle}>{produto.nome}</h3>
-                {produto.descricao && <p className={styles.descricao}>{produto.descricao}</p>}
-                <span className={styles.slidePreco}>{formatBRL(produto.preco_centavos)}</span>
-              </div>
-            </Link>
+              sizes="(max-width: 900px) 70vw, 18rem"
+            />
           ))}
         </div>
 

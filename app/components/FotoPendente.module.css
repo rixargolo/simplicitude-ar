@@ -6,7 +6,7 @@
   justify-content: center;
   padding: 24px;
   /* campo escuro de cor (não um tom do fundo): destaca-se do cartão claro do hero.
-     Par destaque/fundo já exigido a 4,5:1 em todo preset (tests/paletas.test.js) */
+     Par destaque/fundo já exigido a 4,5:1 (tests/paletas.test.js) */
   background: var(--cor-destaque);
   color: var(--cor-fundo);
 }

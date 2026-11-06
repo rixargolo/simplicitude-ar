@@ -102,20 +102,6 @@ select.input:focus {
   accent-color: var(--green);
 }
 
-.imgPreviewWrap {
-  position: relative;
-  width: 96px;
-  height: 96px;
-  border-radius: 4px;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  margin-bottom: 4px;
-}
-
-.imgPreview {
-  object-fit: cover;
-}
-
 .erro {
   font-family: var(--font-body);
   font-size: 0.9rem;
