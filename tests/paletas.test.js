@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 afterEach(() => vi.unstubAllEnvs());
@@ -70,8 +70,8 @@ describe('contraste', () => {
       'destaque/fundo': ['--cor-destaque', '--cor-fundo'],
       'botão': ['--cor-botao-texto', '--cor-botao'],
       'rodapé': ['--cor-rodape-texto', '--cor-rodape'],
-      // texto suave/superfície (4,22) fica de fora de propósito: só aparece no selo do admin e
-      // na letra grande do placeholder de ApresentacaoProduto (decisão do X2, ver plano-v1)
+      // texto suave/superfície (4,22) fica de fora de propósito: só aparece no selo do admin
+      // (decisão do X2, ver plano-v1)
       'texto suave/fundo': ['--cor-texto-suave', '--cor-fundo'],
     };
     for (const [nome, [frente, fundo]] of Object.entries(pares)) {
@@ -81,8 +81,11 @@ describe('contraste', () => {
 
   it('texto do cartão translúcido do hero cumpre 4,5:1 mesmo com foto preta ou branca por trás', () => {
     // o percentual vem do próprio CSS: mudar a opacidade lá é conferido aqui
+    // ancorado no bloco do cartão: a pílula dos controles também usa um color-mix translúcido
     const css = ler('../app/components/HeroCarrossel.module.css');
-    const m = css.match(/color-mix\(in srgb, var\(--cor-fundo\) (\d+)%, transparent\)/);
+    const m = css.match(
+      /\.sobreposto \.cartao\s*\{[^}]*?color-mix\(in srgb, var\(--cor-fundo\) (\d+)%, transparent\)/,
+    );
     expect(m, 'cartão sem color-mix de --cor-fundo').not.toBeNull();
     const alfa = Number(m[1]) / 100;
     const t = tokens();
@@ -112,6 +115,31 @@ describe('contraste', () => {
         `texto sobre ${cor} ${pct * 100}% + ${base}`,
       ).toBeGreaterThanOrEqual(4.5);
     }
+  });
+});
+
+describe('tipografia (X3)', () => {
+  const semComentarios = (css) => css.replace(/\/\*[\s\S]*?\*\//g, '');
+
+  it('MeditacaoPlayer não usa opacity (ela derrubava "áudio guiado" para ~2:1)', () => {
+    const css = semComentarios(ler('../app/components/MeditacaoPlayer.module.css'));
+    expect(css).not.toMatch(/opacity\s*:/);
+  });
+
+  it('a fonte de destaque (Amsterdam One) não é usada em nenhum CSS até a dona indicar onde entra', () => {
+    const pasta = new URL('../app/', import.meta.url);
+    const achados = [];
+    const varrer = (dir) => {
+      for (const e of readdirSync(dir, { withFileTypes: true })) {
+        const caminho = new URL(e.name + (e.isDirectory() ? '/' : ''), dir);
+        if (e.isDirectory()) varrer(caminho);
+        else if (e.name.endsWith('.css') && e.name !== 'globals.css' &&
+          /var\(--font-accent\)/.test(readFileSync(caminho, 'utf8'))) achados.push(e.name);
+      }
+    };
+    varrer(pasta);
+    // ao autorizar um uso, listar aqui o arquivo e registrar o lugar no CLAUDE.md
+    expect(achados.sort()).toEqual([]);
   });
 });
 

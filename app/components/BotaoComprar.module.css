@@ -1,0 +1,29 @@
+.botao {
+  position: relative;
+  display: inline-block;
+  padding: 14px 28px;
+  border-radius: var(--raio-botao);
+  background: var(--cor-botao);
+  color: var(--cor-botao-texto);
+  font-family: var(--font-body);
+  font-size: var(--tam-pequeno);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.botao:focus-visible {
+  outline: 2px solid var(--cor-destaque);
+  outline-offset: 3px;
+}
+
+/* só para leitor de tela */
+.aviso {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

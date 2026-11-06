@@ -134,13 +134,6 @@ export default function HeroCarrossel({ slides, layout = 'sobreposto' }) {
           >
             ›
           </button>
-          <button
-            type="button"
-            className={styles.pausa}
-            onClick={() => dispatch({ tipo: 'alternarPausa' })}
-          >
-            {estado.pausado ? 'Continuar' : 'Pausar'}
-          </button>
         </div>
       )}
     </section>

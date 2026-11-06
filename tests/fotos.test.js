@@ -19,6 +19,13 @@ describe('caminhoDaUrl', () => {
     expect(caminhoDaUrl(`${BASE}abc/principal.jpg`)).toBe('abc/principal.jpg');
   });
 
+  it('só reconhece o bucket pedido (padrão produtos)', () => {
+    const cat = 'https://x.supabase.co/storage/v1/object/public/categorias/id1/f.webp';
+    expect(caminhoDaUrl(cat, 'categorias')).toBe('id1/f.webp');
+    expect(caminhoDaUrl(cat)).toBeNull();
+    expect(caminhoDaUrl(`${BASE}abc/principal.jpg`, 'categorias')).toBeNull();
+  });
+
   it.each([[null], [undefined], [''], ['https://outro.com/foto.jpg'], [`${BASE}`]])('%s vira null', (v) => {
     expect(caminhoDaUrl(v)).toBeNull();
   });

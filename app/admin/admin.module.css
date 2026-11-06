@@ -17,9 +17,9 @@
 
 .brand {
   display: block;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
-  font-size: 1.05rem;
+  font-size: var(--tam-texto);
   letter-spacing: 0.06em;
   color: var(--bg);
   margin-bottom: 24px;
@@ -34,9 +34,9 @@
 
 .navLink {
   display: block;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: var(--tam-pequeno);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--cream-name);
@@ -112,14 +112,14 @@
 
 .title {
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.6rem;
+  font-weight: 500;
+  font-size: var(--tam-subtitulo);
   color: var(--green);
 }
 
 .welcome {
   font-family: var(--font-body);
-  font-size: 1.1rem;
+  font-size: var(--tam-texto);
   color: var(--brown);
   max-width: 480px;
 }
@@ -134,7 +134,7 @@
 
 .atalho {
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: var(--tam-pequeno);
   color: var(--green);
   background: #fff;
   border: 1px solid var(--border);

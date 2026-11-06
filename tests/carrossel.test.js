@@ -42,7 +42,7 @@ describe('índice do carrossel', () => {
 });
 
 describe('pausa', () => {
-  it('tick não avança com a pausa explícita (botão ou toque)', async () => {
+  it('tick não avança com a pausa explícita (toque)', async () => {
     const { reducer } = await carregar('');
     const s = reducer(inicio(3), { tipo: 'alternarPausa' });
     expect(s.pausado).toBe(true);

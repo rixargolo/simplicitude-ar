@@ -15,19 +15,17 @@
 
 .title {
   font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-weight: 500;
   color: var(--green);
-  font-size: 1.4rem;
-  text-transform: uppercase;
+  font-size: var(--tam-subtitulo);
 }
 
 .novoLink {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  font-size: var(--tam-pequeno);
   background: var(--green);
   color: var(--bg);
   padding: 12px 22px;
@@ -43,7 +41,7 @@
 
 .empty {
   font-family: var(--font-body);
-  font-size: 1.05rem;
+  font-size: var(--tam-texto);
   color: var(--brown);
 }
 
@@ -57,17 +55,17 @@
   width: 100%;
   border-collapse: collapse;
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: var(--tam-pequeno);
   min-width: 560px;
 }
 
 .table th {
   text-align: left;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  font-size: 0.75rem;
+  font-size: var(--tam-rotulo);
   color: var(--brown);
   padding: 14px 16px;
   background: var(--cream);
@@ -86,7 +84,7 @@
 }
 
 .nome {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   color: var(--green-nav);
 }
@@ -100,7 +98,7 @@
 
 .editarLink {
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: var(--tam-pequeno);
   color: var(--caramel);
   text-decoration: none;
   border-bottom: 1px solid transparent;

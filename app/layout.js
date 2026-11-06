@@ -4,34 +4,36 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import SiteChrome from './components/SiteChrome';
 
-// Fontes hospedadas no projeto (app/fonts, subconjunto latin, variáveis): o build não
-// depende do Google Fonts, que já derrubou o build no Netlify. Ver app/fonts/LEIA-ME.md.
-const cinzel = localFont({
-  src: './fonts/cinzel-latin.woff2',
-  weight: '400 900',
-  variable: '--font-cinzel',
+// Fontes hospedadas no projeto (app/fonts, subconjunto latin): o build não depende do
+// Google Fonts, que já derrubou o build no Netlify. Ver app/fonts/LEIA-ME.md.
+const fraunces = localFont({
+  src: [
+    { path: './fonts/fraunces-latin.woff2', weight: '300 700', style: 'normal' },
+    { path: './fonts/fraunces-italic-latin.woff2', weight: '300 700', style: 'italic' },
+  ],
+  variable: '--font-fraunces',
   display: 'swap',
   adjustFontFallback: 'Times New Roman',
 });
 
-const ebGaramond = localFont({
+const assistant = localFont({
   src: [
-    { path: './fonts/eb-garamond-latin.woff2', weight: '400 800', style: 'normal' },
-    { path: './fonts/eb-garamond-italic-latin.woff2', weight: '400 800', style: 'italic' },
+    { path: './fonts/assistant-400-latin.woff2', weight: '400', style: 'normal' },
+    { path: './fonts/assistant-600-latin.woff2', weight: '600', style: 'normal' },
   ],
-  variable: '--font-eb-garamond',
+  variable: '--font-assistant',
   display: 'swap',
-  adjustFontFallback: 'Times New Roman',
+  adjustFontFallback: 'Arial',
 });
 
-const cormorantGaramond = localFont({
-  src: [
-    { path: './fonts/cormorant-garamond-latin.woff2', weight: '300 700', style: 'normal' },
-    { path: './fonts/cormorant-garamond-italic-latin.woff2', weight: '300 700', style: 'italic' },
-  ],
-  variable: '--font-cormorant',
+// Amsterdam One: carregada mas sem uso por enquanto (`--font-accent`); a dona vai indicar onde
+// entra. preload:false evita baixar 45 KB à toa; o arquivo só é buscado se algum CSS a usar.
+const amsterdam = localFont({
+  src: './fonts/amsterdam-one-latin.woff2',
+  weight: '400',
+  variable: '--font-amsterdam',
   display: 'swap',
-  adjustFontFallback: 'Times New Roman',
+  preload: false,
 });
 
 export const metadata = {
@@ -43,7 +45,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="pt-BR"
-      className={`${cinzel.variable} ${ebGaramond.variable} ${cormorantGaramond.variable}`}
+      className={`${fraunces.variable} ${assistant.variable} ${amsterdam.variable}`}
       suppressHydrationWarning // o script inline da logo altera a class do <html> antes da hidratação
     >
       <body>

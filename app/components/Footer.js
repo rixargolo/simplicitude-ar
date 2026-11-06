@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import styles from './Footer.module.css';
 import { itensMenu, mockupsLigados } from '@/lib/navegacao';
+import { WHATSAPP_EXIBICAO, linkWhatsApp } from '@/lib/whatsapp';
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -16,8 +17,8 @@ export default function Footer() {
         </div>
 
         <address className={styles.address}>
-          <a href="https://wa.me/5573920026708" target="_blank" rel="noreferrer noopener">
-            WhatsApp (73) 9 2002-6708
+          <a href={linkWhatsApp()} target="_blank" rel="noreferrer noopener">
+            WhatsApp {WHATSAPP_EXIBICAO}
           </a>
           <a href="mailto:viva@simplicitude.com.br">viva@simplicitude.com.br</a>
           <a href="https://instagram.com/simplicitude.co" target="_blank" rel="noreferrer noopener">

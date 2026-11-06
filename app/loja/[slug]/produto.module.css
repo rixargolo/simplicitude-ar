@@ -10,15 +10,15 @@
 
 .peso {
   font-family: var(--font-body);
-  font-size: 1rem;
-  color: var(--brown);
+  font-size: var(--tam-texto);
+  color: var(--cor-texto);
 }
 
 .preco {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
-  font-size: 1.5rem;
-  color: var(--green-nav);
+  font-size: var(--tam-subtitulo);
+  color: var(--cor-texto);
 }
 
 .actions {
@@ -29,67 +29,32 @@
   margin-top: 12px;
 }
 
-.cta {
-  font-family: var(--font-display);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-size: 0.95rem;
-  background: var(--green);
-  color: var(--bg);
-  padding: 14px 28px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.cta:hover {
-  background: var(--green-nav);
-}
-
-.cta:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.cta:disabled:hover {
-  background: var(--green);
-}
-
-.esgotadoWrap {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-}
-
 .esgotado {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-size: 0.75rem;
-  background: var(--green);
-  color: var(--cream);
+  font-size: var(--tam-rotulo);
+  background: var(--cor-botao);
+  color: var(--cor-botao-texto);
   padding: 6px 14px;
   border-radius: 999px;
 }
 
 .meditacaoLink {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-size: 0.85rem;
-  color: var(--caramel);
+  letter-spacing: 0.1em;
+  font-size: var(--tam-pequeno);
+  color: var(--cor-texto-suave);
   text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: border-color 0.2s ease;
 }
 
 .meditacaoLink:hover {
-  border-color: var(--caramel);
+  border-color: var(--cor-texto-suave);
 }
 
 @media (max-width: 640px) {
