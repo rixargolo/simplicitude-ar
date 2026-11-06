@@ -6,7 +6,7 @@
 -- e lê com select('*'). Nada muda em RLS de tabelas nem no bucket "produtos".
 -- Leitura: bucket público serve a URL pública sem policy de SELECT para anon (de propósito: sem listagem anônima).
 -- Escrita: mesmo modelo das demais tabelas, authenticated = admin (pendência de segurança #1 do CLAUDE.md).
--- Fatia X7. AINDA NÃO aplicado em produção. Reexecutável: if not exists, on conflict, drop policy if exists.
+-- Fatia X7. Já aplicado em produção em 2026-11-06. Reexecutável: if not exists, on conflict, drop policy if exists.
 
 alter table public.categorias
   add column if not exists imagem_url text,

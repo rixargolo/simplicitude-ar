@@ -3,7 +3,7 @@
 -- Seguro para a main: coluna nullable, sem default; a main lê com select('*') e grava payload explícito.
 -- Sem unique (trocar posições esbarraria nele); empate resolvido por created_at desc no código.
 -- Não muda RLS: valem as policies atuais de produtos.
--- Fatia X6. AINDA NÃO aplicado em produção. Reexecutável.
+-- Fatia X6. Já aplicado em produção em 2026-11-06. Reexecutável.
 
 alter table public.produtos
   add column if not exists novidade_ordem smallint check (novidade_ordem > 0);

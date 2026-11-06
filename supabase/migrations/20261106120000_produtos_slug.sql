@@ -1,6 +1,6 @@
 -- X8: endereço (slug) estável do produto. Coluna produtos.slug fixa + histórico produto_slugs
 -- (slug antigo continua resolvendo e redireciona; nunca é reaproveitado por outro produto).
--- Ainda NÃO aplicado em produção. Aplicar ANTES de publicar a v1 (o código novo lê produtos.slug).
+-- Já aplicado em produção em 2026-11-06 (o código novo lê produtos.slug).
 -- Seguro para a branch main: ela não conhece a coluna; o trigger preenche o slug em INSERT sem slug,
 -- e UPDATE de nome não mexe no slug.
 -- Reexecutável: if not exists, drop ... if exists, on conflict do nothing.

@@ -61,12 +61,12 @@ qualquer dependência de plataforma** (Netlify/Supabase).
   "Backlog X" de [`docs/plano-v1.md`](docs/plano-v1.md). **X1 (várias fotos por produto), X2 (paleta verde
   padrão, sem seletor) e X3 (tipografia da marca Fraunces + Assistant + Amsterdam One, escala `--tam-*`
   menor) e o A7 (produto: galeria + Comprar → WhatsApp) estão no código. **X8 (slug fixo do produto + redirect 308 do
-  antigo) está no código, mas o SQL `supabase/migrations/20261106120000_produtos_slug.sql` AINDA NÃO foi aplicado:
-  aplicar antes de publicar a v1.** **X4 (controle do slider sem Pausar/Continuar, pílula translúcida) está no código.**
+  antigo) está no código e o SQL `supabase/migrations/20261106120000_produtos_slug.sql` **já foi aplicado
+  (2026-11-06)**.** **X4 (controle do slider sem Pausar/Continuar, pílula translúcida) está no código.**
   **X5 (home com Meditação, seção placeholder e Quem somos; ver `/`) está no código; falta texto e foto da seção nova
   e confirmar com a dona o título "Meditação".** **X6 (Novidades permanente, curadoria em `/admin/novidades`) está no
-  código, mas o SQL `supabase/migrations/20261106130000_produtos_novidade_ordem.sql` AINDA NÃO foi aplicado: aplicar
-  antes de publicar a v1 (sem ele a home cai nos mais recentes, sem quebrar).** **X7 (categorias com imagem: foto no admin + desfoque que esmaece no hover) e X10 (sem chips de categoria na vitrine Novidades) estão no código, mas o SQL `supabase/migrations/20261106140000_categorias_imagem.sql` AINDA NÃO foi aplicado: aplicar antes de publicar a v1 (sem ele a home e a loja funcionam, só sem foto; salvar categoria sem foto também funciona, mas subir foto não).** **X11 (análise e organização do Storage: buckets por tipo, policies em SQL, limites, órfãos, público/privado) só está registrado no plano, sem implementação.** **X9 (página 404 da marca, `app/not-found.js`) está no código; texto provisório, confirmar com a dona.** Próximo: mostrar o preview à dona.
+  código e o SQL `supabase/migrations/20261106130000_produtos_novidade_ordem.sql` **já foi aplicado (2026-11-06)**
+  (a home cai nos mais recentes enquanto a curadoria estiver vazia).** **X7 (categorias com imagem: foto no admin + desfoque que esmaece no hover) e X10 (sem chips de categoria na vitrine Novidades) estão no código e o SQL `supabase/migrations/20261106140000_categorias_imagem.sql` **já foi aplicado (2026-11-06)**.** **X11 (análise e organização do Storage: buckets por tipo, policies em SQL, limites, órfãos, público/privado) só está registrado no plano, sem implementação.** **X9 (página 404 da marca, `app/not-found.js`) está no código; texto provisório, confirmar com a dona.** Próximo: mostrar o preview à dona.
 - **Decisões vigentes:** checkout como **convidado** (a decisão antiga de login obrigatório
   está superada); vitrine da home com título derivado do critério de ordem — `novidade_ordem` (curadoria da dona,
   reserva `created_at`) = "Novidades",
@@ -217,7 +217,7 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   precisou de q90). Os PNGs originais ficam em `_DOCS/originais-hero/` (fora do git). Mantém o
   check do D2: todo slide do hero com foto real
 - **X1 (várias fotos):** SQL aplicado em produção em 2026-11-05 (`supabase/migrations/20261105181330_produto_imagens.sql`). **Rodar de novo no D2** o script de reconciliação `supabase/scripts/x1_reconciliar_produto_imagens.sql` (a `main` só grava em `produtos`). A galeria em `/loja/[slug]` já usa `produto_imagens` (A7)
-- **Foto de categoria (X7):** código pronto (upload no `CategoriaForm`, `getCategoriasComProdutos()` e `GradeCategorias`); falta aplicar o SQL `20261106140000_categorias_imagem.sql` e a dona enviar as fotos (cada categoria sem foto segue com o cartão de sempre). O mesmo SQL cria o bucket próprio `categorias` com as policies (ver Storage)
+- **Foto de categoria (X7):** código pronto (upload no `CategoriaForm`, `getCategoriasComProdutos()` e `GradeCategorias`); o SQL `20261106140000_categorias_imagem.sql` já foi aplicado (2026-11-06); falta a dona enviar as fotos (cada categoria sem foto segue com o cartão de sempre). O mesmo SQL cria o bucket próprio `categorias` com as policies (ver Storage)
 - Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive hero e cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam sem uso até autorização), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `filtrarPorCategoria`, `lib/foco.js`, `lib/fotos.js`, `lib/whatsapp.js` e os slugs do X8: `slugValido`, `getProdutoBySlug`, `getSlugAtual`). Sem lint nem CI
 - Admin de pedidos
 - **Admin CRUD de coleções** — a tabela `colecoes` existe e é lida (dropdown no formulário
@@ -503,8 +503,8 @@ com `NEXT_PUBLIC_MOCKUPS=1` e, sem a flag, só os que têm `imagem`. Cobertos em
   (`tests/vitrine.test.js`). A home tem `revalidate = 60` (senão a curadoria só valeria no próximo build)
 - `getCategoriasComProdutos()` — `[{ nome, slug, descricao, imagem_url, imagem_foco_x, imagem_foco_y,
   imagem_zoom, total }]` das categorias com ao menos um produto ativo (join `produtos!inner`; `total` = nº de
-  produtos ativos); alimenta os chips da `/loja` e `GradeCategorias`. Coluna da foto inexistente (`42703`, SQL
-  do X7 não aplicado) → refaz a consulta sem as colunas de foto, nunca quebra
+  produtos ativos); alimenta os chips da `/loja` e `GradeCategorias`. Coluna da foto inexistente (`42703`, ex.: SQL
+  do X7 não aplicado em outro banco) → refaz a consulta sem as colunas de foto, nunca quebra
 - `rotuloCategoria(produto)` — retorna o nome da categoria só quando
   `mostrar_categoria_no_titulo=true` **e** há `categoria_id` vinculado; senão `null` (sem
   fallback fixo)
@@ -573,10 +573,10 @@ então apaga do Storage as excluídas.
   `supabase/migrations/` (`..._produtos_foco_imagem.sql`, `..._produtos_zoom_imagem.sql`), ver `lib/foco.js` —, `estoque` (nullable — mantido pela trigger, nunca por
   `UPDATE` da aplicação), `created_at` (usado por `getVitrine()` para ordenar a
   vitrine da home, critério reserva de "Novidades"), **`novidade_ordem`** (X6; migration
-  `supabase/migrations/20261106130000_produtos_novidade_ordem.sql`, **ainda não aplicada**: smallint nullable,
+  `supabase/migrations/20261106130000_produtos_novidade_ordem.sql`, **aplicada em 2026-11-06**: smallint nullable,
   `check > 0`, sem default nem `unique`; posição na vitrine Novidades, 1 = primeiro, null = fora; segura para a `main`,
   que a ignora), **`slug`** (X8; migration `supabase/migrations/20261106120000_produtos_slug.sql`,
-  **ainda não aplicada**: text not null, `unique`, `check` `^[a-z0-9]+(-[a-z0-9]+)*$` e ≤ 80; gerado uma vez e **não
+  **aplicada em 2026-11-06**: text not null, `unique`, `check` `^[a-z0-9]+(-[a-z0-9]+)*$` e ≤ 80; gerado uma vez e **não
   muda com o nome**; trigger `before insert` preenche com `public.slugify(nome)` se vier vazio — cobre o admin da `main`)
 - **`produto_slugs`** (X8, mesma migration) — `slug` (PK, mesmo `check`), `produto_id` (FK `produtos`, `on delete
   cascade`), `created_at`: todo slug que um produto já teve, inclusive o atual. Preenchida só pela trigger `after
@@ -590,7 +590,7 @@ então apaga do Storage as excluídas.
   `authenticated` (mesmo modelo das demais, ver pendência de segurança #1). `produtos.imagem_*` é a cópia da principal
 - **`categorias`** — `id`, `nome`, `slug`, `descricao` — tipo do produto, usado como
   rótulo de exibição (ex.: "Chocolate", "Combo"). **X7** (migration `supabase/migrations/20261106140000_categorias_imagem.sql`,
-  **ainda não aplicada**): `imagem_url` (text nullable), `imagem_foco_x`/`imagem_foco_y` (smallint not null, 0–100, default 50) e
+  **aplicada em 2026-11-06**): `imagem_url` (text nullable), `imagem_foco_x`/`imagem_foco_y` (smallint not null, 0–100, default 50) e
   `imagem_zoom` (smallint not null, 100–200, default 100), todas seguras para a `main`; editadas no `CategoriaForm`
   com o `SeletorFoco` (prévia 16:9). X8: o slug não
   acompanha o nome; a mesma migration acrescenta índice `unique` e `check` de formato (`not valid`, vale só para
@@ -642,7 +642,7 @@ checkout):**
   `{produto_id}/{uuid}.{ext}` nas fotos novas (nome único, sem cache-buster); fotos antigas ficam em
   `{produto_id}/principal.{ext}` (com `?v=` em `imagem_url`). Fotos de categoria (X7): bucket **próprio `categorias`**
   (público, 5 MB, JPEG/PNG/WebP, criado com a policy `authenticated` de escrita no SQL de
-  `20261106140000_categorias_imagem.sql`, ainda não aplicado), caminho `{categoria_id}/{uuid}.{ext}`. URL pública
+  `20261106140000_categorias_imagem.sql`, aplicado em 2026-11-06), caminho `{categoria_id}/{uuid}.{ext}`. URL pública
 
 ---
 
