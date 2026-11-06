@@ -1,0 +1,71 @@
+.galeria {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* mesmo quadro do card e da prévia do admin; o zoom (scale) é cortado pelo overflow */
+.quadro {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--proporcao-produto);
+  background: var(--cor-superficie);
+  overflow: hidden;
+}
+
+.foto {
+  object-fit: cover;
+}
+
+.placeholder {
+  width: 100%;
+  aspect-ratio: var(--proporcao-produto);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cor-superficie);
+  color: var(--cor-texto);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 4rem;
+  text-transform: uppercase;
+}
+
+/* celular: fileira que rola na horizontal; a partir de 700px quebra linha */
+.miniaturas {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding: 2px;
+  list-style: none;
+  overflow-x: auto;
+}
+
+.miniatura {
+  position: relative;
+  display: block;
+  width: 72px;
+  aspect-ratio: var(--proporcao-produto);
+  padding: 0;
+  border: 2px solid transparent;
+  background: var(--cor-superficie);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.miniatura[aria-current='true'] {
+  border-color: var(--cor-destaque);
+}
+
+.miniatura:focus-visible {
+  outline: 2px solid var(--cor-destaque);
+  outline-offset: 2px;
+}
+
+@media (min-width: 700px) {
+  .miniaturas {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+}

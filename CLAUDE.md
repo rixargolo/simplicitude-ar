@@ -60,7 +60,7 @@ qualquer dependência de plataforma** (Netlify/Supabase).
 - **Backlog X:** ajustes vindos do feedback da dona da fábrica, em fatias pequenas (X1, X2…), na seção
   "Backlog X" de [`docs/plano-v1.md`](docs/plano-v1.md). **X1 (várias fotos por produto), X2 (paleta verde
   padrão, sem seletor) e X3 (tipografia da marca Fraunces + Assistant + Amsterdam One, escala `--tam-*`
-  menor) estão no código.** Próximos, nesta ordem: A7 → X4 slider da home sem pausar/continuar e com fundo translúcido → X5 home
+  menor) e o A7 (produto: galeria + Comprar → WhatsApp) estão no código.** Próximos, nesta ordem: X4 slider da home sem pausar/continuar e com fundo translúcido → X5 home
   com "Quem somos" e "Meditação" de volta + seção placeholder entre elas → X6 Novidades permanente com
   curadoria no admin → X7 categorias com imagem (admin + hover com blur).
 - **Decisões vigentes:** checkout como **convidado** (a decisão antiga de login obrigatório
@@ -100,7 +100,7 @@ novo usa só esses papéis.** Regra de contraste: **nunca azul sobre verde (1,17
 botão/rodapé sempre bege. `tests/paletas.test.js` lê os tokens do próprio `globals.css` e exige
 4,5:1 em texto/fundo, texto/superfície, destaque/fundo, botão, rodapé e texto suave/fundo.
 **Exceção conhecida:** `--cor-texto-suave` sobre `--cor-superficie` dá 4,22:1 na verde (só o selo do
-admin e a letra grande do placeholder de `ApresentacaoProduto`); decisão de manter o 72% do suave. O
+admin); decisão de manter o 72% do suave. O
 `.emBreve` e o "áudio guiado" do `MeditacaoPlayer` (antes ~2:1 por causa de `opacity`) agora usam
 `--cor-texto-suave` sem `opacity`; `tests/paletas.test.js` falha se esse CSS voltar a ter `opacity`.
 
@@ -134,7 +134,7 @@ licenças em `app/fonts/LEIA-ME.md`). Nenhum CSS cita as famílias direto.
   px/rem soltos**): `rotulo` 0.75rem, `pequeno` 0.875rem, `texto` 1rem, `chamada` 1.06–1.19rem, `nome-card`
   1.0625rem, `subtitulo` 1.25–1.5rem, `titulo-secao` 1.5–2.125rem, `titulo-pagina` 1.75–2.75rem,
   `nome-produto` 1.875–2.75rem, `destaque` 1.75–2.5rem. Ficam fora da escala só placeholders de letra grande
-  (`CardProduto`, `ApresentacaoProduto`) e ícones de seta.
+  (`CardProduto`, `GaleriaProduto`) e ícones de seta.
 - Zips originais em `docs/Fontes da marca/` (fora do git). Grandeurs e Simplicity não são usadas.
 
 **Contato vigente:** WhatsApp **(73) 9 2002-6708**; e-mail `viva@simplicitude.com.br`
@@ -183,8 +183,8 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   (`GradeCategorias`, cartões tipográficos sem foto com dados reais), que substituiu o teaser antigo de meditação
 - Estoque: `produtos.estoque` é mantido pela trigger `calcular_estoque_movimentacao` a
   partir de `INSERT`s em `estoque_movimentacoes`; admin registra `reposicao`/`ajuste` em
-  `/admin/estoque`; loja pública mostra selo "Esgotado" e desabilita "Comprar" quando
-  `estoque = 0`
+  `/admin/estoque`; loja pública mostra selo "Esgotado" quando
+  `estoque = 0` (e a página do produto troca "Comprar" por "Consultar no WhatsApp")
 - **Schema completo do banco já existe** para suportar clientes, endereços, pedidos e
   pagamentos (`clientes`, `enderecos`, `pedidos`, `pedido_itens`, `pagamentos`) — ver
   [Modelo de dados](#modelo-de-dados-tabelas-do-projeto) abaixo. Nenhuma dessas 5 tabelas
@@ -195,7 +195,7 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
 [`docs/plano-v1.md`](docs/plano-v1.md), seção 3):
 - Conteúdo de `/bem-fazer` e `/assinaturas` (hoje mockups "Em breve" só no preview) e confirmar
   com a dona o rótulo "Bem-estar" para `/meditacao`
-- Checkout real — botão "Comprar" em `/loja/[slug]` é inerte; integração InfinitePay não
+- Checkout real — hoje "Comprar" em `/loja/[slug]` abre o WhatsApp (A7, temporário); integração InfinitePay não
   existe (quando existir, é quem vai gerar as movimentações `venda`/`cancelamento` em
   `estoque_movimentacoes` e os registros em `pagamentos`)
 - Checkout de **convidado**: exige migration (`pedidos.cliente_id` nullable, campos
@@ -211,9 +211,9 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   mín. 1920×1080, ideal 2400×1350, sem upscale), PSNR ≥ ~38 dB contra o original (a foto 3, com céu,
   precisou de q90). Os PNGs originais ficam em `_DOCS/originais-hero/` (fora do git). Mantém o
   check do D2: todo slide do hero com foto real
-- **X1 (várias fotos):** SQL aplicado em produção em 2026-11-05 (`supabase/migrations/20261105181330_produto_imagens.sql`). **Rodar de novo no D2** o script de reconciliação `supabase/scripts/x1_reconciliar_produto_imagens.sql` (a `main` só grava em `produtos`). Falta a galeria em `/loja/[slug]` (A7)
+- **X1 (várias fotos):** SQL aplicado em produção em 2026-11-05 (`supabase/migrations/20261105181330_produto_imagens.sql`). **Rodar de novo no D2** o script de reconciliação `supabase/scripts/x1_reconciliar_produto_imagens.sql` (a `main` só grava em `produtos`). A galeria em `/loja/[slug]` já usa `produto_imagens` (A7)
 - **Foto de categoria:** `categorias` não tem `imagem_url`. A coluna (+ upload no `CategoriaForm`) pertence ao grupo da migration C2 do plano; `GradeCategorias` já renderiza a foto quando o campo vier, falta incluí-lo no `select` de `getCategoriasComProdutos()`. A foto em si depende da dona
-- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive hero e cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam sem uso até autorização), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `filtrarPorCategoria`, `lib/foco.js` e `lib/fotos.js`). Sem lint nem CI
+- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive hero e cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam sem uso até autorização), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `filtrarPorCategoria`, `lib/foco.js`, `lib/fotos.js` e `lib/whatsapp.js`). Sem lint nem CI
 - Admin de pedidos
 - **Admin CRUD de coleções** — a tabela `colecoes` existe e é lida (dropdown no formulário
   de produto), mas não há tela de gestão para criá-las/editá-las
@@ -266,7 +266,13 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
   produtos com `tem_meditacao=true` via `ApresentacaoProduto` + `MeditacaoPlayer`
 - **`/loja`** — `h1` (nome da categoria ativa ou "Loja") + frase, chips de categoria ("Todas" + só categorias com ≥1 produto ativo, `getCategoriasComProdutos()`; rolam na horizontal no celular, quebram linha a partir de 900px) e grade de `CardProduto` (2 colunas no celular). Filtro por `?categoria=slug`, no servidor (`searchParams`, links `<Link>`, funciona sem JS). **Slug desconhecido, vazio ou repetido = "Todas"** (`filtrarPorCategoria`), nunca página vazia. Zero produtos ativos → frase de estado vazio com link para `/quem-somos`. A página é dinâmica (`ƒ`) por causa do `searchParams`
 - **`/loja/[slug]`** — detalhe do produto (slug calculado em memória, não é coluna do
-  banco)
+  banco). Dinâmica (`ƒ`: lê `headers()` para o endereço absoluto). `h1` = nome; galeria
+  (`getFotosDoProduto` → `ApresentacaoProduto` → `GaleriaProduto`); peso, preço, descrição; **Comprar =
+  link do WhatsApp com mensagem pronta** (`BotaoComprar`, nova aba, sem carrinho/quantidade). Sem estoque
+  (`estoque === 0`): selo "Esgotado" e o mesmo botão com o rótulo "Consultar no WhatsApp" (não perde a
+  venda; sem ramo novo). `tem_meditacao` mostra só o selo-link para `/meditacao` (sem player aqui).
+  `generateMetadata`: `title`, `description` e `openGraph` com título e foto principal; o resto do
+  compartilhamento (imagem 1200x630, `metadataBase`) é o A11
 - **`/bem-fazer`**, **`/assinaturas`** — mockups "Em breve" (`EmBreve`); só existem com
   `NEXT_PUBLIC_MOCKUPS=1` (`exigirMockups()` → 404 em produção, e saem do menu)
 - `/contato` foi **removida** (contato vive no rodapé)
@@ -314,7 +320,7 @@ Cada um com `*.module.css` co-locado.
   (vindo de `itensMenu()`, `lib/navegacao.js`); logo leva à home (sem item "Início"); item ativo
   via `usePathname()` + `aria-current`; sem linha divisória; abaixo de 960px vira botão de texto
   "Menu"/"Fechar". **`Footer`** — campo `--cor-rodape` com logo, lema, contatos (WhatsApp via
-  `wa.me`), links do mesmo `itensMenu()` e linha legal (CNPJ só no preview).
+  `linkWhatsApp()` de `lib/whatsapp.js`), links do mesmo `itensMenu()` e linha legal (CNPJ só no preview).
 - **`EmBreve`** — página mockup "Em breve" com botão pílula para `/loja`
 - **`LogoAnimado`** (`'use client'`) — usado dentro do `<Link href="/">` do `Header` no
   lugar do `<Image>` direto da wordmark. Na **1ª carga da Home (`/`) em cada sessão do
@@ -352,9 +358,19 @@ Cada um com `*.module.css` co-locado.
   raiz; estado `ciclo` nas deps do efeito de desenho reinicia a animação mesmo no meio
   dela; ignora a chave de `sessionStorage`, mas respeita `prefers-reduced-motion`). Fora
   da Home o clique só navega para `/` via o `<Link>` do `Header`.
-- **`ApresentacaoProduto`** — bloco de apresentação de produto (galeria de fotos, rótulo
+- **`ApresentacaoProduto`** (server) — bloco de apresentação de produto (`GaleriaProduto`, rótulo
   de categoria via `rotuloCategoria()`, nome, atributos, descrição); usado em
-  `/loja/[slug]` e `/meditacao`
+  `/loja/[slug]` e `/meditacao`. Props `produto`, `fotos` (opcional, de `getFotosDoProduto`; sem ela cai na
+  cópia da principal em `produtos.imagem_*` via `fotosDoProduto`, caso de `/meditacao`), `Titulo` (`h2`
+  padrão; a página do produto passa `h1`)
+- **`GaleriaProduto`** (`'use client'`) — foto principal no quadro do card (`--proporcao-produto`, `cover`,
+  `estiloFoto` de cada foto: foco e zoom) e, com 2+ fotos, miniaturas em `<button>` (`aria-label` "Ver foto N
+  de M", `aria-current`, foco visível; Tab + Enter/Espaço; fileira rolável no celular, quebra linha ≥700px).
+  Sem foto: inicial do nome. Sem setas de teclado, deslize nem lightbox (de propósito)
+- **`BotaoComprar`** (server) — **único** lugar que monta o link de compra: `<a>` pílula para
+  `linkCompra(nome, url)`, `target="_blank"`, `rel="noopener noreferrer"`. **Ponto de extensão do clique:** para
+  registrar no futuro, virar `'use client'` com `onClick` + `navigator.sendBeacon` para uma rota do servidor;
+  o link continua direto ao `wa.me` (sem redirecionamento, por causa do navegador interno do Instagram)
 - **`HeroCarrossel`** (`'use client'`) — hero da home. Props `slides` (`{ id, rotulo, titulo,
   texto, cta: { rotulo, href }, imagem?: { src, alt, posicao? } }`; `posicao` = `object-position`
   para enquadrar a foto quando a tela larga corta o 16:9 em cima e embaixo — slide 3 com
@@ -389,7 +405,7 @@ Cada um com `*.module.css` co-locado.
   quadro de proporção fixa (`--proporcao-produto` em `globals.css`, 0.8 = 4:5; é o único lugar da proporção, a
   seta da vitrine também a usa) preenchido com `object-fit: cover` e enquadrado por
   `style={estiloFoto(produto.imagem_foco_x, produto.imagem_foco_y, produto.imagem_zoom)}` (ponto de foco + zoom por
-  produto; sem ajuste = centro e 100%). A página de produto (A7) deve usar o mesmo `estiloFoto`. Selo "Esgotado" (`estoque === 0`), categoria (**sempre**, ignora
+  produto; sem ajuste = centro e 100%). A página de produto (A7) usa o mesmo `estiloFoto`. Selo "Esgotado" (`estoque === 0`), categoria (**sempre**, ignora
   `mostrar_categoria_no_titulo`), nome, `descricao` em 2 linhas (`line-clamp`; vira `descricao_curta` no C2) e preço.
   Link para `/loja/[slug]`. Só papéis `--cor-*`
   Usado em `app/page.js` logo abaixo do hero, alimentado por `getVitrine()` e
@@ -461,6 +477,13 @@ com `NEXT_PUBLIC_MOCKUPS=1` e, sem a flag, só os que têm `imagem`. Cobertos em
 - `slugify(nome)`, `getProdutoBySlug(slug)` — não há coluna `slug` em `produtos`; o match
   é feito em memória sobre `getProdutos()`
 
+### WhatsApp — `lib/whatsapp.js`
+
+**Único lugar do número** (`WHATSAPP_NUMERO` `5573920026708`, `WHATSAPP_EXIBICAO`): `linkWhatsApp(texto?)` (`wa.me`,
+com `?text=` codificado quando há texto) e `linkCompra(nome, url)` (mensagem "Olá! Tenho interesse em: {nome}" +
+endereço da página; sem artigo porque os nomes variam de gênero). Usados por `BotaoComprar` e `Footer`. Coberto em
+`tests/whatsapp.test.js`.
+
 ### Foco da foto — `lib/foco.js`
 
 `normalizarFoco(v)` (inteiro 0–100; nulo/vazio/NaN/texto → 50, fora da faixa é limitado), `normalizarZoom(v)`
@@ -480,7 +503,7 @@ Várias fotos por produto na tabela `produto_imagens`; a primeira por `ordem` é
 `produtos.imagem_url`, então produto nunca fica sem foto), `mover`, `tornarPrincipal`, `validarArquivos`
 (limites `MAX_FOTOS = 8`, `TAMANHO_MAX` 5 MB, `TIPOS_ACEITOS` JPEG/PNG/WebP; o bucket impõe o mesmo) e
 `caminhoDaUrl`. **`getFotosDoProduto(produto)`** (`lib/produtos.js`) entrega `[{ caminho, url, alt, foco_x, foco_y,
-zoom }]` para a galeria do A7 (usar `estiloFoto(foco_x, foco_y, zoom)`). **`produtos.imagem_url` /
+zoom }]` para a galeria do A7 (`GaleriaProduto` usa `estiloFoto(foco_x, foco_y, zoom)`). **`produtos.imagem_url` /
 `imagem_foco_x/y` / `imagem_zoom` continuam como CÓPIA da principal**, regravada pelo `ProdutoForm` a cada
 salvar: o card da home/loja, `/meditacao`, a lista do admin e a branch `main` (que só conhece essas colunas)
 seguem funcionando sem mudança. No admin, `FotosProduto` (`app/admin/produtos/`) lista as fotos com botões
@@ -603,7 +626,8 @@ implementado — ver pendência de segurança #3.
   `globals.css`
 - Menu e mockups: ver `lib/navegacao.js`; mockup = `status: 'mockup'` + `exigirMockups()`
 - Preços sempre em **centavos** (inteiro) no banco; formatação BRL na exibição
-- Selo "Esgotado" (`estoque === 0` em `/loja` e `/loja/[slug]`, desabilita "Comprar") usa
+- Selo "Esgotado" (`estoque === 0` em `/loja` e `/loja/[slug]`; na página do produto o botão vira "Consultar no
+  WhatsApp") usa
   comparação estrita — `estoque` é nullable e `null` significa "não controlado", não deve
   virar "Esgotado"
 - **Sem TypeScript** — projeto é JavaScript puro

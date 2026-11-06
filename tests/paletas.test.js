@@ -70,8 +70,8 @@ describe('contraste', () => {
       'destaque/fundo': ['--cor-destaque', '--cor-fundo'],
       'botão': ['--cor-botao-texto', '--cor-botao'],
       'rodapé': ['--cor-rodape-texto', '--cor-rodape'],
-      // texto suave/superfície (4,22) fica de fora de propósito: só aparece no selo do admin e
-      // na letra grande do placeholder de ApresentacaoProduto (decisão do X2, ver plano-v1)
+      // texto suave/superfície (4,22) fica de fora de propósito: só aparece no selo do admin
+      // (decisão do X2, ver plano-v1)
       'texto suave/fundo': ['--cor-texto-suave', '--cor-fundo'],
     };
     for (const [nome, [frente, fundo]] of Object.entries(pares)) {
