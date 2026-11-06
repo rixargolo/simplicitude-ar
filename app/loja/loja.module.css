@@ -16,10 +16,9 @@
 .titulo {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: clamp(2rem, 6vw, 3.5rem);
-  line-height: 1.1;
-  letter-spacing: 0.01em;
+  font-weight: 500;
+  font-size: var(--tam-titulo-pagina);
+  line-height: 1.15;
   color: var(--cor-texto);
   overflow-wrap: break-word;
 }
@@ -28,7 +27,7 @@
   max-width: 40rem;
   margin: 0;
   font-family: var(--font-body);
-  font-size: 1.125rem;
+  font-size: var(--tam-chamada);
   line-height: 1.5;
   color: var(--cor-texto);
 }
@@ -66,7 +65,7 @@
   background: var(--cor-superficie);
   color: var(--cor-texto);
   font-family: var(--font-body);
-  font-size: 1.0625rem;
+  font-size: var(--tam-pequeno);
   text-decoration: none;
   white-space: nowrap;
   transition: background-color 0.2s ease, color 0.2s ease;
@@ -95,9 +94,9 @@
 .vazio {
   max-width: 32rem;
   margin: 0;
-  font-family: var(--font-accent);
+  font-family: var(--font-display);
   font-style: italic;
-  font-size: 1.5rem;
+  font-size: var(--tam-subtitulo);
   line-height: 1.4;
   color: var(--cor-texto);
 }

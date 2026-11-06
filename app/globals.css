@@ -31,10 +31,23 @@ body {
   /* proporção (largura ÷ altura) da foto do produto nos cards e na prévia do admin: 0.8 = 4:5 */
   --proporcao-produto: 0.8;
 
-  /* tipografia provisória: trocar a oficial é mexer só aqui e em app/layout.js */
-  --font-display: var(--font-cinzel), serif;
-  --font-body: var(--font-eb-garamond), serif;
-  --font-accent: var(--font-cormorant), serif;
+  /* tipografia da marca (X3): trocar é mexer só aqui, em app/layout.js e em app/fonts/ */
+  --font-display: var(--font-fraunces), Georgia, serif;     /* títulos, nomes de produto, itálico de leitura */
+  --font-body: var(--font-assistant), Arial, sans-serif;    /* texto, botões, preços, rótulos */
+  /* só destaque curto em tamanho grande (--tam-destaque); nunca leitura, nomes, preços ou rótulos */
+  --font-accent: var(--font-amsterdam), var(--font-fraunces), Georgia, serif;
+
+  /* escala por papel (X3): código novo usa estes, nunca px/rem soltos */
+  --tam-rotulo: 0.75rem;                                     /* tags, selos, eyebrow */
+  --tam-pequeno: 0.875rem;                                   /* menu, botões, chips, meta */
+  --tam-texto: 1rem;                                         /* corpo, descrição, preço */
+  --tam-chamada: clamp(1.0625rem, 1.4vw, 1.1875rem);         /* lead/intro */
+  --tam-nome-card: 1.0625rem;                                /* nome no card de produto */
+  --tam-subtitulo: clamp(1.25rem, 1.8vw, 1.5rem);            /* título de cartão, títulos do admin */
+  --tam-titulo-secao: clamp(1.5rem, 2.6vw, 2.125rem);        /* h2 de seção */
+  --tam-titulo-pagina: clamp(1.75rem, 4vw, 2.75rem);         /* h1 de página */
+  --tam-nome-produto: clamp(1.875rem, 4vw, 2.75rem);         /* nome na apresentação do produto */
+  --tam-destaque: clamp(1.75rem, 3.2vw, 2.5rem);             /* só com --font-accent */
 
   /* shortcut: nomes antigos como aliases dos papéis, para as páginas que ainda não
      foram refeitas já pegarem a paleta nova. Cada item do plano (A3–A7, A12) troca

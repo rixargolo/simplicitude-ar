@@ -21,17 +21,19 @@
 .titulo {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: clamp(2rem, 3.6vw, 3rem);
-  line-height: 1.1;
-  letter-spacing: 0.01em;
+  font-weight: 500;
+  font-size: var(--tam-titulo-secao);
+  line-height: 1.15;
   color: var(--cor-texto);
 }
 
+/* destaque curto em tamanho grande: único uso da fonte accent na vitrine */
 .enfase {
   font-family: var(--font-accent);
-  font-style: italic;
-  font-weight: 500;
+  font-size: var(--tam-destaque);
+  font-style: normal; /* é um <em>; a Amsterdam One não tem itálico */
+  font-weight: 400;
+  line-height: 1;
 }
 
 .chips {
@@ -52,7 +54,7 @@
   background: var(--cor-superficie);
   color: var(--cor-texto);
   font-family: var(--font-body);
-  font-size: 1.0625rem;
+  font-size: var(--tam-pequeno);
   text-decoration: none;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
@@ -68,10 +70,10 @@
   border-radius: var(--raio-botao);
   background: var(--cor-botao);
   color: var(--cor-botao-texto);
-  font-family: var(--font-display);
-  font-size: 13px;
+  font-family: var(--font-body);
+  font-size: var(--tam-pequeno);
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   text-decoration: none;
 }

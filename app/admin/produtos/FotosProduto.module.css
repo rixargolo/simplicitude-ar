@@ -14,18 +14,18 @@
 
 .rotulo {
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: var(--tam-pequeno);
 }
 
 .arquivo {
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: var(--tam-pequeno);
 }
 
 .ajuda {
   margin: 0;
   font-family: var(--font-body);
-  font-size: 0.85rem;
+  font-size: var(--tam-pequeno);
   color: var(--cor-texto-suave);
 }
 
@@ -36,7 +36,7 @@
   border-radius: 4px;
   background: var(--cor-superficie);
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: var(--tam-pequeno);
 }
 
 .lista {
@@ -87,14 +87,14 @@
   align-items: center;
   gap: 8px;
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: var(--tam-texto);
 }
 
 .selo,
 .novo {
   padding: 2px 10px;
   border-radius: var(--raio-botao);
-  font-size: 0.8rem;
+  font-size: var(--tam-rotulo);
 }
 
 .selo {
@@ -112,7 +112,7 @@
   flex-direction: column;
   gap: 4px;
   font-family: var(--font-body);
-  font-size: 0.85rem;
+  font-size: var(--tam-pequeno);
 }
 
 .alt input {
@@ -123,7 +123,7 @@
   background: var(--cor-fundo);
   color: var(--cor-texto);
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: var(--tam-pequeno);
 }
 
 .botoes {
@@ -140,7 +140,7 @@
   background: var(--cor-botao);
   color: var(--cor-botao-texto);
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: var(--tam-pequeno);
   cursor: pointer;
 }
 
@@ -178,5 +178,5 @@
 .ajusteTitulo {
   margin: 0;
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: var(--tam-texto);
 }

@@ -58,9 +58,9 @@ qualquer dependência de plataforma** (Netlify/Supabase).
   Graph. O **checkout InfinitePay (bloco C, A0, A8–A10) fica para depois do go-live**. Escopo: Home,
   Loja, Meditação (o redesign de `/meditacao` fica para depois do go-live).
 - **Backlog X:** ajustes vindos do feedback da dona da fábrica, em fatias pequenas (X1, X2…), na seção
-  "Backlog X" de [`docs/plano-v1.md`](docs/plano-v1.md). **X1 (várias fotos por produto) e X2 (paleta verde
-  padrão, sem seletor) estão no código.** Próximos, nesta ordem: X3 tipografia da marca (Fraunces +
-  Assistant) e escala menor → A7 → X4 slider da home sem pausar/continuar e com fundo translúcido → X5 home
+  "Backlog X" de [`docs/plano-v1.md`](docs/plano-v1.md). **X1 (várias fotos por produto), X2 (paleta verde
+  padrão, sem seletor) e X3 (tipografia da marca Fraunces + Assistant + Amsterdam One, escala `--tam-*`
+  menor) estão no código.** Próximos, nesta ordem: A7 → X4 slider da home sem pausar/continuar e com fundo translúcido → X5 home
   com "Quem somos" e "Meditação" de volta + seção placeholder entre elas → X6 Novidades permanente com
   curadoria no admin → X7 categorias com imagem (admin + hover com blur).
 - **Decisões vigentes:** checkout como **convidado** (a decisão antiga de login obrigatório
@@ -100,8 +100,9 @@ novo usa só esses papéis.** Regra de contraste: **nunca azul sobre verde (1,17
 botão/rodapé sempre bege. `tests/paletas.test.js` lê os tokens do próprio `globals.css` e exige
 4,5:1 em texto/fundo, texto/superfície, destaque/fundo, botão, rodapé e texto suave/fundo.
 **Exceção conhecida:** `--cor-texto-suave` sobre `--cor-superficie` dá 4,22:1 na verde (só o selo do
-admin e a letra grande do placeholder de `ApresentacaoProduto`), e o `.emBreve` do `MeditacaoPlayer`
-(suave com `opacity: 0.65`) fica em ~2,5:1; decisão de manter o 72% do suave, revisar no X3/A12.
+admin e a letra grande do placeholder de `ApresentacaoProduto`); decisão de manter o 72% do suave. O
+`.emBreve` e o "áudio guiado" do `MeditacaoPlayer` (antes ~2:1 por causa de `opacity`) agora usam
+`--cor-texto-suave` sem `opacity`; `tests/paletas.test.js` falha se esse CSS voltar a ter `opacity`.
 
 > ⚠️ **Aliases temporários:** `--bg`, `--green`, `--green-nav`, `--brown`, `--caramel`,
 > `--border`, `--cream`, `--cream-name` seguem existindo em `globals.css` só como aliases dos
@@ -111,10 +112,25 @@ admin e a letra grande do placeholder de `ApresentacaoProduto`), e o `.emBreve` 
 > pretos de `/quem-somos` e de `/meditacao` (e do `app/home.module.css`, hoje sem uso, ver `/`). O hero da home (A3) já
 > usa só papéis.
 
-**Tipografia:** provisória, centralizada em tokens (`--font-display` Cinzel, `--font-body` EB
-Garamond, `--font-accent` Cormorant Garamond, definidos em `globals.css` sobre as variáveis do
-`next/font/local` em `app/layout.js`, arquivos em `app/fonts/`). Nenhum CSS cita as famílias
-direto: trocar pela oficial é mexer só em `globals.css`, `app/layout.js` e `app/fonts/`. Dancing Script foi removida.
+**Tipografia da marca (X3, 2026-11-06):** três famílias por papel, em tokens de `app/globals.css` sobre as
+variáveis do `next/font/local` de `app/layout.js` (arquivos WOFF2 latin em `app/fonts/`, receita de geração e
+licenças em `app/fonts/LEIA-ME.md`). Nenhum CSS cita as famílias direto.
+- **`--font-display` = Fraunces** (variável, `SOFT=0`, `WONK=0`, `wght` 300–700, `opsz` 9–72; normal + itálico):
+  títulos, nomes de produto e o itálico de leitura (lead da meditação, `emphasis`, nome de categoria). **Caixa
+  normal**, sem `uppercase` nem tracking largo; peso 500 nos títulos.
+- **`--font-body` = Assistant** (400 e 600 estáticas, sem itálico): texto, botões, chips, menu, preços, rótulos.
+  Rótulos pequenos seguem em caixa alta, tracking ≤ 0.12em. Itálico em texto de Assistant = usar Fraunces itálico.
+- **`--font-accent` = Amsterdam One** (só 400, sem Slant e sem itálico; fallback Fraunces): **somente destaque
+  curto em tamanho grande** (`--tam-destaque`), nunca texto de leitura, nomes, preços nem rótulos. Hoje em 3
+  lugares: "da floresta" na vitrine, lema do rodapé e "Em breve"; `tests/paletas.test.js` falha se aparecer em
+  outro CSS. O pacote recebido **não trouxe licença**: uso por orientação da dona/criador do projeto (registrado
+  no LEIA-ME das fontes; confirmar se a marca for publicada mais amplamente).
+- **Escala por papel** (`--tam-*` em `globals.css`, menor que a anterior; **código novo usa só esses, nunca
+  px/rem soltos**): `rotulo` 0.75rem, `pequeno` 0.875rem, `texto` 1rem, `chamada` 1.06–1.19rem, `nome-card`
+  1.0625rem, `subtitulo` 1.25–1.5rem, `titulo-secao` 1.5–2.125rem, `titulo-pagina` 1.75–2.75rem,
+  `nome-produto` 1.875–2.75rem, `destaque` 1.75–2.5rem. Ficam fora da escala só placeholders de letra grande
+  (`CardProduto`, `ApresentacaoProduto`) e ícones de seta.
+- Zips originais em `docs/Fontes da marca/` (fora do git). Grandeurs e Simplicity não são usadas.
 
 **Contato vigente:** WhatsApp **(73) 9 2002-6708**; e-mail `viva@simplicitude.com.br`
 (inalterado); Instagram `@simplicitude.co`. O `Footer` já usa esses dados. **CNPJ/razão
@@ -192,7 +208,7 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   check do D2: todo slide do hero com foto real
 - **X1 (várias fotos):** SQL aplicado em produção em 2026-11-05 (`supabase/migrations/20261105181330_produto_imagens.sql`). **Rodar de novo no D2** o script de reconciliação `supabase/scripts/x1_reconciliar_produto_imagens.sql` (a `main` só grava em `produtos`). Falta a galeria em `/loja/[slug]` (A7)
 - **Foto de categoria:** `categorias` não tem `imagem_url`. A coluna (+ upload no `CategoriaForm`) pertence ao grupo da migration C2 do plano; `GradeCategorias` já renderiza a foto quando o campo vier, falta incluí-lo no `select` de `getCategoriasComProdutos()`. A foto em si depende da dona
-- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive hero e cartões de categoria), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `filtrarPorCategoria`, `lib/foco.js` e `lib/fotos.js`). Sem lint nem CI
+- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive hero e cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam só nos 3 CSS autorizados), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `filtrarPorCategoria`, `lib/foco.js` e `lib/fotos.js`). Sem lint nem CI
 - Admin de pedidos
 - **Admin CRUD de coleções** — a tabela `colecoes` existe e é lida (dropdown no formulário
   de produto), mas não há tela de gestão para criá-las/editá-las
@@ -570,14 +586,15 @@ implementado — ver pendência de segurança #3.
 
 - CSS Modules (`*.module.css`) co-locados, classes em camelCase
 - Cores: **só tokens de papel** (`--cor-*`, ver [Paleta](#paleta-e-tipografia-oficiais)); hex
-  solto em componente novo é proibido. Fontes: só `--font-display/body/accent`. Os nomes
-  antigos (`--bg`, `--green`…) são aliases a eliminar, não a usar.
-- Fontes **hospedadas no projeto** (`next/font/local` em `app/layout.js`, arquivos WOFF2
-  variáveis latin em `app/fonts/`, licença OFL em `app/fonts/LEIA-ME.md`): Cinzel, EB Garamond e
-  Cormorant Garamond. **Não voltar a `next/font/google`:** em 2026-11-05 o build do Netlify quebrou
+  solto em componente novo é proibido. Fontes: só `--font-display/body/accent` (a accent só em
+  destaque curto e grande). Tamanhos de texto: só `--tam-*`. Os nomes antigos (`--bg`, `--green`…)
+  são aliases a eliminar, não a usar.
+- Fontes **hospedadas no projeto** (`next/font/local` em `app/layout.js`, WOFF2 latin em
+  `app/fonts/`, licenças e receita em `app/fonts/LEIA-ME.md`): Fraunces, Assistant e Amsterdam One.
+  **Não voltar a `next/font/google`:** em 2026-11-05 o build do Netlify quebrou
   ao baixar a EB Garamond do Google (`Can't resolve '@vercel/turbopack-next/internal/font/google/font'`,
   "queries have exactly one entry"), sem reproduzir localmente; o build agora não depende de rede
-  externa. Variáveis `--font-cinzel`, `--font-eb-garamond`, `--font-cormorant`, só consumidas por
+  externa. Variáveis `--font-fraunces`, `--font-assistant`, `--font-amsterdam`, só consumidas por
   `globals.css`
 - Menu e mockups: ver `lib/navegacao.js`; mockup = `status: 'mockup'` + `exigirMockups()`
 - Preços sempre em **centavos** (inteiro) no banco; formatação BRL na exibição

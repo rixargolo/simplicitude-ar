@@ -55,21 +55,21 @@
 
 .pullQuote {
   margin: 0;
-  font-family: var(--font-accent);
+  font-family: var(--font-display);
   font-style: italic;
   font-weight: 400;
-  font-size: clamp(1.55rem, 3.4vw, 2.2rem);
+  font-size: var(--tam-titulo-secao);
   line-height: 1.45;
   color: var(--bg);
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
 }
 
 .duotoneCta {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  font-size: var(--tam-pequeno);
   background: var(--bg);
   color: var(--green-nav);
   padding: 14px 28px;

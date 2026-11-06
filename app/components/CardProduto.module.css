@@ -48,7 +48,7 @@
   background: var(--cor-botao);
   color: var(--cor-botao-texto);
   font-family: var(--font-body);
-  font-size: 0.9375rem;
+  font-size: var(--tam-pequeno);
 }
 
 .body {
@@ -59,24 +59,23 @@
 
 .categoria {
   font-family: var(--font-body);
-  font-size: 0.9375rem;
+  font-size: var(--tam-pequeno);
   color: var(--cor-texto);
 }
 
 .titulo {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.125rem;
+  font-weight: 500;
+  font-size: var(--tam-nome-card);
   line-height: 1.25;
-  letter-spacing: 0.03em;
   color: var(--cor-destaque);
 }
 
 .descricao {
   margin: 0;
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: var(--tam-pequeno);
   line-height: 1.5;
   color: var(--cor-texto);
   display: -webkit-box;
@@ -88,9 +87,9 @@
 
 .preco {
   margin-top: 4px;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
-  font-size: 1rem;
+  font-size: var(--tam-texto);
   color: var(--cor-texto);
 }
 

@@ -9,7 +9,7 @@
 .dica {
   margin: 0;
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: var(--tam-pequeno);
 }
 
 /* touch-action: none → o arrasto com o dedo move o ponto em vez de rolar a página */
@@ -57,7 +57,7 @@
 
 .previaRotulo {
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: var(--tam-pequeno);
 }
 
 .quadro {
@@ -87,7 +87,7 @@
   flex-direction: column;
   gap: 4px;
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: var(--tam-pequeno);
 }
 
 .controle input {
@@ -105,7 +105,7 @@
   background: var(--cor-botao);
   color: var(--cor-botao-texto);
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: var(--tam-texto);
   cursor: pointer;
 }
 

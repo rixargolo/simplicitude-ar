@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 afterEach(() => vi.unstubAllEnvs());
@@ -112,6 +112,30 @@ describe('contraste', () => {
         `texto sobre ${cor} ${pct * 100}% + ${base}`,
       ).toBeGreaterThanOrEqual(4.5);
     }
+  });
+});
+
+describe('tipografia (X3)', () => {
+  const semComentarios = (css) => css.replace(/\/\*[\s\S]*?\*\//g, '');
+
+  it('MeditacaoPlayer não usa opacity (ela derrubava "áudio guiado" para ~2:1)', () => {
+    const css = semComentarios(ler('../app/components/MeditacaoPlayer.module.css'));
+    expect(css).not.toMatch(/opacity\s*:/);
+  });
+
+  it('a fonte de destaque (Amsterdam One) só aparece onde foi autorizada: vitrine, rodapé e Em breve', () => {
+    const pasta = new URL('../app/', import.meta.url);
+    const achados = [];
+    const varrer = (dir) => {
+      for (const e of readdirSync(dir, { withFileTypes: true })) {
+        const caminho = new URL(e.name + (e.isDirectory() ? '/' : ''), dir);
+        if (e.isDirectory()) varrer(caminho);
+        else if (e.name.endsWith('.css') && e.name !== 'globals.css' &&
+          /var\(--font-accent\)/.test(readFileSync(caminho, 'utf8'))) achados.push(e.name);
+      }
+    };
+    varrer(pasta);
+    expect(achados.sort()).toEqual(['EmBreve.module.css', 'Footer.module.css', 'VitrineProdutos.module.css']);
   });
 });
 

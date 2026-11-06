@@ -38,9 +38,8 @@
 
 .tagline {
   font-family: var(--font-accent);
-  font-style: italic;
-  font-weight: 300;
-  font-size: clamp(28px, 4vw, 40px);
+  font-size: var(--tam-destaque);
+  font-weight: 400;
   line-height: 1.1;
 }
 
@@ -49,7 +48,7 @@
   flex-direction: column;
   gap: 8px;
   font-style: normal;
-  font-size: 17px;
+  font-size: var(--tam-texto);
   line-height: 1.5;
 }
 
@@ -71,10 +70,10 @@
 }
 
 .navLink {
-  font-family: var(--font-display);
-  font-size: 13px;
+  font-family: var(--font-body);
+  font-size: var(--tam-pequeno);
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
@@ -84,7 +83,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 4px 24px;
-  font-size: 15px;
+  font-size: var(--tam-pequeno);
   opacity: 0.8;
 }
 

@@ -5,6 +5,8 @@ node_modules/
 .next/
 next-env.d.ts
 _DOCS/
+# zips originais das fontes da marca (só os WOFF2 gerados e as licenças vão para app/fonts/)
+docs/Fontes da marca/
 
 # Env
 .env*.local

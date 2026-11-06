@@ -26,10 +26,10 @@
 }
 
 .navLink {
-  font-family: var(--font-display);
-  font-size: 14px;
+  font-family: var(--font-body);
+  font-size: var(--tam-pequeno);
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--cor-texto);
   text-decoration: none;
@@ -53,10 +53,10 @@
   border: none;
   cursor: pointer;
   padding: 8px 0;
-  font-family: var(--font-display);
-  font-size: 14px;
+  font-family: var(--font-body);
+  font-size: var(--tam-pequeno);
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--cor-texto);
 }
@@ -69,7 +69,7 @@
   background: var(--cor-superficie);
 }
 
-/* 5 itens em Cinzel espaçado não cabem em uma linha antes de ~960px */
+/* 5 itens em caixa alta espaçada não cabem em uma linha antes de ~960px (rever se a Assistant, mais estreita, permitir baixar) */
 @media (max-width: 960px) {
   .navDesktop {
     display: none;

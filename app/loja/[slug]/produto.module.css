@@ -10,14 +10,14 @@
 
 .peso {
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: var(--tam-texto);
   color: var(--brown);
 }
 
 .preco {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
-  font-size: 1.5rem;
+  font-size: var(--tam-subtitulo);
   color: var(--green-nav);
 }
 
@@ -30,11 +30,11 @@
 }
 
 .cta {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  font-size: var(--tam-pequeno);
   background: var(--green);
   color: var(--bg);
   padding: 14px 28px;
@@ -65,11 +65,11 @@
 }
 
 .esgotado {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-size: 0.75rem;
+  font-size: var(--tam-rotulo);
   background: var(--green);
   color: var(--cream);
   padding: 6px 14px;
@@ -77,11 +77,11 @@
 }
 
 .meditacaoLink {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  font-size: var(--tam-pequeno);
   color: var(--caramel);
   text-decoration: none;
   border-bottom: 1px solid transparent;

@@ -13,10 +13,9 @@
 .titulo {
   margin: 0 0 28px;
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: clamp(2rem, 3.6vw, 3rem);
-  line-height: 1.1;
-  letter-spacing: 0.01em;
+  font-weight: 500;
+  font-size: var(--tam-titulo-secao);
+  line-height: 1.15;
   color: var(--cor-texto);
 }
 
@@ -78,12 +77,11 @@
 
 .nome {
   margin: 0;
-  font-family: var(--font-accent);
+  font-family: var(--font-display);
   font-style: italic;
   font-weight: 500;
-  font-size: clamp(1.75rem, 2.4vw, 2.25rem);
-  line-height: 1.05;
-  letter-spacing: -0.01em;
+  font-size: var(--tam-subtitulo);
+  line-height: 1.15;
   color: var(--cor-texto);
   overflow-wrap: break-word;
 }
@@ -112,7 +110,7 @@
 .descricao {
   margin: 0;
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: var(--tam-pequeno);
   line-height: 1.5;
   color: var(--cor-texto);
   display: -webkit-box;
@@ -130,7 +128,7 @@
   margin: auto 0 0;
   padding-top: 8px;
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: var(--tam-pequeno);
   color: var(--cor-texto);
 }
 
@@ -143,9 +141,9 @@
   border-radius: var(--raio-botao);
   background: var(--cor-botao);
   color: var(--cor-botao-texto);
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
-  font-size: 0.8125rem;
+  font-size: var(--tam-rotulo);
   letter-spacing: 0.04em;
 }
 

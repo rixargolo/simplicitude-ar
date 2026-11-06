@@ -46,16 +46,15 @@
 
 .titulo {
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: clamp(1.5rem, 2.6vw, 2.25rem);
-  line-height: 1.15;
-  letter-spacing: 0.02em;
+  font-weight: 500;
+  font-size: var(--tam-subtitulo);
+  line-height: 1.2;
   color: var(--cor-texto);
 }
 
 .texto {
   font-family: var(--font-body);
-  font-size: 1.125rem;
+  font-size: var(--tam-texto);
   line-height: 1.55;
   color: var(--cor-texto);
 }
@@ -66,10 +65,10 @@
   border-radius: var(--raio-botao);
   background: var(--cor-botao);
   color: var(--cor-botao-texto);
-  font-family: var(--font-display);
-  font-size: 13px;
+  font-family: var(--font-body);
+  font-size: var(--tam-pequeno);
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   text-decoration: none;
 }
@@ -132,10 +131,10 @@
 .pausa {
   margin-left: 12px;
   padding: 0 12px;
-  font-family: var(--font-display);
-  font-size: 13px;
+  font-family: var(--font-body);
+  font-size: var(--tam-pequeno);
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
