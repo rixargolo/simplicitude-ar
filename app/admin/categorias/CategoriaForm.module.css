@@ -79,6 +79,15 @@
   background: var(--cor-superficie);
 }
 
+.resumo {
+  font-family: var(--font-body);
+  font-size: var(--tam-pequeno);
+  font-weight: 600;
+  color: var(--cor-texto);
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
 .remover {
   align-self: flex-start;
   font-family: var(--font-body);

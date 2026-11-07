@@ -39,7 +39,9 @@ Repositório: GitHub pessoal (rixargolo) + deploy via Netlify
 Plano completo (auditoria, decisões, lista priorizada, contrato de dados, pendências):
 [`docs/plano-v1.md`](docs/plano-v1.md). Regras de portabilidade:
 [`docs/adr/0001-portabilidade.md`](docs/adr/0001-portabilidade.md) — **ler antes de adicionar
-qualquer dependência de plataforma** (Netlify/Supabase).
+qualquer dependência de plataforma** (Netlify/Supabase). Multilíngue PT/EN (**só decisão, nada
+implementado**): [`docs/adr/0002-multilingue.md`](docs/adr/0002-multilingue.md) — **ler antes de mexer em rotas
+públicas, `proxy.js`, textos fixos ou no schema de conteúdo** (produtos, categorias, coleções, tags, áudio).
 
 - **Objetivo:** ampliar os canais de venda. Em 6 meses o fluxo de venda deve ser totalmente
   automatizado (só o manuseio do produto é humano). Hoje a venda online é só por WhatsApp; o
@@ -66,14 +68,20 @@ qualquer dependência de plataforma** (Netlify/Supabase).
   **X5 (home com Meditação, seção placeholder e Quem somos; ver `/`) está no código; falta texto e foto da seção nova
   e confirmar com a dona o título "Meditação".** **X6 (Novidades permanente, curadoria em `/admin/novidades`) está no
   código e o SQL `supabase/migrations/20261106130000_produtos_novidade_ordem.sql` **já foi aplicado (2026-11-06)**
-  (a home cai nos mais recentes enquanto a curadoria estiver vazia).** **X7 (categorias com imagem: foto no admin + desfoque que esmaece no hover) e X10 (sem chips de categoria na vitrine Novidades) estão no código e o SQL `supabase/migrations/20261106140000_categorias_imagem.sql` **já foi aplicado (2026-11-06)**.** **X11 (análise e organização do Storage: buckets por tipo, policies em SQL, limites, órfãos, público/privado) só está registrado no plano, sem implementação.** **X9 (página 404 da marca, `app/not-found.js`) está no código; texto provisório, confirmar com a dona.** Próximo: mostrar o preview à dona.
+  (a home cai nos mais recentes enquanto a curadoria estiver vazia).** **X7 (categorias com imagem: foto no admin + desfoque que esmaece no hover) e X10 (sem chips de categoria na vitrine Novidades) estão no código e o SQL `supabase/migrations/20261106140000_categorias_imagem.sql` **já foi aplicado (2026-11-06)**.** **X11 (análise e organização do Storage: buckets por tipo, policies em SQL, limites, órfãos, público/privado) só está registrado no plano, sem implementação.** **X9 (página 404 da marca, `app/not-found.js`) está no código; texto provisório, confirmar com a dona.** **X12 (coleções dentro de categorias, produto ↔ coleção M:N, gestão em `/admin/colecoes`, par de tradução EN de categorias e coleções) está no código; o SQL `20261106150000_x12_colecoes.sql` ainda não foi aplicado.** Próximo: mostrar o preview à dona.
 - **Decisões vigentes:** checkout como **convidado** (a decisão antiga de login obrigatório
   está superada); vitrine da home com título derivado do critério de ordem — `novidade_ordem` (curadoria da dona,
   reserva `created_at`) = "Novidades",
   `destaque_ordem` curado sem dado de venda = "Favoritos", só ordem real da dona ou histórico de
   pedidos = "Mais vendidos" (**nunca "Mais vendidos" ordenado por `created_at`**);
-  frete por tabela de zonas por faixa de CEP (Melhor Envio depois); sem glossário e só o ADR
-  0001 (as demais decisões entram aqui em uma linha).
+  frete por tabela de zonas por faixa de CEP (Melhor Envio depois); sem glossário e só os ADRs
+  0001 e 0002 (as demais decisões entram aqui em uma linha). **Multilíngue (ADR 0002, proposto, pós-go-live,
+  nada no código):** PT é a base nas colunas atuais e EN vai em tabelas `*_traducoes` (fallback para o PT em
+  `lib/i18n.js`); PT sem prefixo e EN em `/en/...` (`app/[lang]/`, hreflang, `noindex` na página EN sem
+  tradução); slugs e caminhos não se traduzem; idioma por cookie `idioma` (só a escolha explícita grava) e
+  `Accept-Language` + país no `proxy.js`, sem cabeçalho = PT; áudio EN em `produto_traducoes.audio_url`;
+  fatias I1–I4 no plano. **I1 já feito para categorias e coleções no X12** (tabelas, `lib/i18n.js`, seção
+  `TraducaoEn` no admin; falta produto e tag).
 - **Fluxo de trabalho da v1:** o redesign mora na branch `v1` (preview no Netlify, `noindex`);
   `main` segue sendo o site atual até o go-live. Mockups de UI ficam atrás de
   `NEXT_PUBLIC_MOCKUPS` e nunca vão para o domínio real. **A1 (infra de preview) está concluído**
@@ -218,10 +226,13 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   check do D2: todo slide do hero com foto real
 - **X1 (várias fotos):** SQL aplicado em produção em 2026-11-05 (`supabase/migrations/20261105181330_produto_imagens.sql`). **Rodar de novo no D2** o script de reconciliação `supabase/scripts/x1_reconciliar_produto_imagens.sql` (a `main` só grava em `produtos`). A galeria em `/loja/[slug]` já usa `produto_imagens` (A7)
 - **Foto de categoria (X7):** código pronto (upload no `CategoriaForm`, `getCategoriasComProdutos()` e `GradeCategorias`); o SQL `20261106140000_categorias_imagem.sql` já foi aplicado (2026-11-06); falta a dona enviar as fotos (cada categoria sem foto segue com o cartão de sempre). O mesmo SQL cria o bucket próprio `categorias` com as policies (ver Storage)
-- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive hero e cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam sem uso até autorização), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `filtrarPorCategoria`, `lib/foco.js`, `lib/fotos.js`, `lib/whatsapp.js` e os slugs do X8: `slugValido`, `getProdutoBySlug`, `getSlugAtual`). Sem lint nem CI
+- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive hero e cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam sem uso até autorização), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `filtrarPorCategoria`, `lib/foco.js`, `lib/fotos.js`, `lib/whatsapp.js`, `lib/i18n.js` e os slugs do X8: `slugValido`, `getProdutoBySlug`, `getSlugAtual`). Sem lint nem CI
 - Admin de pedidos
-- **Admin CRUD de coleções** — a tabela `colecoes` existe e é lida (dropdown no formulário
-  de produto), mas não há tela de gestão para criá-las/editá-las
+- **Coleções (X12):** gestão no admin pronta (`/admin/colecoes`); falta só o uso público (filtro/página por coleção
+  não existe) e excluir coleção (de propósito, fora do X12)
+- **X12 (taxonomia + par EN de categorias e coleções):** código pronto; **SQL
+  `supabase/migrations/20261106150000_x12_colecoes.sql` ainda NÃO aplicado** — aplicar antes de abrir o admin da `v1`
+  (as consultas embutem as tabelas novas e falham sem ele)
 
 ---
 
@@ -298,7 +309,9 @@ Auth / admin (chrome oculto por `SiteChrome`):
   (novo produto, nova categoria, registrar movimentação). Os links de navegação entre
   seções não ficam mais aqui — moraram para a sidebar persistente (ver abaixo)
 - **`/admin/produtos`**, **`/admin/produtos/novo`**, **`/admin/produtos/[id]/editar`** —
-  CRUD de produtos (toggle ativo/inativo, upload de imagem); `novo` e `[id]/editar` têm
+  CRUD de produtos (toggle ativo/inativo, upload de imagem); **coleções (X12): checkboxes agrupados por categoria**
+  (produto em várias; a 1ª marcada na ordem do admin vira `produtos.colecao_id`; `salvarColecoes` roda **depois** do
+  update de `produtos` e deixa em `produto_colecoes` exatamente as marcadas; a lista mostra todas); `novo` e `[id]/editar` têm
   link "← Produtos" acima do formulário, voltando para a listagem. **Campo "Endereço na loja" (X8)** no
   `ProdutoForm`: sugerido do nome só na criação (até ser editado à mão), nunca acompanha o nome na edição;
   normalizado com `slugify` ao sair do campo, validado com `slugValido`, mostra `{origem}/loja/{slug}`, e na
@@ -308,7 +321,13 @@ Auth / admin (chrome oculto por `SiteChrome`):
   **`/admin/categorias/[id]/editar`** — CRUD de categorias; `nova` e `[id]/editar` têm
   link "← Categorias" acima do formulário. O `CategoriaForm` tem campo "Foto (opcional)" (X7: upload para `{id}/{uuid}.{ext}` no bucket `categorias`, `SeletorFoco` com prévia 16:9, "Remover foto"; só toca nas colunas de foto se há foto antes ou agora). O campo de slug do `CategoriaForm` ganhou normalização, validação
   de formato, endereço resultante e aviso ao mudar na edição (X8); `23505` → "já existe uma categoria com esse
-  endereço"
+  endereço". X12: seção `TraducaoEn` ("English (opcional)") e coluna "EN" (✓ / —) na lista
+- **`/admin/colecoes`**, **`/admin/colecoes/nova`**, **`/admin/colecoes/[id]/editar`** (X12) — coleção pertence a uma
+  categoria. A lista (`OrdemColecoes`, `'use client'`) agrupa por categoria, com Subir/Descer, Editar, selo "EN ✓" e
+  "Salvar ordem" (grava `colecoes.ordem` = posição no grupo, só onde mudou; mesmo padrão de `CuradoriaNovidades`, reusa
+  `novidades.module.css`). `ColecaoForm`: nome, slug (`slugify`/`slugValido`; `23505` → "já existe uma coleção com esse
+  endereço"), categoria (obrigatória), descrição e `TraducaoEn`; coleção nova entra com `ordem` null (fim do grupo).
+  Sem excluir
 - **`/admin/estoque`** — lista produtos com estoque atual, link para registrar
   movimentação por produto
 - **`/admin/estoque/nova`** — formulário de movimentação (`MovimentacaoForm`), aceita
@@ -330,7 +349,7 @@ rota atual via `usePathname()` (primeiro uso desse padrão fora de `SiteChrome`)
 destacar a seção ativa (array `SECOES` — acrescentar uma seção futura, ex. Pedidos ou
 Coleções, é só adicionar um item nesse array) e renderiza o `LogoutButton` no rodapé da
 sidebar. Em telas `≤640px` a sidebar vira uma barra superior horizontal. Toda a navegação
-entre seções (Início/Produtos/Categorias/Novidades/Estoque) e o logout ficam ali, visíveis em todas
+entre seções (Início/Produtos/Categorias/Coleções/Novidades/Estoque) e o logout ficam ali, visíveis em todas
 as páginas de `/admin/*` — antes só havia um header estático com marca + logout, sem links
 de seção.
 
@@ -454,6 +473,10 @@ Cada um com `*.module.css` co-locado.
   hover do cartão e no foco de teclado do link; só dentro de `@media (hover: hover)`, então **no celular a foto fica
   sempre nítida** (o toque já navega, não há "por cima"). Foto decorativa (`alt=""`)
 - **`MeditacaoPlayer`** (`'use client'`) — player de áudio da meditação guiada
+- **`TraducaoEn`** (`'use client'`, mora em `app/admin/TraducaoEn.js`, não em `components/`) — seção recolhível "English
+  (opcional)" (nome + descrição) dos formulários de categoria e coleção; aberta só se já há tradução. Exporta também
+  `traducaoEnInicial(linhas)` e `salvarTraducao(supabase, tabela, fk, id, valores, existia)` (upsert, apaga ou nada,
+  conforme `acaoTraducao` de `lib/i18n.js`; erro com `exibir`). O formulário dono guarda o estado
 - **`LogoutButton`** (`'use client'`) — `signOut()` + redirect para `/login`, usado dentro
   de `AdminNav` (`app/admin/AdminNav.js`, ver seção de Rotas — não faz parte de
   `app/components/`, mas segue o mesmo padrão de client component com CSS module)
@@ -548,10 +571,20 @@ Subir/Descer/Tornar principal/Ajustar/Excluir (teclado e celular, sem arrastar) 
 foto; `salvarFotos()` (no `ProdutoForm`) envia para `{produto_id}/{uuid}.{ext}`, grava as linhas, atualiza a cópia e só
 então apaga do Storage as excluídas.
 
-### Admin — `lib/admin/produtos.js`, `lib/admin/categorias.js`, `lib/admin/estoque.js`
+### Traduções — `lib/i18n.js` (X12, ADR 0002)
 
-- `getAllProdutos()`, `getProdutoById(id)` (com `produto_imagens(*)`), `getColecoes()`, `getCategorias()`
-- `getAllCategorias()`, `getCategoriaById(id)`
+`traduzir(registro, traducao, idioma)` — fallback para o PT (pt, sem tradução ou sem registro devolve o registro;
+senão sobrepõe só os campos de texto preenchidos, ignorando `idioma` e `*_id`) e `acaoTraducao(valores, existia)`
+(`'gravar' | 'apagar' | 'nada'`, usada por `salvarTraducao`). **Nada público chama `traduzir` ainda** (sem rotas `/en`).
+Cobertos em `tests/i18n.test.js`.
+
+### Admin — `lib/admin/produtos.js`, `lib/admin/categorias.js`, `lib/admin/colecoes.js`, `lib/admin/estoque.js`
+
+- `getAllProdutos()` (com `produto_colecoes(colecao_id)`), `getProdutoById(id)` (com `produto_imagens(*)` e
+  `produto_colecoes(colecao_id)`), `getCategorias()`
+- `lib/admin/colecoes.js` (X12): `getColecoes()` (`*, categorias(nome), colecao_traducoes(idioma)`, por `ordem` com
+  null por último e nome — **saiu de `lib/admin/produtos.js`**) e `getColecaoById(id)` (com `colecao_traducoes(*)`)
+- `getAllCategorias()` (com `categoria_traducoes(idioma)`), `getCategoriaById(id)` (com `categoria_traducoes(*)`)
 - `getProdutosComEstoque()` — `{ produtos, colecoes }`, todos os produtos (ativos e
   inativos) com estoque atual + coleções para exibir o nome
 - `getMovimentacoes()` — histórico de `estoque_movimentacoes` (`select('*,
@@ -567,7 +600,8 @@ então apaga do Storage as excluídas.
 **Em uso pelo código:**
 
 - **`produtos`** — `id`, `nome`, `descricao`, `atributos`, `peso_gramas`,
-  `preco_centavos` (inteiro, centavos), `colecao_id` (FK, nullable), `categoria_id` (FK,
+  `preco_centavos` (inteiro, centavos), `colecao_id` (FK, nullable; **cópia da 1ª coleção**, X12:
+  as coleções do produto estão em `produto_colecoes`), `categoria_id` (FK,
   nullable), `mostrar_categoria_no_titulo` (bool), `tem_meditacao` (bool), `audio_url`,
   `ativo` (bool), `imagem_url`, `imagem_foco_x`/`imagem_foco_y` (smallint not null, 0–100, default 50, `check`;
   ponto de foco da foto), `imagem_zoom` (smallint not null, 100–200, default 100, `check`) — migrations em
@@ -597,7 +631,22 @@ então apaga do Storage as excluídas.
   acompanha o nome; a mesma migration acrescenta índice `unique` e `check` de formato (`not valid`, vale só para
   gravações novas). Sem histórico/redirect de slug de categoria (link antigo cai em "Todas", nunca 404)
 - **`colecoes`** — `id`, `nome`, `slug`, `descricao` — linha de marketing/produto (ex.:
-  "Coleção Inspirar"); **conceito diferente de categoria** (ver acima)
+  "Coleção Inspirar"); **conceito diferente de categoria**, mas **pertence a uma categoria**. **X12** (migration
+  `supabase/migrations/20261106150000_x12_colecoes.sql`, **ainda não aplicada**): `categoria_id` (FK `categorias`,
+  `on delete restrict`, not null; backfill = Chocolates), `ordem` (smallint nullable, `check > 0`; posição dentro da
+  categoria, null = fim), slug `unique` + `check` de formato (`not valid`), slug da Inspirar `cole-o-inspirar` →
+  `inspirar`, seed "Bombons" (`bombons`, Chocolates, ordem 2) e policy `"colecoes admin"` (escrita `authenticated`;
+  a migration não liga nem desliga RLS: estado atual não versionado, B-1b). Slug de coleção não é usado em link público
+- **`produto_colecoes`** (X12, mesma migration) — M:N produto ↔ coleção: `produto_id`, `colecao_id` (FKs, `on delete
+  cascade`), `created_at`, PK `(produto_id, colecao_id)`. RLS no padrão de `produto_imagens` (anon lê só de produto ativo,
+  `authenticated` tudo). **`produtos.colecao_id` segue como CÓPIA da 1ª coleção** (a `main` só conhece essa coluna);
+  os triggers `produtos_sincronizar_colecao_ins/_upd` (`sincronizar_colecao_principal()`) refletem em `produto_colecoes`
+  a troca/remoção feita pelo admin da `main` (tira o par antigo, põe o novo; as outras coleções ficam). Sem coluna
+  `ordem` (o ADR a previa; nada a usa, acrescentar depois é aditivo). Backfill dos pares a partir de `colecao_id`
+- **`categoria_traducoes`**, **`colecao_traducoes`** (X12, mesma migration; ADR 0002, opção B) — `categoria_id`/
+  `colecao_id` (FK, `on delete cascade`), `idioma` (`check in ('en')`), `nome`, `descricao` (nullable), PK
+  `(entidade_id, idioma)`. RLS: `anon` lê tudo (as entidades já são públicas), `authenticated` escreve. Campo vazio cai
+  no PT (`lib/i18n.js`). Editadas pela seção `TraducaoEn` do admin
 - **`estoque_movimentacoes`** — `id`, `produto_id` (FK), `tipo` (constraint: `venda`,
   `reposicao`, `ajuste`, `cancelamento` — hoje o admin só cria `reposicao`/`ajuste`;
   `venda`/`cancelamento` são reservados para o checkout), `quantidade` (inteiro, pode ser

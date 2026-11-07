@@ -1,10 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import {
-  getProdutoById,
-  getColecoes,
-  getCategorias,
-} from '@/lib/admin/produtos';
+import { getProdutoById, getCategorias } from '@/lib/admin/produtos';
+import { getColecoes } from '@/lib/admin/colecoes';
 import ProdutoForm from '../../ProdutoForm';
 import formStyles from '../../ProdutoForm.module.css';
 

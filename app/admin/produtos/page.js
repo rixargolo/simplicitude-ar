@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { getAllProdutos, getColecoes } from '@/lib/admin/produtos';
+import { getAllProdutos } from '@/lib/admin/produtos';
+import { getColecoes } from '@/lib/admin/colecoes';
 import ToggleAtivo from './ToggleAtivo';
 import styles from './produtos.module.css';
 
@@ -68,7 +69,12 @@ export default async function AdminProdutosPage() {
                     )}
                   </td>
                   <td className={styles.nome}>{produto.nome}</td>
-                  <td>{nomeColecao.get(produto.colecao_id) ?? '—'}</td>
+                  <td>
+                    {produto.produto_colecoes
+                      .map((pc) => nomeColecao.get(pc.colecao_id))
+                      .filter(Boolean)
+                      .join(', ') || '—'}
+                  </td>
                   <td className={styles.preco}>
                     {formatBRL(produto.preco_centavos)}
                   </td>

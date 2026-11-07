@@ -7,6 +7,7 @@ import { slugify, slugValido } from '@/lib/produtos';
 import { caminhoDaUrl, validarArquivos } from '@/lib/fotos';
 import { FOCO_PADRAO, ZOOM_PADRAO } from '@/lib/foco';
 import SeletorFoco from '../produtos/SeletorFoco';
+import TraducaoEn, { salvarTraducao, traducaoEnInicial } from '../TraducaoEn';
 import styles from './CategoriaForm.module.css';
 
 const BUCKET = 'categorias'; // bucket próprio (X7), criado no SQL da migration
@@ -29,6 +30,8 @@ export default function CategoriaForm({ mode, categoria }) {
         }
       : null,
   );
+  const [en, setEn] = useState(() => traducaoEnInicial(categoria?.categoria_traducoes));
+  const existiaEn = Boolean(categoria?.categoria_traducoes?.some((t) => t.idioma === 'en'));
   const [idCriado, setIdCriado] = useState(null); // criada, mas a foto falhou: o próximo Salvar atualiza em vez de inserir
   const [erro, setErro] = useState('');
   const [salvando, setSalvando] = useState(false);
@@ -86,6 +89,7 @@ export default function CategoriaForm({ mode, categoria }) {
       }
 
       await salvarFoto(supabase, id, foto, categoria);
+      await salvarTraducao(supabase, 'categoria_traducoes', 'categoria_id', id, en, existiaEn);
 
       router.push('/admin/categorias');
       router.refresh();
@@ -186,6 +190,8 @@ export default function CategoriaForm({ mode, categoria }) {
           </>
         )}
       </div>
+
+      <TraducaoEn valores={en} onChange={setEn} />
 
       {erro && <p className={styles.erro}>{erro}</p>}
 

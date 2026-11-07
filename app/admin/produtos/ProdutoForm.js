@@ -43,7 +43,21 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
       ? (produto.preco_centavos / 100).toFixed(2).replace('.', ',')
       : '',
   );
-  const [colecaoId, setColecaoId] = useState(produto?.colecao_id ?? '');
+  // Coleções (X12, M:N): ids marcados. Grupos por categoria na ordem do admin; a 1ª marcada nessa ordem
+  // vira produtos.colecao_id (cópia que o admin da main lê).
+  const [colecaoIds, setColecaoIds] = useState(
+    () => new Set(produto?.produto_colecoes?.map((pc) => pc.colecao_id) ?? []),
+  );
+  const gruposColecoes = categorias
+    .map((c) => ({ categoria: c, colecoes: colecoes.filter((x) => x.categoria_id === c.id) }))
+    .filter((g) => g.colecoes.length > 0);
+  const colecoesNaOrdem = gruposColecoes.flatMap((g) => g.colecoes);
+  const alternarColecao = (id) =>
+    setColecaoIds((atual) => {
+      const novo = new Set(atual);
+      if (!novo.delete(id)) novo.add(id);
+      return novo;
+    });
   const [categoriaId, setCategoriaId] = useState(
     produto?.categoria_id ?? '',
   );
@@ -87,6 +101,8 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
     setSalvando(true);
     const supabase = createClient();
 
+    const idsColecoes = colecoesNaOrdem.map((c) => c.id).filter((id) => colecaoIds.has(id));
+
     const payload = {
       nome: nome.trim(),
       slug,
@@ -94,7 +110,7 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
       atributos: atributos.trim() || null,
       peso_gramas: pesoGramas ? Number(pesoGramas) : null,
       preco_centavos: centavos,
-      colecao_id: colecaoId || null,
+      colecao_id: idsColecoes[0] ?? null,
       categoria_id: categoriaId || null,
       mostrar_categoria_no_titulo: mostrarCategoriaNoTitulo,
       tem_meditacao: temMeditacao,
@@ -108,6 +124,8 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
           ? await criarProduto(supabase, payload)
           : await atualizarProduto(supabase, produto.id, payload);
 
+      // depois do update de produtos: o trigger de colecao_id mexe nos pares, e aqui o conjunto final vence
+      await salvarColecoes(supabase, produtoId, idsColecoes);
       await salvarFotos(supabase, produtoId, fotos, fotosIniciais, produto);
 
       router.push('/admin/produtos');
@@ -224,21 +242,25 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
         </label>
       </div>
 
-      <label className={styles.field}>
-        <span className={styles.label}>Coleção</span>
-        <select
-          className={styles.input}
-          value={colecaoId}
-          onChange={(e) => setColecaoId(e.target.value)}
-        >
-          <option value="">Sem coleção</option>
-          {colecoes.map((colecao) => (
-            <option key={colecao.id} value={colecao.id}>
-              {colecao.nome}
-            </option>
-          ))}
-        </select>
-      </label>
+      <div className={styles.field}>
+        <span className={styles.label}>Coleções</span>
+        {gruposColecoes.length === 0 && <span className={styles.ajuda}>Nenhuma coleção cadastrada.</span>}
+        {gruposColecoes.map(({ categoria, colecoes: lista }) => (
+          <fieldset key={categoria.id} className={styles.grupo}>
+            <legend className={styles.ajuda}>{categoria.nome}</legend>
+            {lista.map((colecao) => (
+              <label key={colecao.id} className={styles.checkboxField}>
+                <input
+                  type="checkbox"
+                  checked={colecaoIds.has(colecao.id)}
+                  onChange={() => alternarColecao(colecao.id)}
+                />
+                <span>{colecao.nome}</span>
+              </label>
+            ))}
+          </fieldset>
+        ))}
+      </div>
 
       <label className={styles.field}>
         <span className={styles.label}>Categoria</span>
@@ -330,6 +352,18 @@ async function atualizarProduto(supabase, id, payload) {
 
   if (error) throw Object.assign(new Error(error.message), { code: error.code });
   return id;
+}
+
+// Deixa em produto_colecoes exatamente as coleções marcadas: apaga as desmarcadas e insere as novas.
+async function salvarColecoes(supabase, produtoId, ids) {
+  const apagar = supabase.from('produto_colecoes').delete().eq('produto_id', produtoId);
+  const { error: erroApagar } = await (ids.length > 0 ? apagar.not('colecao_id', 'in', `(${ids.join(',')})`) : apagar);
+  if (erroApagar) throw new Error(`Produto salvo, mas não foi possível gravar as coleções: ${erroApagar.message}`);
+  if (ids.length === 0) return;
+  const { error } = await supabase
+    .from('produto_colecoes')
+    .upsert(ids.map((colecao_id) => ({ produto_id: produtoId, colecao_id })), { onConflict: 'produto_id,colecao_id', ignoreDuplicates: true });
+  if (error) throw new Error(`Produto salvo, mas não foi possível gravar as coleções: ${error.message}`);
 }
 
 // Grava as fotos do produto, em ordem segura (nunca apontar para arquivo apagado):
