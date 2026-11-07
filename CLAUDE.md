@@ -840,7 +840,8 @@ implementado — ver pendência de segurança #3.
   `tests/paletas.test.js`): sem isso o Next não inlina a env no client e o código de mockup não é
   descartado do bundle de produção; headers de segurança em todas as rotas (CSP com
   `frame-ancestors 'none'`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy`,
-  `nosniff`) — a CSP libera só o Storage do Supabase e precisará liberar a InfinitePay quando
+  `nosniff`) — a CSP ganha `'unsafe-eval'` em `script-src` **só com `NODE_ENV=development`** (React em dev usa eval;
+  produção idêntica, travada em `tests/preview.test.js`) — a CSP libera só o Storage do Supabase e precisará liberar a InfinitePay quando
   o checkout existir
 - `.mcp.json` (Playwright + Context7 MCP) existe só localmente, **não está versionado**
 - `_DOCS/` (auditorias de segurança e de design, assets de marca) está no `.gitignore`
