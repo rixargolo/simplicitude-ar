@@ -68,7 +68,7 @@ públicas, `proxy.js`, textos fixos ou no schema de conteúdo** (produtos, categ
   **X5 (home com Meditação, seção placeholder e Quem somos; ver `/`) está no código; falta texto e foto da seção nova
   e confirmar com a dona o título "Meditação".** **X6 (Novidades permanente, curadoria em `/admin/novidades`) está no
   código e o SQL `supabase/migrations/20261106130000_produtos_novidade_ordem.sql` **já foi aplicado (2026-11-06)**
-  (a home cai nos mais recentes enquanto a curadoria estiver vazia).** **X7 (categorias com imagem: foto no admin + desfoque que esmaece no hover) e X10 (sem chips de categoria na vitrine Novidades) estão no código e o SQL `supabase/migrations/20261106140000_categorias_imagem.sql` **já foi aplicado (2026-11-06)**.** **X11 (análise e organização do Storage: buckets por tipo, policies em SQL, limites, órfãos, público/privado) só está registrado no plano, sem implementação.** **X9 (página 404 da marca, `app/not-found.js`) está no código; texto provisório, confirmar com a dona.** **X12 (coleções dentro de categorias, produto ↔ coleção M:N, gestão em `/admin/colecoes`, par de tradução EN de categorias e coleções) está no código; o SQL `20261106150000_x12_colecoes.sql` ainda não foi aplicado.** Próximo: mostrar o preview à dona.
+  (a home cai nos mais recentes enquanto a curadoria estiver vazia).** **X7 (categorias com imagem: foto no admin + desfoque que esmaece no hover) e X10 (sem chips de categoria na vitrine Novidades) estão no código e o SQL `supabase/migrations/20261106140000_categorias_imagem.sql` **já foi aplicado (2026-11-06)**.** **X11 (análise e organização do Storage: buckets por tipo, policies em SQL, limites, órfãos, público/privado) só está registrado no plano, sem implementação.** **X9 (página 404 da marca, `app/not-found.js`) está no código; texto provisório, confirmar com a dona.** **X12 (coleções dentro de categorias, produto ↔ coleção M:N, gestão em `/admin/colecoes`, par de tradução EN de categorias e coleções) está no código e concluído/testado; o SQL `20261106150000_x12_colecoes.sql` **foi aplicado (2026-11-06)**.** **X13 (campos do produto: descrição curta, descrição longa com quebras de linha, ingredientes, tags com CRUD em `/admin/tags` e tradução EN de produto e tag) está no código e concluído/testado; o SQL `20261107120000_x13_campos_produto.sql` **foi aplicado (2026-11-07)**.** **Ideias registradas, nada implementado:** **X14** (nova `/loja`: topo de impacto, filtro por categoria/coleção, carrosséis de uma linha), **X15** (destaque ou landing de Presentes/Natal), **X16** (busca no site todo, no cabeçalho) e **X17** (política de troca e devolução, dentro do A11); detalhes no plano. Próximo: mostrar o preview à dona.
 - **Decisões vigentes:** checkout como **convidado** (a decisão antiga de login obrigatório
   está superada); vitrine da home com título derivado do critério de ordem — `novidade_ordem` (curadoria da dona,
   reserva `created_at`) = "Novidades",
@@ -78,10 +78,11 @@ públicas, `proxy.js`, textos fixos ou no schema de conteúdo** (produtos, categ
   0001 e 0002 (as demais decisões entram aqui em uma linha). **Multilíngue (ADR 0002, proposto, pós-go-live,
   nada no código):** PT é a base nas colunas atuais e EN vai em tabelas `*_traducoes` (fallback para o PT em
   `lib/i18n.js`); PT sem prefixo e EN em `/en/...` (`app/[lang]/`, hreflang, `noindex` na página EN sem
-  tradução); slugs e caminhos não se traduzem; idioma por cookie `idioma` (só a escolha explícita grava) e
+  tradução); slugs e caminhos não se traduzem (**pergunta em aberto no ADR: traduzir slugs em `/en`? rever antes do I2**); idioma por cookie `idioma` (só a escolha explícita grava) e
   `Accept-Language` + país no `proxy.js`, sem cabeçalho = PT; áudio EN em `produto_traducoes.audio_url`;
   fatias I1–I4 no plano. **I1 já feito para categorias e coleções no X12** (tabelas, `lib/i18n.js`, seção
-  `TraducaoEn` no admin; falta produto e tag).
+  `TraducaoEn` no admin); **produto e tag no X13** (`produto_traducoes`, `tag_traducoes`; ficou sem `atributos` e sem
+  `audio_url`, que é o I3). Faltam só as rotas `/en` (I2).
 - **Fluxo de trabalho da v1:** o redesign mora na branch `v1` (preview no Netlify, `noindex`);
   `main` segue sendo o site atual até o go-live. Mockups de UI ficam atrás de
   `NEXT_PUBLIC_MOCKUPS` e nunca vão para o domínio real. **A1 (infra de preview) está concluído**
@@ -230,9 +231,12 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
 - Admin de pedidos
 - **Coleções (X12):** gestão no admin pronta (`/admin/colecoes`); falta só o uso público (filtro/página por coleção
   não existe) e excluir coleção (de propósito, fora do X12)
-- **X12 (taxonomia + par EN de categorias e coleções):** código pronto; **SQL
-  `supabase/migrations/20261106150000_x12_colecoes.sql` ainda NÃO aplicado** — aplicar antes de abrir o admin da `v1`
-  (as consultas embutem as tabelas novas e falham sem ele)
+- **X12 (taxonomia + par EN de categorias e coleções):** concluído e testado; SQL
+  `supabase/migrations/20261106150000_x12_colecoes.sql` **aplicado em 2026-11-06**
+- **X13 (campos do produto):** concluído e testado; SQL `supabase/migrations/20261107120000_x13_campos_produto.sql`
+  **aplicado em 2026-11-07**. `produtos.atributos` não é migrado nem editado na `v1` (a `main` ainda o usa); a descrição
+  curta começa vazia (a dona precisa preenchê-la: `/meditacao` mostra só ela). Uso público de tag (link, filtro, tags no
+  card e em `/meditacao`) e `/en` ficam fora
 
 ---
 
@@ -285,9 +289,10 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
 - **`/quem-somos`** — institucional
 - **`/meditacao`** — hero (faixa de imagem + duotone + listras diagonais + título, no
   padrão de `/quem-somos`) e bloco de introdução da Coleção Inspirar, seguidos da lista de
-  produtos com `tem_meditacao=true` via `ApresentacaoProduto` + `MeditacaoPlayer`
+  produtos com `tem_meditacao=true` via `ApresentacaoProduto resumido` + `MeditacaoPlayer` (**só a descrição curta**:
+  sem descrição longa nem ingredientes)
 - **`/loja`** — `h1` (nome da categoria ativa ou "Loja") + frase, chips de categoria ("Todas" + só categorias com ≥1 produto ativo, `getCategoriasComProdutos()`; rolam na horizontal no celular, quebram linha a partir de 900px) e grade de `CardProduto` (2 colunas no celular). Filtro por `?categoria=slug`, no servidor (`searchParams`, links `<Link>`, funciona sem JS). **Slug desconhecido, vazio ou repetido = "Todas"** (`filtrarPorCategoria`), nunca página vazia. Zero produtos ativos → frase de estado vazio com link para `/quem-somos`. A página é dinâmica (`ƒ`) por causa do `searchParams`
-- **`/loja/[slug]`** — detalhe do produto (X8: o slug é a coluna `produtos.slug`, fixa; slug antigo que
+- **`/loja/[slug]`** — detalhe do produto (X13: texto na ordem categoria, nome, descrição curta, tags, preço/Comprar, descrição longa e ingredientes, ver `ApresentacaoProduto`; X8: o slug é a coluna `produtos.slug`, fixa; slug antigo que
   consta em `produto_slugs` responde **308** para o atual via `permanentRedirect`, senão 404). Dinâmica (`ƒ`: lê `headers()` para o endereço absoluto). `h1` = nome; galeria
   (`getFotosDoProduto` → `ApresentacaoProduto` → `GaleriaProduto`); peso, preço, descrição; **Comprar =
   link do WhatsApp com mensagem pronta** (`BotaoComprar`, nova aba, sem carrinho/quantidade). Sem estoque
@@ -316,7 +321,11 @@ Auth / admin (chrome oculto por `SiteChrome`):
   `ProdutoForm`: sugerido do nome só na criação (até ser editado à mão), nunca acompanha o nome na edição;
   normalizado com `slugify` ao sair do campo, validado com `slugValido`, mostra `{origem}/loja/{slug}`, e na
   edição avisa que mudar afeta links compartilhados (o antigo redireciona, mas não é reaproveitável). Unicidade
-  é do banco: erro `23505` vira "já é (ou já foi) de outro produto"
+  é do banco: erro `23505` vira "já é (ou já foi) de outro produto". **X13:** "Atributos" saiu do formulário (e do
+  payload: a `v1` nunca grava `atributos`); entram "Descrição curta" (≤120, contador), "Descrição longa", "Ingredientes",
+  checkboxes de **Tags** e a seção `TraducaoEn` (nome, curta, longa, ingredientes → `produto_traducoes`; fica **logo depois do
+  campo Ingredientes**, antes de Peso/Preço, para não parecer escondida abaixo das fotos). `salvarVinculos`
+  (coleções e tags) roda depois do update de `produtos`; a lista ganha a coluna "EN"
 - **`/admin/categorias`**, **`/admin/categorias/nova`**,
   **`/admin/categorias/[id]/editar`** — CRUD de categorias; `nova` e `[id]/editar` têm
   link "← Categorias" acima do formulário. O `CategoriaForm` tem campo "Foto (opcional)" (X7: upload para `{id}/{uuid}.{ext}` no bucket `categorias`, `SeletorFoco` com prévia 16:9, "Remover foto"; só toca nas colunas de foto se há foto antes ou agora). O campo de slug do `CategoriaForm` ganhou normalização, validação
@@ -328,6 +337,9 @@ Auth / admin (chrome oculto por `SiteChrome`):
   `novidades.module.css`). `ColecaoForm`: nome, slug (`slugify`/`slugValido`; `23505` → "já existe uma coleção com esse
   endereço"), categoria (obrigatória), descrição e `TraducaoEn`; coleção nova entra com `ordem` null (fim do grupo).
   Sem excluir
+- **`/admin/tags`**, **`/admin/tags/nova`**, **`/admin/tags/[id]/editar`** (X13) — CRUD de tags (`TagForm`: nome, slug com
+  `slugify`/`slugValido`, `23505` → "já existe uma tag com esse endereço", `TraducaoEn` só com o nome). Na edição há **Excluir**
+  (`window.confirm`; o cascade tira a tag dos produtos e da tradução) — o único "excluir" do admin. Lista com selo "EN ✓"
 - **`/admin/estoque`** — lista produtos com estoque atual, link para registrar
   movimentação por produto
 - **`/admin/estoque/nova`** — formulário de movimentação (`MovimentacaoForm`), aceita
@@ -349,7 +361,7 @@ rota atual via `usePathname()` (primeiro uso desse padrão fora de `SiteChrome`)
 destacar a seção ativa (array `SECOES` — acrescentar uma seção futura, ex. Pedidos ou
 Coleções, é só adicionar um item nesse array) e renderiza o `LogoutButton` no rodapé da
 sidebar. Em telas `≤640px` a sidebar vira uma barra superior horizontal. Toda a navegação
-entre seções (Início/Produtos/Categorias/Coleções/Novidades/Estoque) e o logout ficam ali, visíveis em todas
+entre seções (Início/Produtos/Categorias/Coleções/Tags/Novidades/Estoque) e o logout ficam ali, visíveis em todas
 as páginas de `/admin/*` — antes só havia um header estático com marca + logout, sem links
 de seção.
 
@@ -404,8 +416,11 @@ Cada um com `*.module.css` co-locado.
   dela; ignora a chave de `sessionStorage`, mas respeita `prefers-reduced-motion`). Fora
   da Home o clique só navega para `/` via o `<Link>` do `Header`.
 - **`ApresentacaoProduto`** (server) — bloco de apresentação de produto (`GaleriaProduto`, rótulo
-  de categoria via `rotuloCategoria()`, nome, atributos, descrição); usado em
-  `/loja/[slug]` e `/meditacao`. Props `produto`, `fotos` (opcional, de `getFotosDoProduto`; sem ela cai na
+  de categoria via `rotuloCategoria()`, nome, **descrição curta** em Fraunces itálico, **tags** como chips (`produto.tags`,
+  só vem de `getProdutoBySlug`), `children`, **descrição longa** (`white-space: pre-line`) e **ingredientes** (`dl`); a
+  ordem põe preço/Comprar (ou o player, em `/meditacao`) antes do texto longo; `atributos` não aparece mais, X13); usado em
+  `/loja/[slug]` e `/meditacao`. Props `produto`, `resumido` (padrão `false`; `/meditacao` o liga: omite descrição longa e
+  ingredientes, fica só a curta), `fotos` (opcional, de `getFotosDoProduto`; sem ela cai na
   cópia da principal em `produtos.imagem_*` via `fotosDoProduto`, caso de `/meditacao`), `Titulo` (`h2`
   padrão; a página do produto passa `h1`)
 - **`GaleriaProduto`** (`'use client'`) — foto principal no quadro do card (`--proporcao-produto`, `cover`,
@@ -452,7 +467,7 @@ Cada um com `*.module.css` co-locado.
   seta da vitrine também a usa) preenchido com `object-fit: cover` e enquadrado por
   `style={estiloFoto(produto.imagem_foco_x, produto.imagem_foco_y, produto.imagem_zoom)}` (ponto de foco + zoom por
   produto; sem ajuste = centro e 100%). A página de produto (A7) usa o mesmo `estiloFoto`. Selo "Esgotado" (`estoque === 0`), categoria (**sempre**, ignora
-  `mostrar_categoria_no_titulo`), nome, `descricao` em 2 linhas (`line-clamp`; vira `descricao_curta` no C2) e preço.
+  `mostrar_categoria_no_titulo`), nome, `descricao_curta || descricao` em 2 linhas (`line-clamp`, X13) e preço.
   Link para `/loja/[slug]`. Só papéis `--cor-*`
   Usado em `app/page.js` logo abaixo do hero, alimentado por `getVitrine()` e
   `getCategoriasComProdutos()`
@@ -474,8 +489,10 @@ Cada um com `*.module.css` co-locado.
   sempre nítida** (o toque já navega, não há "por cima"). Foto decorativa (`alt=""`)
 - **`MeditacaoPlayer`** (`'use client'`) — player de áudio da meditação guiada
 - **`TraducaoEn`** (`'use client'`, mora em `app/admin/TraducaoEn.js`, não em `components/`) — seção recolhível "English
-  (opcional)" (nome + descrição) dos formulários de categoria e coleção; aberta só se já há tradução. Exporta também
-  `traducaoEnInicial(linhas)` e `salvarTraducao(supabase, tabela, fk, id, valores, existia)` (upsert, apaga ou nada,
+  (opcional)" dos formulários de categoria, coleção, produto e tag; aberta só se já há tradução. A prop `campos`
+  (`[{ chave, rotulo, multilinha?, maxLength? }]`, padrão nome + descrição) define os campos; `valores` tem uma chave por
+  campo. Exporta também `traducaoEnInicial(linhas, campos)` e `salvarTraducao(supabase, tabela, fk, id, valores, existia)`
+  (grava as colunas = chaves de `valores`; upsert, apaga ou nada,
   conforme `acaoTraducao` de `lib/i18n.js`; erro com `exibir`). O formulário dono guarda o estado
 - **`LogoutButton`** (`'use client'`) — `signOut()` + redirect para `/login`, usado dentro
   de `AdminNav` (`app/admin/AdminNav.js`, ver seção de Rotas — não faz parte de
@@ -532,6 +549,7 @@ com `NEXT_PUBLIC_MOCKUPS=1` e, sem a flag, só os que têm `imagem`. Cobertos em
 - `rotuloCategoria(produto)` — retorna o nome da categoria só quando
   `mostrar_categoria_no_titulo=true` **e** há `categoria_id` vinculado; senão `null` (sem
   fallback fixo)
+- `getProdutoBySlug(slug)` embute também `tags(nome)` (N:N por `produto_tags`, ordenadas por nome, X13)
 - `slugify(nome)` (só para **sugerir** slug nos formulários do admin e normalizar a digitação; não resolve
   mais rota), `slugValido(slug)` (regex + ≤ 80, a mesma regra do `check` no banco), `getProdutoBySlug(slug)`
   (`produtos.slug`, ativos) e `getSlugAtual(slugAntigo)` (`produto_slugs` → slug atual do produto ativo, ou
@@ -584,6 +602,8 @@ Cobertos em `tests/i18n.test.js`.
   `produto_colecoes(colecao_id)`), `getCategorias()`
 - `lib/admin/colecoes.js` (X12): `getColecoes()` (`*, categorias(nome), colecao_traducoes(idioma)`, por `ordem` com
   null por último e nome — **saiu de `lib/admin/produtos.js`**) e `getColecaoById(id)` (com `colecao_traducoes(*)`)
+- `lib/admin/tags.js` (X13): `getTags()` (`*, tag_traducoes(idioma)`, por nome) e `getTagById(id)` (com `tag_traducoes(*)`).
+  `getAllProdutos()` embute também `produto_traducoes(idioma)` e `getProdutoById()` embute `produto_tags(tag_id)` e `produto_traducoes(*)`
 - `getAllCategorias()` (com `categoria_traducoes(idioma)`), `getCategoriaById(id)` (com `categoria_traducoes(*)`)
 - `getProdutosComEstoque()` — `{ produtos, colecoes }`, todos os produtos (ativos e
   inativos) com estoque atual + coleções para exibir o nome
@@ -613,6 +633,15 @@ Cobertos em `tests/i18n.test.js`.
   que a ignora), **`slug`** (X8; migration `supabase/migrations/20261106120000_produtos_slug.sql`,
   **aplicada em 2026-11-06**: text not null, `unique`, `check` `^[a-z0-9]+(-[a-z0-9]+)*$` e ≤ 80; gerado uma vez e **não
   muda com o nome**; trigger `before insert` preenche com `public.slugify(nome)` se vier vazio — cobre o admin da `main`)
+  **X13** (migration `supabase/migrations/20261107120000_x13_campos_produto.sql`, **aplicada em 2026-11-07**): `descricao_curta`
+  (text nullable, `check char_length <= 120`) e `ingredientes` (text nullable), seguras para a `main`. **`atributos` segue na
+  tabela só para a `main`**: a `v1` não o exibe nem o grava; `descricao` é a descrição longa (sem renomear)
+- **`tags`**, **`produto_tags`**, **`tag_traducoes`**, **`produto_traducoes`** (X13, mesma migration; ADR 0002, opção B) —
+  `tags`: `id`, `nome`, `slug` (`unique` + `check` de formato), `created_at`; `anon` lê tudo, `authenticated` escreve.
+  `produto_tags`: M:N produto ↔ tag, PK `(produto_id, tag_id)`, cascade, RLS no padrão de `produto_colecoes`. `tag_traducoes`
+  `(tag_id, idioma, nome)`. `produto_traducoes` `(produto_id, idioma, nome, descricao_curta ≤120, descricao, ingredientes)`:
+  `anon` lê só de produto ativo. `idioma` só `'en'`; campo vazio cai no PT (`lib/i18n.js`). Sem `atributos` nem `audio_url`
+  (esse é o I3). Editadas pela seção `TraducaoEn` do admin; nada público usa a tradução ainda
 - **`produto_slugs`** (X8, mesma migration) — `slug` (PK, mesmo `check`), `produto_id` (FK `produtos`, `on delete
   cascade`), `created_at`: todo slug que um produto já teve, inclusive o atual. Preenchida só pela trigger `after
   insert or update of slug` em `produtos` (`security definer`), que recusa com `23505` um slug de outro produto;
@@ -632,7 +661,7 @@ Cobertos em `tests/i18n.test.js`.
   gravações novas). Sem histórico/redirect de slug de categoria (link antigo cai em "Todas", nunca 404)
 - **`colecoes`** — `id`, `nome`, `slug`, `descricao` — linha de marketing/produto (ex.:
   "Coleção Inspirar"); **conceito diferente de categoria**, mas **pertence a uma categoria**. **X12** (migration
-  `supabase/migrations/20261106150000_x12_colecoes.sql`, **ainda não aplicada**): `categoria_id` (FK `categorias`,
+  `supabase/migrations/20261106150000_x12_colecoes.sql`, **aplicada em 2026-11-06**): `categoria_id` (FK `categorias`,
   `on delete restrict`, not null; backfill = Chocolates), `ordem` (smallint nullable, `check > 0`; posição dentro da
   categoria, null = fim), slug `unique` + `check` de formato (`not valid`), slug da Inspirar `cole-o-inspirar` →
   `inspirar`, seed "Bombons" (`bombons`, Chocolates, ordem 2) e policy `"colecoes admin"` (escrita `authenticated`;
@@ -776,6 +805,21 @@ implementado — ver pendência de segurança #3.
 - `scripts/vincular-audio-meditacao.mjs` — script one-off e idempotente que vincula os
   áudios de meditação guiada (bucket `meditacao`) aos produtos Esperança/Serenidade,
   preenchendo `audio_url` (já rodado); mesmo padrão de autenticação admin do script acima
+
+---
+
+## Deploy
+
+Regras permanentes, a seguir quando o dono pedir:
+
+- **"deploy pra v1":** commitar o que estiver pendente (mensagem descritiva, em português) e dar push na branch `v1`.
+- **"deploy pra main":** commitar o que estiver pendente, dar push na `v1`, fazer o merge da `v1` na `main` e dar
+  push na `main`. **Nunca apagar a `v1`**; voltar para a `v1` depois do merge.
+- **Nos dois casos:**
+  - rodar `npm test` e `npm run build` antes; se falharem, parar e avisar o dono;
+  - nunca usar force push;
+  - se houver migration nova em `supabase/migrations/` que o dono possa não ter aplicado, avisar e esperar a
+    confirmação dele antes do push.
 
 ---
 

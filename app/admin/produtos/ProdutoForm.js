@@ -6,9 +6,20 @@ import { createClient } from '@/lib/supabase/client';
 import { slugify, slugValido } from '@/lib/produtos';
 import { caminhoDaUrl, fotosDoProduto } from '@/lib/fotos';
 import FotosProduto from './FotosProduto';
+import TraducaoEn, { salvarTraducao, traducaoEnInicial } from '../TraducaoEn';
 import styles from './ProdutoForm.module.css';
 
 const BUCKET = 'produtos';
+
+const LIMITE_DESCRICAO_CURTA = 120; // mesmo limite do check no banco (X13)
+
+// Campos da seção "English (opcional)" do produto (X13), em produto_traducoes.
+const CAMPOS_EN = [
+  { chave: 'nome', rotulo: 'Name' },
+  { chave: 'descricao_curta', rotulo: 'Short description', maxLength: LIMITE_DESCRICAO_CURTA },
+  { chave: 'descricao', rotulo: 'Long description', multilinha: true },
+  { chave: 'ingredientes', rotulo: 'Ingredients', multilinha: true },
+];
 
 const EXTENSAO = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
 
@@ -24,7 +35,7 @@ function precoParaCentavos(texto) {
   return Math.round(valor * 100);
 }
 
-export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
+export default function ProdutoForm({ mode, produto, colecoes, categorias, tags }) {
   const router = useRouter();
 
   const [nome, setNome] = useState(produto?.nome ?? '');
@@ -34,7 +45,18 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
   const [origem, setOrigem] = useState('');
   useEffect(() => setOrigem(window.location.origin), []);
   const [descricao, setDescricao] = useState(produto?.descricao ?? '');
-  const [atributos, setAtributos] = useState(produto?.atributos ?? '');
+  // `atributos` (coluna antiga) não é editado aqui: a main ainda o usa e a v1 não o grava (X13)
+  const [descricaoCurta, setDescricaoCurta] = useState(produto?.descricao_curta ?? '');
+  const [ingredientes, setIngredientes] = useState(produto?.ingredientes ?? '');
+  const [tagIds, setTagIds] = useState(() => new Set(produto?.produto_tags?.map((pt) => pt.tag_id) ?? []));
+  const alternarTag = (id) =>
+    setTagIds((atual) => {
+      const novo = new Set(atual);
+      if (!novo.delete(id)) novo.add(id);
+      return novo;
+    });
+  const [en, setEn] = useState(() => traducaoEnInicial(produto?.produto_traducoes, CAMPOS_EN));
+  const existiaEn = Boolean(produto?.produto_traducoes?.some((t) => t.idioma === 'en'));
   const [pesoGramas, setPesoGramas] = useState(
     produto?.peso_gramas != null ? String(produto.peso_gramas) : '',
   );
@@ -107,7 +129,8 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
       nome: nome.trim(),
       slug,
       descricao: descricao.trim() || null,
-      atributos: atributos.trim() || null,
+      descricao_curta: descricaoCurta.trim() || null,
+      ingredientes: ingredientes.trim() || null,
       peso_gramas: pesoGramas ? Number(pesoGramas) : null,
       preco_centavos: centavos,
       colecao_id: idsColecoes[0] ?? null,
@@ -125,7 +148,9 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
           : await atualizarProduto(supabase, produto.id, payload);
 
       // depois do update de produtos: o trigger de colecao_id mexe nos pares, e aqui o conjunto final vence
-      await salvarColecoes(supabase, produtoId, idsColecoes);
+      await salvarVinculos(supabase, 'produto_colecoes', 'colecao_id', produtoId, idsColecoes, 'as coleções');
+      await salvarVinculos(supabase, 'produto_tags', 'tag_id', produtoId, [...tagIds], 'as tags');
+      await salvarTraducao(supabase, 'produto_traducoes', 'produto_id', produtoId, en, existiaEn);
       await salvarFotos(supabase, produtoId, fotos, fotosIniciais, produto);
 
       router.push('/admin/produtos');
@@ -135,7 +160,9 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
       setErro(
         err.code === '23505'
           ? 'Esse endereço já é (ou já foi) de outro produto. Escolha outro.'
-          : 'Não foi possível salvar o produto. Tente novamente.',
+          : err.exibir
+            ? err.message
+            : 'Não foi possível salvar o produto. Tente novamente.',
       );
       setSalvando(false);
     }
@@ -195,26 +222,48 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
         )}
       </div>
 
-      <label className={styles.field}>
-        <span className={styles.label}>Descrição</span>
+      <div className={styles.field}>
+        <label htmlFor="produto-descricao-curta" className={styles.label}>Descrição curta</label>
+        <input
+          id="produto-descricao-curta"
+          className={styles.input}
+          type="text"
+          value={descricaoCurta}
+          onChange={(e) => setDescricaoCurta(e.target.value)}
+          maxLength={LIMITE_DESCRICAO_CURTA}
+          aria-describedby="descricao-curta-ajuda"
+        />
+        <span id="descricao-curta-ajuda" className={styles.ajuda}>
+          Até {LIMITE_DESCRICAO_CURTA} caracteres ({descricaoCurta.length}/{LIMITE_DESCRICAO_CURTA}); aparece no
+          card e abaixo do nome.
+        </span>
+      </div>
+
+      <div className={styles.field}>
+        <label htmlFor="produto-descricao" className={styles.label}>Descrição longa</label>
         <textarea
+          id="produto-descricao"
           className={styles.textarea}
           value={descricao}
           onChange={(e) => setDescricao(e.target.value)}
-          rows={4}
+          rows={6}
+          aria-describedby="descricao-ajuda"
         />
-      </label>
+        <span id="descricao-ajuda" className={styles.ajuda}>As quebras de linha aparecem na página.</span>
+      </div>
 
-      <label className={styles.field}>
-        <span className={styles.label}>Atributos</span>
-        <input
-          className={styles.input}
-          type="text"
-          value={atributos}
-          onChange={(e) => setAtributos(e.target.value)}
-          placeholder="Ex.: Intenso | 62% cacau | Laranja & Cardamomo"
+      <div className={styles.field}>
+        <label htmlFor="produto-ingredientes" className={styles.label}>Ingredientes</label>
+        <textarea
+          id="produto-ingredientes"
+          className={styles.textarea}
+          value={ingredientes}
+          onChange={(e) => setIngredientes(e.target.value)}
+          rows={3}
         />
-      </label>
+      </div>
+
+      <TraducaoEn valores={en} onChange={setEn} campos={CAMPOS_EN} />
 
       <div className={styles.row}>
         <label className={styles.field}>
@@ -260,6 +309,22 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias }) {
             ))}
           </fieldset>
         ))}
+      </div>
+
+      <div className={styles.field}>
+        <span className={styles.label}>Tags</span>
+        {tags.length === 0 && <span className={styles.ajuda}>Nenhuma tag cadastrada (Admin → Tags).</span>}
+        {tags.length > 0 && (
+          <fieldset className={styles.grupo}>
+            <legend className={styles.ajuda}>Marque as que se aplicam</legend>
+            {tags.map((tag) => (
+              <label key={tag.id} className={styles.checkboxField}>
+                <input type="checkbox" checked={tagIds.has(tag.id)} onChange={() => alternarTag(tag.id)} />
+                <span>{tag.nome}</span>
+              </label>
+            ))}
+          </fieldset>
+        )}
       </div>
 
       <label className={styles.field}>
@@ -354,16 +419,19 @@ async function atualizarProduto(supabase, id, payload) {
   return id;
 }
 
-// Deixa em produto_colecoes exatamente as coleções marcadas: apaga as desmarcadas e insere as novas.
-async function salvarColecoes(supabase, produtoId, ids) {
-  const apagar = supabase.from('produto_colecoes').delete().eq('produto_id', produtoId);
-  const { error: erroApagar } = await (ids.length > 0 ? apagar.not('colecao_id', 'in', `(${ids.join(',')})`) : apagar);
-  if (erroApagar) throw new Error(`Produto salvo, mas não foi possível gravar as coleções: ${erroApagar.message}`);
+// Deixa na tabela de ligação (produto_colecoes, produto_tags) exatamente os ids marcados, na coluna `coluna`:
+// apaga os desmarcados e insere os novos. `rotulo` entra na mensagem de erro.
+async function salvarVinculos(supabase, tabela, coluna, produtoId, ids, rotulo) {
+  const falha = (e) =>
+    Object.assign(new Error(`Produto salvo, mas não foi possível gravar ${rotulo}: ${e.message}`), { exibir: true });
+  const apagar = supabase.from(tabela).delete().eq('produto_id', produtoId);
+  const { error: erroApagar } = await (ids.length > 0 ? apagar.not(coluna, 'in', `(${ids.join(',')})`) : apagar);
+  if (erroApagar) throw falha(erroApagar);
   if (ids.length === 0) return;
   const { error } = await supabase
-    .from('produto_colecoes')
-    .upsert(ids.map((colecao_id) => ({ produto_id: produtoId, colecao_id })), { onConflict: 'produto_id,colecao_id', ignoreDuplicates: true });
-  if (error) throw new Error(`Produto salvo, mas não foi possível gravar as coleções: ${error.message}`);
+    .from(tabela)
+    .upsert(ids.map((id) => ({ produto_id: produtoId, [coluna]: id })), { onConflict: `produto_id,${coluna}`, ignoreDuplicates: true });
+  if (error) throw falha(error);
 }
 
 // Grava as fotos do produto, em ordem segura (nunca apontar para arquivo apagado):

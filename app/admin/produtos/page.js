@@ -42,6 +42,7 @@ export default async function AdminProdutosPage() {
                 <th>Imagem</th>
                 <th>Nome</th>
                 <th>Coleção</th>
+                <th>EN</th>
                 <th>Preço</th>
                 <th>Estoque</th>
                 <th>Status</th>
@@ -75,6 +76,7 @@ export default async function AdminProdutosPage() {
                       .filter(Boolean)
                       .join(', ') || '—'}
                   </td>
+                  <td>{produto.produto_traducoes.length > 0 ? 'EN ✓' : '—'}</td>
                   <td className={styles.preco}>
                     {formatBRL(produto.preco_centavos)}
                   </td>

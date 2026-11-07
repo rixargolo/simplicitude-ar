@@ -61,22 +61,67 @@
   overflow-wrap: break-word;
 }
 
+/* descrição curta: lead em itálico de leitura (Fraunces) */
+.curta {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--tam-chamada);
+  line-height: 1.5;
+  color: var(--cor-texto);
+  margin-bottom: 16px;
+}
+
+/* chips; sem opacity para não derrubar o contraste (tests/paletas.test.js) */
 .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22px;
+}
+
+.tag {
   font-family: var(--font-body);
   font-size: var(--tam-rotulo);
-  font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--cor-texto);
-  margin-bottom: 22px;
-  opacity: 0.8;
+  border: 1px solid var(--cor-borda);
+  border-radius: 999px;
+  padding: 4px 12px;
 }
 
+/* pre-line preserva as quebras de linha digitadas no admin (X13) */
 .desc {
   font-family: var(--font-body);
   font-size: var(--tam-texto);
   font-weight: 400;
   line-height: 1.7;
   color: var(--cor-texto);
-  margin-bottom: 32px;
+  margin-top: 32px;
+  white-space: pre-line;
+}
+
+.ingredientes {
+  margin-top: 24px;
+}
+
+.ingredientes dt {
+  font-family: var(--font-body);
+  font-size: var(--tam-rotulo);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cor-texto-suave);
+  margin-bottom: 6px;
+}
+
+.ingredientes dd {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--tam-pequeno);
+  line-height: 1.6;
+  color: var(--cor-texto);
+  white-space: pre-line;
 }

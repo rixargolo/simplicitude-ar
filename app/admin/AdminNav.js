@@ -12,6 +12,7 @@ const SECOES = [
   { href: '/admin/produtos', label: 'Produtos' },
   { href: '/admin/categorias', label: 'Categorias' },
   { href: '/admin/colecoes', label: 'Coleções' },
+  { href: '/admin/tags', label: 'Tags' },
   { href: '/admin/novidades', label: 'Novidades' },
   { href: '/admin/estoque', label: 'Estoque' },
 ];
