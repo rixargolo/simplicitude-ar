@@ -28,6 +28,7 @@ export default async function AdminCategoriasPage() {
                 <th>Nome</th>
                 <th>Slug</th>
                 <th>Descrição</th>
+                <th>EN</th>
                 <th>Ações</th>
               </tr>
             </thead>
@@ -37,6 +38,7 @@ export default async function AdminCategoriasPage() {
                   <td className={styles.nome}>{categoria.nome}</td>
                   <td>{categoria.slug}</td>
                   <td>{categoria.descricao || '—'}</td>
+                  <td>{categoria.categoria_traducoes.length > 0 ? 'EN ✓' : '—'}</td>
                   <td>
                     <div className={styles.acoes}>
                       <Link

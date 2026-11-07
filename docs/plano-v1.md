@@ -136,9 +136,18 @@ daí em diante, toda venda fora do site (feira, B2B, WhatsApp) é lançada como 
 se separa uma cota só para o online.
 
 ### 2.7 Glossário e ADRs
-Sem glossário: o CLAUDE.md já define os termos que confundem. Só o ADR 0001 (regra transversal que
-alguém quebraria sem saber o porquê). As demais decisões viram uma linha no CLAUDE.md. Critério
-para um ADR futuro: decisão cara de reverter e cujo motivo não aparece no código.
+Sem glossário: o CLAUDE.md já define os termos que confundem. ADR 0001 (regra transversal que
+alguém quebraria sem saber o porquê) e ADR 0002 (multilíngue: estrutura de URL e de tabelas, cara de
+reverter). As demais decisões viram uma linha no CLAUDE.md. Critério para um ADR futuro: decisão cara
+de reverter e cujo motivo não aparece no código.
+
+### 2.9 Multilíngue (PT e EN)
+Decisão em [ADR 0002](adr/0002-multilingue.md) (proposto, **nada implementado**, pós-go-live). Resumo: PT
+fica nas colunas atuais e EN em tabelas `*_traducoes` com fallback para o PT (a `main` e o banco compartilhado
+não mudam); PT sem prefixo e EN em `/en/...`; slugs e caminhos não se traduzem; idioma por cookie
+`idioma` + `Accept-Language` + país, só no `proxy.js`; áudio EN em `produto_traducoes.audio_url`. Fatias
+**I1–I4** no Pós-go-live. `descricao_curta` e `ingredientes` (C2), coleções M:N e tags nascem já com o par de
+tradução.
 
 ### 2.8 Visual antes da segurança do banco
 Seguro, porque o cadastro está desligado, as fatias visuais não escrevem dados, e o checkout
@@ -242,6 +251,7 @@ real baixo + estorno" (volta quando o C existir).
 | X11 | Análise e organização do Storage | real | 🔒 | **Só registro, nada implementado.** Hoje os buckets (`produtos`, `meditacao`, e o novo `categorias` do X7) foram criados à mão no painel, com policies e limites que só o X1 e o X7 versionam em SQL. Escopo da análise: (1) **buckets por tipo de conteúdo** (fotos de produto, categorias, áudio, institucional) e o que cada um guarda; (2) **policies de `storage.objects` versionadas em SQL** em `supabase/migrations/` (conferir o que existe hoje em `pg_policies`, junto do B-1b); (3) **limites por tipo** (tamanho e MIME por bucket; áudio de meditação é maior que foto); (4) **limpeza de arquivos órfãos** (arquivos sem linha em `produto_imagens`/`produtos.imagem_url`/`categorias.imagem_url`, restos de uploads que falharam e das fotos antigas `principal.{ext}`), com script de listagem antes de qualquer remoção; (5) **o que é público e o que é privado** (hoje tudo público por URL; decidir se algo, ex.: áudio pago ou documentos de pedido, deve ser privado com URL assinada) |
 | X8 | **Prioridade, antes do X4:** editar o nome do produto não pode quebrar a URL | real | 🔒 | ✅ **No código (2026-11-06); SQL aplicado em 2026-11-06.** Antes: não havia coluna, o slug era `slugify(nome)` em memória (`getProdutoBySlug`, `CardProduto`), então renomear = 404 no link antigo. Agora: `produtos.slug` (not null, unique, formato `^[a-z0-9]+(-[a-z0-9]+)*$`, ≤ 80) gerado **uma vez** (backfill = slug atual, URLs não mudam; INSERT sem slug, como o admin da `main`, é preenchido por trigger) e **não muda com o nome**. Tabela `produto_slugs` (PK `slug`) guarda todo slug que um produto já teve: `/loja/[slug]` desconhecido consulta-a e responde **308** (`permanentRedirect`) para o slug atual; a PK + trigger recusam (erro 23505) dar a outro produto um slug antigo. `ProdutoForm`: campo "Endereço na loja" (sugerido do nome só na criação, normalizado ao sair do campo, endereço resultante visível, aviso ao mudar na edição, validação de formato, 23505 → mensagem). **Categorias:** já tinham slug que não acompanha o nome; ganharam `unique`, formato (`not valid`: só gravações novas), validação/aviso no `CategoriaForm`. **Sem redirect de categoria** (link antigo cai em "Todas", nunca 404; não vai em embalagem) — vira X8b se a dona quiser. **Fora:** tela para ver/apagar slugs antigos (apagar o produto libera os slugs dele); a `main` segue calculando do nome até o go-live (o banco é compartilhado, então lá o link continua pelo slug do nome original) |
 | X9 | **Página 404 da marca (antes de publicar)** | real | 🔒🧩 (texto) | ✅ **No código (2026-11-06).** Antes: 404 genérica do Next (rota inexistente, `notFound()` de `/loja/[slug]`, `exigirMockups()` em produção). Agora `app/not-found.js` + `not-found.module.css`, dentro do layout raiz (Header/Footer via `SiteChrome`), só com tokens `--cor-*`/`--font-*`/`--tam-*`, uma coluna no molde do `EmBreve` (CSS próprio, porque o `EmBreve` some com os mockups). **Texto provisório, a confirmar com a dona:** rótulo "Página não encontrada", `h1` "Este caminho se perdeu na floresta.", "A página que você procura não existe ou mudou de lugar. O chocolate continua aqui.", botão "Ver a loja" e link "Voltar para o início". `/admin` e `/login` no preview seguem com 404 vazio do `proxy.js` (de propósito); URL inexistente sob `/admin/*` mostra a 404 sem Header/Footer. **Ideia registrada, não implementada:** `app/error.js` (`'use client'`, mesmo CSS) para erro inesperado (Supabase/rede fora do ar hoje mostra a tela genérica do Next): "Algo deu errado por aqui", botão "Tentar de novo" (`reset()`) e link do WhatsApp (`linkWhatsApp()`) para não perder a venda; `global-error.js` não compensa (só quando o próprio layout quebra) |
+| X12 | Taxonomia: coleção pertence a categoria, produto ↔ coleção M:N, gestão de coleções e par EN | real | 🔒 | **No código (2026-11-06); SQL [`20261106150000_x12_colecoes.sql`](../supabase/migrations/20261106150000_x12_colecoes.sql) ainda NÃO aplicado.** Antes: `colecoes` sem tela, 1-N por `produtos.colecao_id`, uma coleção ("Coleção Inspirar", os 4 produtos). Agora: `colecoes.categoria_id` (not null; Inspirar → Chocolates) e `ordem`; "Bombons" entra em Chocolates; `produto_colecoes` (PK produto+coleção) com backfill; **`produtos.colecao_id` fica como cópia da 1ª coleção** (X1) e triggers refletem em `produto_colecoes` o que o admin da `main` gravar (a `main` só lê `colecoes` e grava `colecao_id`, nunca insere coleção). **Decisões:** produto pode estar em coleção de qualquer categoria (o form agrupa por categoria); slug da Inspirar vira `inspirar`, nome inalterado. Admin: `/admin/colecoes` (agrupado por categoria, Subir/Descer, criar/editar), checkboxes no `ProdutoForm`. **I1 do ADR 0002 para categorias e coleções:** `categoria_traducoes`, `colecao_traducoes`, `lib/i18n.js` (`traduzir`, `acaoTraducao`), seção "English (opcional)" (`TraducaoEn`) e coluna/selo EN nas listas. **Fora:** excluir coleção, ordenar categorias ou produtos dentro da coleção, uso público (filtro/página de coleção), rotas `/en`, tradução de produto e de tag, `ordem` em `produto_colecoes` (o ADR a previa; acrescentar depois é aditivo). **Limite aceito:** a `main` só conhece uma coleção: trocar lá tira só o par antigo e adiciona o novo, e tirar a coleção lá não zera a cópia se restarem outras — até o go-live, editar coleções só pelo admin da `v1`. Conferir `pg_policies`/RLS de `colecoes` no B-1b (a migration só acrescenta a policy de escrita) |
 
 **SQL do X8:** migration [`supabase/migrations/20261106120000_produtos_slug.sql`](../supabase/migrations/20261106120000_produtos_slug.sql) (extensão `unaccent`, `public.slugify`, colunas/tabela, RLS, triggers; conferir colisão de nomes antes, o `select` está no cabeçalho).
 
@@ -264,7 +274,7 @@ ou compressão no navegador; HEIC; apagar a cópia em `produtos.imagem_*`; limit
 | # | Item | Marca | Notas |
 |---|---|---|---|
 | C1 | Pesquisa InfinitePay (URL oficial, payload do webhook, sandbox?) → `docs/research/infinitepay.md` | 🔒🧩 (conta + `handle`) | research. As fontes públicas divergem na URL da API |
-| C2 | Migration de venda: (`produtos.slug` já feito no X8) `descricao_curta`/`destaque_ordem` (+ campos no `ProdutoForm`); **`categorias.imagem_url`** (+ upload no `CategoriaForm`; a foto do cartão do A5 depende dela); `pedidos` de convidado (`cliente_id` nullable, `comprador_*`, `token_acesso`); `metodo_entrega` ganha `regional`; `unique(pagamentos.referencia_externa_id)`; `frete_zonas` com seed; RPC `confirmar_pagamento()`; `CHECK`s | 🔒🧩 (regras de frete) | tdd: integração da RPC no staging |
+| C2 | Migration de venda: (`produtos.slug` já feito no X8) `descricao_curta` (**e `ingredientes`**, com o par em `produto_traducoes` quando o I1 existir, ADR 0002)/`destaque_ordem` (+ campos no `ProdutoForm`); **`categorias.imagem_url`** (+ upload no `CategoriaForm`; a foto do cartão do A5 depende dela); `pedidos` de convidado (`cliente_id` nullable, `comprador_*`, `token_acesso`); `metodo_entrega` ganha `regional`; `unique(pagamentos.referencia_externa_id)`; `frete_zonas` com seed; RPC `confirmar_pagamento()`; `CHECK`s | 🔒🧩 (regras de frete) | tdd: integração da RPC no staging |
 | C3 | `POST /api/frete`, `/api/checkout`, `/api/webhooks/infinitepay`, `/api/tarefas/reconciliar` + `lib/checkout/*`, todos usando o contrato do A0 | 🔒 | codebase-design, tdd, security-review |
 | C4 | `lib/email.js` (Resend via `fetch`): comprador + separação; `/admin/pedidos` só leitura | 🔒🧩 (Resend, e-mail de quem separa) | e-mail real com DMARC=pass |
 | C5 | Trocar os mockups A9/A10 pela API real (mesmo contrato) | 🔒 | |
@@ -287,6 +297,11 @@ ou compressão no navegador; HEIC; apagar a cópia em `produtos.imagem_*`; limit
 6. ESLint + CI no GitHub Actions.
 7. **Migração do DNS e do e-mail para fora da GoDaddy** (B5), como mudança separada.
 8. Melhor Envio, WhatsApp, contas de cliente, institucional, NF-e, B2B.
+9. **Multilíngue** ([ADR 0002](adr/0002-multilingue.md)), em fatias: **I1** tabelas `*_traducoes` +
+   `traduzir()` (`lib/i18n.js`) + seção "English (opcional)" nos formulários do admin (inofensivo sem rotas;
+   **categorias e coleções já feitas no X12**, faltam produto e tag) →
+   **I2** `app/[lang]/` + `proxy.js` + seletor + dicionários + hreflang/sitemap → **I3** áudio EN → **I4**
+   conteúdo EN (dona). Skills: `tdd` (I1, I2), `design-taste-frontend` (seletor).
 
 ### Skills por fase
 `design-taste-frontend` (A2–A7, A9–A11) · `tdd` (A0, A8, C2, C3) · `research` (C1) ·
@@ -427,6 +442,7 @@ Actions (`schedule` diário, `workflow_dispatch` e o mesmo cron da reconciliaç�
 | Fotos do hero | dona | 🧩 (há fotos atuais) |
 | Fotos de categoria (precisam de `categorias.imagem_url`, C2) / galeria do produto | dona | 🧩 pós-go-live (o A5 vai ao ar sem foto) |
 | Tipografia oficial | dona | 🧩 (provisória fica) |
+| Textos em inglês (produtos, categorias, coleções, tags) e áudios de meditação em inglês | dona | 🧩 pós-go-live (I4/I3; sem eles a página EN fica `noindex` e o player toca o PT) |
 | Novo provedor de e-mail (saída da GoDaddy) | você/dona | 🧩 pós-go-live |
 
 **Decisões a confirmar:** o redesign de `/meditacao` (cortar-se-atrasar; o A5 já foi reativado);

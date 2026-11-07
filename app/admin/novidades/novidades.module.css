@@ -77,6 +77,28 @@
   cursor: pointer;
 }
 
+/* usados também por /admin/colecoes (X12) */
+.topo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.grupo {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--tam-chamada);
+  color: var(--cor-texto);
+  margin: 24px 0 8px;
+}
+
+.link {
+  display: inline-block;
+  text-decoration: none;
+}
+
 .botao:disabled {
   opacity: 0.4;
   cursor: default;

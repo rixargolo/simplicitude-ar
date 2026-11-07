@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { getColecoes, getCategorias } from '@/lib/admin/produtos';
+import { getCategorias } from '@/lib/admin/produtos';
+import { getColecoes } from '@/lib/admin/colecoes';
 import ProdutoForm from '../ProdutoForm';
 import formStyles from '../ProdutoForm.module.css';
 
