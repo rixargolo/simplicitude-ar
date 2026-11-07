@@ -1,16 +1,29 @@
-/* Celular primeiro: 2 colunas de cards, chips numa linha que rola na horizontal.
-   Margens iguais dos dois lados (20px; 24px a partir de 640px). Só papéis --cor-*. */
-.section {
-  padding: 48px 20px 72px;
+/* Celular primeiro. Sem padding lateral no <main>: cada bloco leva o seu (20px; 24px a partir de 640px),
+   porque o trilho dos carrosséis vai até a borda direita da tela. Só papéis --cor-*, --font-*, --tam-*. */
+.pagina {
+  --margem: 20px;
+  padding: 24px 0 72px;
   background: var(--cor-fundo);
   color: var(--cor-texto);
 }
 
-.cabecalho {
+/* ---------- topo: só texto sobre o fundo, curto (o 1º carrossel tem de aparecer perto da dobra no celular) ---------- */
+
+.topo {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 28px;
+  gap: 8px;
+  margin: 0 var(--margem) 20px;
+}
+
+.rotulo {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--font-body);
+  font-size: var(--tam-rotulo);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cor-texto-suave);
 }
 
 .titulo {
@@ -18,30 +31,32 @@
   font-family: var(--font-display);
   font-weight: 500;
   font-size: var(--tam-titulo-pagina);
-  line-height: 1.15;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
   color: var(--cor-texto);
   overflow-wrap: break-word;
 }
 
 .frase {
-  max-width: 40rem;
+  max-width: 36rem;
   margin: 0;
   font-family: var(--font-body);
   font-size: var(--tam-chamada);
-  line-height: 1.5;
+  line-height: 1.45;
   color: var(--cor-texto);
 }
 
-/* chips: sangram até a borda da tela no celular e rolam na horizontal se não couberem */
+/* ---------- filtro: chips que sangram até a borda e rolam na horizontal no celular ---------- */
+
 .filtro {
-  margin: 0 -20px 32px;
+  margin-bottom: 12px;
 }
 
 .chips {
   display: flex;
   gap: 8px;
   margin: 0;
-  padding: 4px 20px;
+  padding: 4px var(--margem);
   list-style: none;
   overflow-x: auto;
   scrollbar-width: none;
@@ -71,8 +86,14 @@
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+/* 2ª fileira (coleções): mais leve, só contorno */
+.chipLeve {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--cor-borda);
+}
+
 .chip:hover,
-.chip[aria-current='page'] {
+.chip[aria-current] {
   background: var(--cor-botao);
   color: var(--cor-botao-texto);
 }
@@ -82,18 +103,100 @@
   outline-offset: 2px;
 }
 
+/* ---------- seções e carrosséis (em "Todas" e na categoria) ---------- */
+
+.secao {
+  margin-top: 36px;
+}
+
+/* separador entre seções, com a margem da página */
+.secao + .secao::before {
+  content: '';
+  display: block;
+  height: 1px;
+  margin: 0 var(--margem) 36px;
+  background: var(--cor-borda);
+}
+
+.secaoCab {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 var(--margem) 8px;
+}
+
+.secaoTitulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--tam-titulo-secao);
+  line-height: 1.15;
+  color: var(--cor-texto);
+}
+
+.secaoDesc {
+  max-width: 40rem;
+  margin: 6px 0 0;
+  font-family: var(--font-body);
+  font-size: var(--tam-pequeno);
+  line-height: 1.5;
+  color: var(--cor-texto-suave);
+}
+
+.lista {
+  margin-top: 20px;
+}
+
+.listaCab {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 var(--margem) 8px;
+}
+
+.listaTitulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--tam-subtitulo);
+  line-height: 1.2;
+  color: var(--cor-texto);
+}
+
+/* "Ver tudo" / "Ver coleção": link de texto, alvo de 44px de altura */
+.verMais {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  flex: none;
+  font-family: var(--font-body);
+  font-size: var(--tam-pequeno);
+  font-weight: 600;
+  color: var(--cor-destaque);
+  text-underline-offset: 4px;
+}
+
+.verMais:focus-visible {
+  outline: 3px solid var(--cor-destaque);
+  outline-offset: 2px;
+}
+
+/* ---------- grade (coleção filtrada, ou uma lista só) ---------- */
+
 .grade {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 32px 16px;
-  margin: 0;
+  margin: 24px var(--margem) 0;
   padding: 0;
   list-style: none;
 }
 
 .vazio {
   max-width: 32rem;
-  margin: 0;
+  margin: 24px var(--margem) 0;
   font-family: var(--font-display);
   font-style: italic;
   font-size: var(--tam-subtitulo);
@@ -107,20 +210,9 @@
 }
 
 @media (min-width: 640px) {
-  .section {
-    padding: 72px 24px 96px;
-  }
-
-  .cabecalho {
-    margin-bottom: 36px;
-  }
-
-  .filtro {
-    margin: 0 -24px 40px;
-  }
-
-  .chips {
-    padding: 4px 24px;
+  .pagina {
+    --margem: 24px;
+    padding: 40px 0 96px;
   }
 
   .grade {
@@ -129,16 +221,31 @@
   }
 }
 
-/* com espaço, os chips quebram em linhas em vez de rolar */
+/* topo: título à esquerda, frase à direita, alinhada à base; os chips quebram em linhas em vez de rolar */
 @media (min-width: 900px) {
-  .filtro {
-    margin: 0 0 48px;
+  .topo {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 48px;
+    margin-bottom: 32px;
+  }
+
+  .frase {
+    flex: 0 1 28rem;
   }
 
   .chips {
     flex-wrap: wrap;
-    padding: 0;
     overflow: visible;
+  }
+
+  .secao {
+    margin-top: 48px;
+  }
+
+  .secao + .secao::before {
+    margin-bottom: 48px;
   }
 }
 

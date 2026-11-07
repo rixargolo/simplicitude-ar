@@ -68,7 +68,7 @@ públicas, `proxy.js`, textos fixos ou no schema de conteúdo** (produtos, categ
   **X5 (home com Meditação, seção placeholder e Quem somos; ver `/`) está no código; falta texto e foto da seção nova
   e confirmar com a dona o título "Meditação".** **X6 (Novidades permanente, curadoria em `/admin/novidades`) está no
   código e o SQL `supabase/migrations/20261106130000_produtos_novidade_ordem.sql` **já foi aplicado (2026-11-06)**
-  (a home cai nos mais recentes enquanto a curadoria estiver vazia).** **X7 (categorias com imagem: foto no admin + desfoque que esmaece no hover) e X10 (sem chips de categoria na vitrine Novidades) estão no código e o SQL `supabase/migrations/20261106140000_categorias_imagem.sql` **já foi aplicado (2026-11-06)**.** **X11 (análise e organização do Storage: buckets por tipo, policies em SQL, limites, órfãos, público/privado) só está registrado no plano, sem implementação.** **X9 (página 404 da marca, `app/not-found.js`) está no código; texto provisório, confirmar com a dona.** **X12 (coleções dentro de categorias, produto ↔ coleção M:N, gestão em `/admin/colecoes`, par de tradução EN de categorias e coleções) está no código e concluído/testado; o SQL `20261106150000_x12_colecoes.sql` **foi aplicado (2026-11-06)**.** **X13 (campos do produto: descrição curta, descrição longa com quebras de linha, ingredientes, tags com CRUD em `/admin/tags` e tradução EN de produto e tag) está no código e concluído/testado; o SQL `20261107120000_x13_campos_produto.sql` **foi aplicado (2026-11-07)**.** **Ideias registradas, nada implementado:** **X14** (nova `/loja`: topo de impacto, filtro por categoria/coleção, carrosséis de uma linha), **X15** (destaque ou landing de Presentes/Natal), **X16** (busca no site todo, no cabeçalho) e **X17** (política de troca e devolução, dentro do A11); detalhes no plano. Próximo: mostrar o preview à dona.
+  (a home cai nos mais recentes enquanto a curadoria estiver vazia).** **X7 (categorias com imagem: foto no admin + desfoque que esmaece no hover) e X10 (sem chips de categoria na vitrine Novidades) estão no código e o SQL `supabase/migrations/20261106140000_categorias_imagem.sql` **já foi aplicado (2026-11-06)**.** **X11 (análise e organização do Storage: buckets por tipo, policies em SQL, limites, órfãos, público/privado) só está registrado no plano, sem implementação.** **X9 (página 404 da marca, `app/not-found.js`) está no código; texto provisório, confirmar com a dona.** **X12 (coleções dentro de categorias, produto ↔ coleção M:N, gestão em `/admin/colecoes`, par de tradução EN de categorias e coleções) está no código e concluído/testado; o SQL `20261106150000_x12_colecoes.sql` **foi aplicado (2026-11-06)**.** **X13 (campos do produto: descrição curta, descrição longa com quebras de linha, ingredientes, tags com CRUD em `/admin/tags` e tradução EN de produto e tag) está no código e concluído/testado; o SQL `20261107120000_x13_campos_produto.sql` **foi aplicado (2026-11-07)**.** **X14 (nova `/loja`: topo só de texto, filtro por categoria e coleção, carrosséis de uma linha por categoria e coleção; sem SQL) está no código, build e testes verdes; falta o dono conferir no navegador.** **Ideias registradas, nada implementado:** **X15** (destaque ou landing de Presentes/Natal), **X16** (busca no site todo, no cabeçalho) e **X17** (política de troca e devolução, dentro do A11); detalhes no plano. Próximo: mostrar o preview à dona.
 - **Decisões vigentes:** checkout como **convidado** (a decisão antiga de login obrigatório
   está superada); vitrine da home com título derivado do critério de ordem — `novidade_ordem` (curadoria da dona,
   reserva `created_at`) = "Novidades",
@@ -218,6 +218,8 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
 - Baseline do schema (`supabase db pull`, B-1b) **ainda não existe**: o resto do schema só está no
   painel do Supabase; no repo há só as mudanças desde o A6b, em `supabase/migrations/` (B-1a). Sem
   ambiente de staging — B-2 do plano
+- **Home sem caixa e sem borda na foto:** a dona quer as seções da home sem caixa demarcada e sem bordas na foto (ajuste
+  futuro, **ainda não feito**; registrado em `docs/plano-v1.md`, pendências)
 - **Fotos do hero:** as 4 de `public/home/hero_slide_{1..4}.webp` já estão ligadas aos slides
   (ordem 1→4 = Loja, Bem-estar, Quem somos, Presentes). Se a dona trocar alguma, **receita de
   otimização**: WebP `quality: 85` (`effort: 6`, `smartSubsample: true`) com `sharp` (já está em
@@ -227,10 +229,10 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   check do D2: todo slide do hero com foto real
 - **X1 (várias fotos):** SQL aplicado em produção em 2026-11-05 (`supabase/migrations/20261105181330_produto_imagens.sql`). **Rodar de novo no D2** o script de reconciliação `supabase/scripts/x1_reconciliar_produto_imagens.sql` (a `main` só grava em `produtos`). A galeria em `/loja/[slug]` já usa `produto_imagens` (A7)
 - **Foto de categoria (X7):** código pronto (upload no `CategoriaForm`, `getCategoriasComProdutos()` e `GradeCategorias`); o SQL `20261106140000_categorias_imagem.sql` já foi aplicado (2026-11-06); falta a dona enviar as fotos (cada categoria sem foto segue com o cartão de sempre). O mesmo SQL cria o bucket próprio `categorias` com as policies (ver Storage)
-- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive hero e cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam sem uso até autorização), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `filtrarPorCategoria`, `lib/foco.js`, `lib/fotos.js`, `lib/whatsapp.js`, `lib/i18n.js` e os slugs do X8: `slugValido`, `getProdutoBySlug`, `getSlugAtual`). Sem lint nem CI
+- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive hero e cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam sem uso até autorização), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `montarLoja`, `lib/foco.js`, `lib/fotos.js`, `lib/whatsapp.js`, `lib/i18n.js` e os slugs do X8: `slugValido`, `getProdutoBySlug`, `getSlugAtual`). Sem lint nem CI
 - Admin de pedidos
-- **Coleções (X12):** gestão no admin pronta (`/admin/colecoes`); falta só o uso público (filtro/página por coleção
-  não existe) e excluir coleção (de propósito, fora do X12)
+- **Coleções (X12):** gestão no admin pronta (`/admin/colecoes`); uso público só na `/loja` (X14: `?colecao=slug`
+  e carrossel por coleção; sem página própria de coleção) e excluir coleção (de propósito, fora do X12)
 - **X12 (taxonomia + par EN de categorias e coleções):** concluído e testado; SQL
   `supabase/migrations/20261106150000_x12_colecoes.sql` **aplicado em 2026-11-06**
 - **X13 (campos do produto):** concluído e testado; SQL `supabase/migrations/20261107120000_x13_campos_produto.sql`
@@ -291,7 +293,25 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
   padrão de `/quem-somos`) e bloco de introdução da Coleção Inspirar, seguidos da lista de
   produtos com `tem_meditacao=true` via `ApresentacaoProduto resumido` + `MeditacaoPlayer` (**só a descrição curta**:
   sem descrição longa nem ingredientes)
-- **`/loja`** — `h1` (nome da categoria ativa ou "Loja") + frase, chips de categoria ("Todas" + só categorias com ≥1 produto ativo, `getCategoriasComProdutos()`; rolam na horizontal no celular, quebram linha a partir de 900px) e grade de `CardProduto` (2 colunas no celular). Filtro por `?categoria=slug`, no servidor (`searchParams`, links `<Link>`, funciona sem JS). **Slug desconhecido, vazio ou repetido = "Todas"** (`filtrarPorCategoria`), nunca página vazia. Zero produtos ativos → frase de estado vazio com link para `/quem-somos`. A página é dinâmica (`ƒ`) por causa do `searchParams`
+- **`/loja`** (X14; markup em `app/loja/page.js`, sem componente próprio além de `CarrosselProdutos`) — **topo só de texto** (2026-11-07: sem foto,
+  sem cartão, sem caixa nem borda, direto sobre `--cor-fundo`; curto, para o 1º carrossel aparecer perto da dobra em 375×667):
+  rótulo pequeno (só com coleção ativa: nome da categoria dela), `h1` (coleção ativa, categoria ativa ou "Loja") e frase
+  (`descricao` ou a frase padrão). Celular: empilhado; ≥900px, título à esquerda e frase à direita, alinhada à base. A foto de
+  categoria (`imagem_url`) **não é mais usada na `/loja`** (segue na `GradeCategorias` da home). **Filtro** (links, sem JS): 1ª fileira "Todas" + categorias com ≥1 produto ativo
+  (`getCategoriasComProdutos()`; rola na horizontal no celular, quebra linha a partir de 900px); 2ª fileira só com categoria
+  ativa que tenha coleção com produto: "Tudo em {categoria}" + as coleções dela (chip só de contorno). **URLs:** `?categoria=slug`
+  (os links antigos seguem valendo) e `?colecao=slug` (a coleção já implica a categoria dela; **coleção válida vence categoria**).
+  **Slug desconhecido, vazio ou repetido = "Todas"**, coleção sem produto ativo conta como desconhecida: nunca página vazia.
+  **Conteúdo** (tudo em `montarLoja`, `lib/produtos.js`): em "Todas" e na categoria, **carrosséis de uma linha** (`CarrosselProdutos`)
+  — por seção de categoria (`h2` + descrição + "Ver tudo", separador de 1px `--cor-borda` entre seções; as categorias ficam em ordem
+  alfabética), um carrossel por coleção dela (`h3` + "Ver coleção") e, no fim, "Mais {categoria}" **só se sobrar produto**; categoria sem
+  coleção tem um carrossel só, sem título de lista. Dentro de uma categoria só entram produtos **daquela** categoria (um produto aparece
+  em uma só seção; ex.: o Chocobook, de Presentes, está na coleção Inspirar, de Chocolates, e só aparece em Presentes), e produto sem
+  categoria vai para uma seção final "Outros" (só em "Todas"). Resultado com **uma lista só** (categoria com um carrossel, ou
+  coleção filtrada, que mostra **todos** os produtos da coleção) vira a **grade** de `CardProduto` (2 colunas no celular). Níveis de
+  título: `h1` → `h2` (categoria, só em "Todas") → `h3`/`h2` (lista) → nome do card. Zero produtos ativos → frase de estado vazio com
+  link para `/quem-somos`. A página é dinâmica (`ƒ`) por causa do `searchParams`. **Fora:** `/en`, filtro por tag, busca, página própria de
+  coleção, ordem manual de categorias, foto própria de coleção
 - **`/loja/[slug]`** — detalhe do produto (X13: texto na ordem categoria, nome, descrição curta, tags, preço/Comprar, descrição longa e ingredientes, ver `ApresentacaoProduto`; X8: o slug é a coluna `produtos.slug`, fixa; slug antigo que
   consta em `produto_slugs` responde **308** para o atual via `permanentRedirect`, senão 404). Dinâmica (`ƒ`: lê `headers()` para o endereço absoluto). `h1` = nome; galeria
   (`getFotosDoProduto` → `ApresentacaoProduto` → `GaleriaProduto`); peso, preço, descrição; **Comprar =
@@ -455,12 +475,15 @@ Cada um com `*.module.css` co-locado.
   pai posicionado; fundo `--cor-destaque` com texto `--cor-fundo`, para contrastar com o cartão
   claro do hero; par já testado a 4,5:1). Usado pelo hero quando o slide não tem `imagem`; quem
   usa decide não renderizá-lo em produção.
-- **`VitrineProdutos`** (`'use client'`) — vitrine da home em duas colunas. Props `titulo`,
+- **`CarrosselProdutos`** (`'use client'`, X14; extraído da `VitrineProdutos`) — trilho scroll-snap de `CardProduto` que vai até a borda
+  direita da tela (próximo card cortado), setas no desktop e toque no celular (≤900px, `--card` 70vw, sem setas). Props `produtos`,
+  `rotulo` (entra no `aria-label` das setas: "{rotulo}: produtos anteriores/seguintes", para distinguir vários na página), `sizes`,
+  `Titulo` (nível do nome no card, padrão `h3`) e `className` (raiz). `--card` e o respiro à esquerda (`--pad-esq`, padrão 24px) saem
+  do próprio CSS; a vitrine zera o respiro. **Não tem título nem link**: quem usa põe o cabeçalho. Usado por `VitrineProdutos` e `/loja`
+- **`VitrineProdutos`** (server, sem `'use client'`; o trilho é o `CarrosselProdutos`) — vitrine da home em duas colunas. Props `titulo`,
   `produtos`. Esquerda: `h2` "{titulo} *da floresta*" e botão "Ver toda a loja" (os chips de categoria
-  saíram no X10: eram redundantes com a `GradeCategorias` logo abaixo). Direita:
-  carrossel scroll-snap que vai até a borda da tela (próximo card cortado), setas no desktop e
-  toque no celular (≤900px a intro vira cabeçalho). Cada card é um `CardProduto`
-  (`className={styles.slide}` só dimensiona no trilho). Só papéis `--cor-*`.
+  saíram no X10: eram redundantes com a `GradeCategorias` logo abaixo). Direita: o `CarrosselProdutos`
+  (≤900px a intro vira cabeçalho). Só papéis `--cor-*`.
 - **`CardProduto`** (server-safe, sem `'use client'`) — card de produto compartilhado por `VitrineProdutos` e
   `/loja`. Props `produto`, `sizes`, `className` (no `<Link>`), `Titulo` (`h3` padrão; a loja passa `h2`). Foto em
   quadro de proporção fixa (`--proporcao-produto` em `globals.css`, 0.8 = 4:5; é o único lugar da proporção, a
@@ -532,8 +555,13 @@ com `NEXT_PUBLIC_MOCKUPS=1` e, sem a flag, só os que têm `imagem`. Cobertos em
 ### Storefront — `lib/produtos.js`
 
 - `getProdutos()` — `select('*, categorias(nome, slug)')` onde `ativo=true`
-- `filtrarPorCategoria(produtos, categorias, slug)` — `{ ativa, produtos }`; `slug` que não esteja em
-  `categorias` (desconhecido, vazio, array) → `ativa: null` e todos os produtos ("Todas"). Usada em `/loja`
+- `montarLoja(produtos, categorias, colecoes, { categoria, colecao })` (X14, puro; **substituiu `filtrarPorCategoria`**) —
+  `{ categoria, colecao, colecoesDaCategoria, secoes, grade }`. `secoes` = `[{ categoria|null, listas: [{ colecao|null, produtos }] }]`;
+  `grade` = produtos (ou `[]`) quando há no máximo uma lista ou uma coleção ativa, senão `null`. Regras (slug inválido = "Todas",
+  coleção vence categoria, produto só na própria categoria, "resto" só se sobrar produto) descritas na rota `/loja`. Coberto em
+  `tests/loja.test.js`
+- `getColecoesPublicas()` (X14) — `[{ id, nome, slug, descricao, ordem, categoria_id }]` por `ordem` (null por último) e nome; a `/loja`
+  passa o resultado a `montarLoja`, que descarta as sem produto ativo. `getProdutos()` embute também `produto_colecoes(colecao_id)`
 - `getVitrine(criterio = CRITERIO_VITRINE, limite = MAX_VITRINE)` — `{ titulo, produtos }`: produtos
   ativos ordenados pela coluna do critério e o título que deriva dele. Critérios em
   **`lib/vitrine.js`** (`novidades`/`novidade_ordem` = curadoria do X6, `recentes`/`created_at` = reserva,
@@ -542,7 +570,7 @@ com `NEXT_PUBLIC_MOCKUPS=1` e, sem a flag, só os que têm `imagem`. Cobertos em
   desc; **curadoria vazia (nada marcado, marcados inativos, ou coluna inexistente `42703`) cai em `recentes`**, ainda
   "Novidades". Consulta e título saem da mesma entrada para não divergirem; "Mais vendidos" nunca com `created_at`
   (`tests/vitrine.test.js`). A home tem `revalidate = 60` (senão a curadoria só valeria no próximo build)
-- `getCategoriasComProdutos()` — `[{ nome, slug, descricao, imagem_url, imagem_foco_x, imagem_foco_y,
+- `getCategoriasComProdutos()` — `[{ id, nome, slug, descricao, imagem_url, imagem_foco_x, imagem_foco_y,
   imagem_zoom, total }]` das categorias com ao menos um produto ativo (join `produtos!inner`; `total` = nº de
   produtos ativos); alimenta os chips da `/loja` e `GradeCategorias`. Coluna da foto inexistente (`42703`, ex.: SQL
   do X7 não aplicado em outro banco) → refaz a consulta sem as colunas de foto, nunca quebra
@@ -575,6 +603,14 @@ clique/arrasto na foto (ponteiro, funciona com o dedo), três deslizantes (Horiz
 `tests/foco.test.js`.
 
 ### Fotos do produto (X1) — `lib/fotos.js`
+
+**Produtos de teste (2026-11-07, temporários):** `supabase/scripts/teste_inserir_produtos.sql` cria 22 produtos (slug
+`teste-*`, tags `teste-*`) cobrindo Chocolates, Presentes, Empório e Dia-a-Dia e as coleções Inspirar e Bombons (alguns
+em duas coleções, vários sem coleção, um esgotado, um com estoque `null`); `teste_remover_produtos.sql` os apaga (só por
+SQL, o admin tentaria apagar do Storage). Fotos WebP 4:5 em `public/teste/` (geradas à mão, fora do Storage): o
+`caminho` de `produto_imagens` e `produtos.imagem_url` apontam para `/teste/...`, e `fotosDoProduto` devolve caminho com
+`/` como URL direta. **v1 e `main` leem o mesmo banco: a produção mostra esses produtos (sem foto) até a remoção.**
+Remover no D2 (item no plano): rodar o SQL de remoção e apagar `public/teste/`.
 
 Várias fotos por produto na tabela `produto_imagens`; a primeira por `ordem` é a principal. Funções puras
 (testadas em `tests/fotos.test.js`): `ordenarFotos`, `fotosDoProduto(produto, linhas, urlDe)` (sem linhas cai em
@@ -665,7 +701,7 @@ Cobertos em `tests/i18n.test.js`.
   `on delete restrict`, not null; backfill = Chocolates), `ordem` (smallint nullable, `check > 0`; posição dentro da
   categoria, null = fim), slug `unique` + `check` de formato (`not valid`), slug da Inspirar `cole-o-inspirar` →
   `inspirar`, seed "Bombons" (`bombons`, Chocolates, ordem 2) e policy `"colecoes admin"` (escrita `authenticated`;
-  a migration não liga nem desliga RLS: estado atual não versionado, B-1b). Slug de coleção não é usado em link público
+  a migration não liga nem desliga RLS: estado atual não versionado, B-1b). O slug da coleção é usado em link público só na `/loja` (`?colecao=slug`, X14)
 - **`produto_colecoes`** (X12, mesma migration) — M:N produto ↔ coleção: `produto_id`, `colecao_id` (FKs, `on delete
   cascade`), `created_at`, PK `(produto_id, colecao_id)`. RLS no padrão de `produto_imagens` (anon lê só de produto ativo,
   `authenticated` tudo). **`produtos.colecao_id` segue como CÓPIA da 1ª coleção** (a `main` só conhece essa coluna);

@@ -1,0 +1,93 @@
+/* Trilho de cards (vitrine da home e carrosséis da /loja). --card dimensiona o card e posiciona as
+   setas; --pad-esq é o respiro à esquerda do primeiro card (a vitrine o zera: a coluna já tem margem). */
+.trilho {
+  --card: clamp(15rem, 22vw, 18rem);
+  position: relative;
+  min-width: 0;
+}
+
+.track {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 4px 24px 4px var(--pad-esq, 24px);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+/* dimensionamento do CardProduto dentro do trilho */
+.slide {
+  flex: 0 0 var(--card);
+  scroll-snap-align: start;
+}
+
+/* setas na altura do centro da imagem (metade da altura do quadro: card ÷ proporção ÷ 2) */
+.arrow {
+  position: absolute;
+  top: calc(var(--card) / var(--proporcao-produto) / 2);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-top: -24px;
+  border: none;
+  border-radius: 50%;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.arrow:hover {
+  background: var(--cor-botao);
+  color: var(--cor-botao-texto);
+}
+
+.arrow:focus-visible {
+  outline: 3px solid var(--cor-destaque);
+  outline-offset: 2px;
+}
+
+.arrowPrev {
+  left: 12px;
+}
+
+.arrowNext {
+  right: 24px;
+}
+
+/* celular e tablet: o carrossel desliza por toque (sem setas) */
+@media (max-width: 900px) {
+  .trilho {
+    --card: 70vw;
+  }
+
+  .track {
+    padding: 4px 20px;
+    scroll-padding: 0 20px;
+  }
+
+  .arrow {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arrow {
+    transition: none;
+  }
+
+  .track {
+    scroll-behavior: auto;
+  }
+}
