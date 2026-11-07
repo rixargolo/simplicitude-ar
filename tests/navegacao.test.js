@@ -18,7 +18,12 @@ afterEach(() => vi.unstubAllEnvs());
 describe('menu', () => {
   it('em produção só tem os itens reais, na ordem', async () => {
     const { itensMenu } = await carregar('');
-    expect(itensMenu().map((i) => i.rotulo)).toEqual(['Loja', 'Meditação', 'Quem somos']);
+    expect(itensMenu().map((i) => i.rotulo)).toEqual([
+      'Loja',
+      'Meditação',
+      'Sustentabilidade',
+      'Quem somos',
+    ]);
   });
 
   it('no preview tem os 5 itens', async () => {

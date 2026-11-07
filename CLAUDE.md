@@ -65,10 +65,9 @@ públicas, `proxy.js`, textos fixos ou no schema de conteúdo** (produtos, categ
   menor) e o A7 (produto: galeria + Comprar → WhatsApp) estão no código. **X8 (slug fixo do produto + redirect 308 do
   antigo) está no código e o SQL `supabase/migrations/20261106120000_produtos_slug.sql` **já foi aplicado
   (2026-11-06)**.** **X4 (controle do slider sem Pausar/Continuar, pílula translúcida) está no código.**
-  **X5 (home com Meditação, seção placeholder e Quem somos; ver `/`) está no código; falta texto e foto da seção nova
-  e confirmar com a dona o título "Meditação".** **X6 (Novidades permanente, curadoria em `/admin/novidades`) está no
+  **X5 (home com Meditação, seção do meio e Quem somos; ver `/`) está no código; a seção do meio virou a Sustentabilidade no X18.** **X6 (Novidades permanente, curadoria em `/admin/novidades`) está no
   código e o SQL `supabase/migrations/20261106130000_produtos_novidade_ordem.sql` **já foi aplicado (2026-11-06)**
-  (a home cai nos mais recentes enquanto a curadoria estiver vazia).** **X7 (categorias com imagem: foto no admin + desfoque que esmaece no hover) e X10 (sem chips de categoria na vitrine Novidades) estão no código e o SQL `supabase/migrations/20261106140000_categorias_imagem.sql` **já foi aplicado (2026-11-06)**.** **X11 (análise e organização do Storage: buckets por tipo, policies em SQL, limites, órfãos, público/privado) só está registrado no plano, sem implementação.** **X9 (página 404 da marca, `app/not-found.js`) está no código; texto provisório, confirmar com a dona.** **X12 (coleções dentro de categorias, produto ↔ coleção M:N, gestão em `/admin/colecoes`, par de tradução EN de categorias e coleções) está no código e concluído/testado; o SQL `20261106150000_x12_colecoes.sql` **foi aplicado (2026-11-06)**.** **X13 (campos do produto: descrição curta, descrição longa com quebras de linha, ingredientes, tags com CRUD em `/admin/tags` e tradução EN de produto e tag) está no código e concluído/testado; o SQL `20261107120000_x13_campos_produto.sql` **foi aplicado (2026-11-07)**.** **X14 (nova `/loja`: topo só de texto, filtro por categoria e coleção, carrosséis de uma linha por categoria e coleção; sem SQL) está no código, build e testes verdes; falta o dono conferir no navegador.** **Ideias registradas, nada implementado:** **X15** (destaque ou landing de Presentes/Natal), **X16** (busca no site todo, no cabeçalho) e **X17** (política de troca e devolução, dentro do A11); detalhes no plano. **X18 (feedback da dona, rodada 2, 3 fatias):** **fatia 1 feita** (menu Meditação/Sustentabilidade com a rota `/sustentabilidade`, categorias da home sem desfoque, frase "Acesse aqui a meditação guiada" no produto; sem SQL); **fatia 2** (seção Meditação da home sem caixa nem moldura, foto direto no fundo, botão "Conheça a Coleção Inspirar" para `/loja?colecao=inspirar`) e **fatia 3** (seção e página Sustentabilidade) ainda não feitas, detalhes no plano. Próximo: mostrar o preview à dona.
+  (a home cai nos mais recentes enquanto a curadoria estiver vazia).** **X7 (categorias com imagem: foto no admin + desfoque que esmaece no hover) e X10 (sem chips de categoria na vitrine Novidades) estão no código e o SQL `supabase/migrations/20261106140000_categorias_imagem.sql` **já foi aplicado (2026-11-06)**.** **X11 (análise e organização do Storage: buckets por tipo, policies em SQL, limites, órfãos, público/privado) só está registrado no plano, sem implementação.** **X9 (página 404 da marca, `app/not-found.js`) está no código; texto provisório, confirmar com a dona.** **X12 (coleções dentro de categorias, produto ↔ coleção M:N, gestão em `/admin/colecoes`, par de tradução EN de categorias e coleções) está no código e concluído/testado; o SQL `20261106150000_x12_colecoes.sql` **foi aplicado (2026-11-06)**.** **X13 (campos do produto: descrição curta, descrição longa com quebras de linha, ingredientes, tags com CRUD em `/admin/tags` e tradução EN de produto e tag) está no código e concluído/testado; o SQL `20261107120000_x13_campos_produto.sql` **foi aplicado (2026-11-07)**.** **X14 (nova `/loja`: topo só de texto, filtro por categoria e coleção, carrosséis de uma linha por categoria e coleção; sem SQL) está no código, build e testes verdes; falta o dono conferir no navegador.** **Ideias registradas, nada implementado:** **X15** (destaque ou landing de Presentes/Natal), **X16** (busca no site todo, no cabeçalho) e **X17** (política de troca e devolução, dentro do A11); detalhes no plano. **X18 (feedback da dona, rodada 2, 3 fatias):** **fatia 1 feita** (menu Meditação/Sustentabilidade com a rota `/sustentabilidade`, categorias da home sem desfoque, frase "Acesse aqui a meditação guiada" no produto; sem SQL); **fatia 2 feita** (seção Meditação da home sem caixa nem moldura, foto direto no fundo, título "Chocolates para Meditação" e botão "Conheça a Coleção Inspirar" para `/loja?colecao=inspirar`; sem SQL); **fatia 3 feita** (seção Sustentabilidade na home no lugar do placeholder, "Um mundo melhor com simples atitudes", 3 blocos que levam a `/sustentabilidade`; a página agora existe em produção, só com título e aviso de "em breve"; sem SQL) — **X18 concluído**. Próximo: mostrar o preview à dona.
 - **Decisões vigentes:** checkout como **convidado** (a decisão antiga de login obrigatório
   está superada); vitrine da home com título derivado do critério de ordem — `novidade_ordem` (curadoria da dona,
   reserva `created_at`) = "Novidades",
@@ -90,7 +89,7 @@ públicas, `proxy.js`, textos fixos ou no schema de conteúdo** (produtos, categ
   ativo e envs configuradas no Netlify (`NEXT_PUBLIC_MOCKUPS=1` só nos contextos
   branch-deploy/deploy-preview), verificado em produção e na `v1`. **A2 (tokens + Header/Footer)
   está no código. A3 (hero da home em carrossel) está no código, com as 4 fotos reais ligadas
-  (ver `HeroCarrossel`). A5 (categorias na home) está no código, sem fotos (ver `GradeCategorias`). A6 (`/loja` com filtro por categoria) está no código (ver `CardProduto`).** Mockups existentes: só `/sustentabilidade` e `/assinaturas` ("Em breve"); os de
+  (ver `HeroCarrossel`). A5 (categorias na home) está no código, sem fotos (ver `GradeCategorias`). A6 (`/loja` com filtro por categoria) está no código (ver `CardProduto`).** Mockups existentes: só `/assinaturas` ("Em breve"); os de
   carrinho/checkout vêm depois — ver a lista priorizada no plano.
 - **Ordem do front:** A1 (preview) → A2 (tokens, header/footer) → A3/A4/A5 (home) → A6 → **X1 (fotos)** →
   **X2 (paleta verde)** → **X3 (tipografia)** → A7 (produto, Comprar → WhatsApp) → **X8 (slug)** → **X4 → X5 → X6 → X7 → X10 → X9 (404)** →
@@ -207,7 +206,8 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
 
 **Pendente / não implementado ainda** (ordem e dependências em
 [`docs/plano-v1.md`](docs/plano-v1.md), seção 3):
-- Conteúdo de `/sustentabilidade` e `/assinaturas` (hoje mockups "Em breve" só no preview); o rótulo
+- Conteúdo de `/sustentabilidade` (hoje só título e aviso "em breve", **já visível em produção e no menu**; no D2 confirmar
+  o conteúdo ou remover o item do menu e os links da home) e de `/assinaturas` (mockup "Em breve" só no preview); o rótulo
   do menu para `/meditacao` já é "Meditação" (X18)
 - Checkout real — hoje "Comprar" em `/loja/[slug]` abre o WhatsApp (A7, temporário); integração InfinitePay não
   existe (quando existir, é quem vai gerar as movimentações `venda`/`cancelamento` em
@@ -218,8 +218,9 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
 - Baseline do schema (`supabase db pull`, B-1b) **ainda não existe**: o resto do schema só está no
   painel do Supabase; no repo há só as mudanças desde o A6b, em `supabase/migrations/` (B-1a). Sem
   ambiente de staging — B-2 do plano
-- **Home sem caixa e sem borda na foto:** a dona quer as seções da home sem caixa demarcada e sem bordas na foto (ajuste
-  futuro, **ainda não feito**; registrado em `docs/plano-v1.md`, pendências)
+- **Home sem caixa e sem borda na foto:** a dona quer as seções da home sem caixa demarcada e sem bordas na foto. **Feito na
+  Meditação (X18, fatia 2) e na Sustentabilidade (fatia 3)**; só Quem somos segue em cartão (registrado em `docs/plano-v1.md`,
+  pendências)
 - **Fotos do hero:** as 4 de `public/home/hero_slide_{1..4}.webp` já estão ligadas aos slides
   (ordem 1→4 = Loja, Bem-estar, Quem somos, Presentes). Se a dona trocar alguma, **receita de
   otimização**: WebP `quality: 85` (`effort: 6`, `smartSubsample: true`) com `sharp` (já está em
@@ -279,15 +280,22 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
 - **`/`** (`app/page.js`) — Home: `HeroCarrossel` (array `SLIDES` no próprio arquivo, filtrado
   por `slidesVisiveis()`; sem slide com foto o hero não renderiza), `VitrineProdutos`,
   `GradeCategorias` e o **bloco de marca (X5, sem componente próprio: markup em `app/page.js`, estilo em
-  `app/home.module.css`)**, na ordem Meditação → seção nova → Quem somos. **Três cartões divididos iguais**
-  (`--cor-superficie`, raio 24px, mesmas margens das categorias, texto sempre fora da foto, sem texto sobre
-  foto nem degradê), ≥768px em 2 colunas: (1) **Meditação**, texto e pílula "Acesse a meditação guiada" (texto do
-  git, `8a10f58^`) à esquerda, foto `/meditacao/hero.png` à direita; (2) **seção nova**, texto à esquerda e
-  `FotoPendente` à direita (escolha: é a ordem em que ela já se lê no celular, texto e depois foto; título e
-  texto provisórios), **renderizada só com `mockupsLigados()`** (em produção some até haver conteúdo: o bloco fica
-  com Meditação e Quem somos, que alternam); (3) **Quem somos**, foto menor (`cabruca.jpg`, natural, coluna 2fr/3fr)
-  à esquerda, frase em `h2` itálico e pílula "Conheça nossa história" à direita. Zigue-zague só no desktop (`order`
-  no `.fotoDireita`); no celular tudo empilha na ordem do markup (foto em cima, exceto a seção nova)
+  `app/home.module.css`)**, na ordem Meditação → Sustentabilidade → Quem somos. (1) **Meditação** (X18 fatia 2) **sem cartão,
+  sem moldura e sem cantos arredondados**: foto `/meditacao/hero.png` direto sobre o fundo, colada às bordas da tela (a
+  `.meditacao` anula com margem negativa o padding lateral de `.marca`), e texto direto sobre `--cor-fundo`; ≥768px em 2
+  colunas, **foto à esquerda** ocupando a altura do bloco (`min-height: 440px`) e texto à direita centrado na vertical;
+  no celular, foto em cima e texto embaixo. Título "Chocolates para Meditação", parágrafo da dona e pílula
+  "Conheça a Coleção Inspirar →" para `/loja?colecao=inspirar`. (2) **Sustentabilidade** (X18 fatia 3, aparece em
+  produção; array `CUIDADOS` no topo de `app/page.js`): também **sem caixa, sem borda e sem cantos arredondados**;
+  `h2` "*Um mundo melhor* com simples atitudes" (Fraunces, só "Um mundo melhor" em itálico) e três blocos (Cuidar de Si,
+  do Outro, do Todo; fotos `public/home/home-cuidar-*.webp`, 16:9, WebP q85, originais em `_DOCS/Seção sustentabilidade/`)
+  numa `ul`, 1 coluna no celular e 3 a partir de 900px, foto em cima e título + texto embaixo. **O bloco inteiro é link
+  para `/sustentabilidade`** (sem botão): o `Link` está no `h3` e o `::after` cobre o `li`, foco visível no bloco por
+  `:has(.blocoLink:focus-visible)` (mesmo padrão da `GradeCategorias`). **Só Quem somos segue em cartão dividido**
+  (`--cor-superficie`, raio 24px, mesmas margens das categorias, texto fora da foto, sem texto sobre foto nem degradê),
+  ≥768px em 2 colunas: (3) **Quem somos**, foto menor (`cabruca.jpg`, natural, coluna 2fr/3fr)
+  à esquerda, frase em `h2` itálico e pílula "Conheça nossa história" à direita. No celular tudo empilha na ordem do
+  markup (foto em cima)
 - **`/quem-somos`** — institucional
 - **`/meditacao`** (`revalidate = 60`, como a home: sem isso a edição no admin só valeria no próximo build) — hero (faixa de imagem + duotone + listras diagonais + título, no
   padrão de `/quem-somos`) e bloco de introdução da Coleção Inspirar, seguidos da lista de
@@ -320,8 +328,12 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
   venda; sem ramo novo). `tem_meditacao` mostra só o link "Acesse aqui a meditação guiada" para `/meditacao` (sem player aqui; frase do X18).
   `generateMetadata`: `title`, `description` e `openGraph` com título e foto principal; o resto do
   compartilhamento (imagem 1200x630, `metadataBase`) é o A11
-- **`/sustentabilidade`** (ex-`/bem-fazer`, renomeada no X18, sem redirect), **`/assinaturas`** — mockups "Em breve" (`EmBreve`); só existem com
-  `NEXT_PUBLIC_MOCKUPS=1` (`exigirMockups()` → 404 em produção, e saem do menu)
+- **`/sustentabilidade`** (ex-`/bem-fazer`, renomeada no X18, sem redirect) — **página real, em produção e no menu** (`status: 'real'`):
+  só `h1` "Sustentabilidade" e um aviso de que o conteúdo chega em breve (texto provisório), CSS próprio
+  (`app/sustentabilidade/page.module.css`, no molde do 404, sem `EmBreve` nem `exigirMockups`). Os 3 blocos da home levam para cá.
+  **Antes do go-live (D2): confirmar o conteúdo ou remover o item do menu e os links da home**
+- **`/assinaturas`** — mockup "Em breve" (`EmBreve`); só existe com
+  `NEXT_PUBLIC_MOCKUPS=1` (`exigirMockups()` → 404 em produção, e sai do menu)
 - `/contato` foi **removida** (contato vive no rodapé)
 - **404 da marca (X9)** — `app/not-found.js` + `not-found.module.css`: cobre rota inexistente, `notFound()` de
   `/loja/[slug]` e `exigirMockups()` em produção; dentro do layout raiz (Header/Footer via `SiteChrome`), uma coluna

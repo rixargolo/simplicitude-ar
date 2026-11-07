@@ -2,11 +2,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getVitrine, getCategoriasComProdutos } from '@/lib/produtos';
 import { slidesVisiveis } from '@/lib/carrossel';
-import { mockupsLigados } from '@/lib/navegacao';
 import HeroCarrossel from './components/HeroCarrossel';
 import VitrineProdutos from './components/VitrineProdutos';
 import GradeCategorias from './components/GradeCategorias';
-import FotoPendente from './components/FotoPendente';
 import styles from './home.module.css';
 
 export const metadata = {
@@ -73,6 +71,31 @@ const SLIDES = [
   },
 ];
 
+// Blocos da seção Sustentabilidade (X18): cada um inteiro leva a /sustentabilidade. Textos da dona, literais.
+const CUIDADOS = [
+  {
+    titulo: 'Cuidar de Si',
+    texto:
+      'Ingredientes naturais, formulações minimalistas e 100% à base de plantas. Nossos produtos foram pensados para cuidar da saúde do corpo, da mente e do meio-ambiente.',
+    src: '/home/home-cuidar-de-si.webp',
+    alt: 'Duas colheres de madeira sobre pedra, uma com açúcar mascavo e outra com nibs de cacau',
+  },
+  {
+    titulo: 'Cuidar do Outro',
+    texto:
+      'Nossa cadeia produtiva fortalece agricultores familiares da Bahia, com preço justo e parceria de longo prazo. Sua compra mantém essas famílias no campo, produzindo cacau de qualidade.',
+    src: '/home/home-cuidar-do-outro.webp',
+    alt: 'Duas agricultoras sorrindo, costas com costas na mata, cada uma segurando um fruto de cacau maduro',
+  },
+  {
+    titulo: 'Cuidar do Todo',
+    texto:
+      'Nosso jeito de plantar alimentos protege a natureza: cultivamos em Cabruca, um sistema de agricultura regenerativa que mantém a floresta em pé. E cada chocolate vendido ajuda a conservar e reflorestar áreas de cabruca na Mata Atlântica.',
+    src: '/home/home-cuidar-do-todo.webp',
+    alt: 'Agricultor de chapéu segurando um fruto de cacau entre as raízes de uma árvore grande na cabruca',
+  },
+];
+
 // A home é pré-renderizada; sem isso a curadoria do admin (X6) só apareceria no próximo build.
 export const revalidate = 60;
 
@@ -89,7 +112,7 @@ export default async function HomePage() {
       <GradeCategorias categorias={categorias} />
 
       <div className={styles.marca}>
-        <section className={`${styles.cartao} ${styles.fotoDireita}`} aria-labelledby="home-meditacao">
+        <section className={styles.meditacao} aria-labelledby="home-meditacao">
           <div className={styles.foto}>
             <Image
               src="/meditacao/hero.png"
@@ -100,35 +123,44 @@ export default async function HomePage() {
             />
           </div>
           <div className={styles.texto}>
-            <h2 id="home-meditacao" className={styles.titulo}>Meditação</h2>
+            <h2 id="home-meditacao" className={styles.titulo}>Chocolates para Meditação</h2>
             <p className={styles.paragrafo}>
-              A Simplicitude traz uma linha especial de chocolates para meditação. A Coleção
-              Inspirar apresenta chocolates com ervas e especiarias que promovem bem estar. Cada
-              blend tem a intenção de despertar uma emoção, através das propriedades de seus
-              ingredientes. São três sabores que, associados à práticas de meditação e atenção
-              plena, inspiram bons sentimentos e uma deliciosa sensação de Simplicitude.
+              A Simplicitude traz para você uma linha exclusiva de chocolates que te levam numa
+              jornada sensorial e emocional. Cada sabor vem acompanhado de uma meditação guiada,
+              pensada para você degustar com presença — sem pressa, sem distração.
             </p>
-            <Link href="/meditacao" className={styles.cta}>
-              Acesse a meditação guiada <span aria-hidden="true">→</span>
+            <Link href="/loja?colecao=inspirar" className={styles.cta}>
+              Conheça a Coleção Inspirar <span aria-hidden="true">→</span>
             </Link>
           </div>
         </section>
 
-        {/* Placeholder: texto e foto ainda não existem (X5); só no preview */}
-        {mockupsLigados() && (
-          <section className={styles.cartao} aria-labelledby="home-nova">
-            <div className={styles.texto}>
-              <h2 id="home-nova" className={styles.titulo}>Título a definir</h2>
-              <p className={styles.paragrafo}>
-                Texto curto desta seção, a definir com a dona da fábrica. Reserva o espaço de uma
-                ideia nova entre a meditação e a nossa história.
-              </p>
-            </div>
-            <div className={styles.foto}>
-              <FotoPendente especificacao="Foto da seção: a definir com a dona (4:3, mín. 1600×1200)" />
-            </div>
-          </section>
-        )}
+        <section className={styles.sustentabilidade} aria-labelledby="home-sustentabilidade">
+          <h2 id="home-sustentabilidade" className={styles.tituloSust}>
+            <em>Um mundo melhor</em> com simples atitudes
+          </h2>
+          <ul className={styles.blocos}>
+            {CUIDADOS.map((c) => (
+              <li key={c.titulo} className={styles.bloco}>
+                <div className={styles.blocoFoto}>
+                  <Image
+                    src={c.src}
+                    alt={c.alt}
+                    fill
+                    sizes="(min-width: 900px) 33vw, 100vw"
+                    className={styles.fotoImg}
+                  />
+                </div>
+                <h3 className={styles.blocoTitulo}>
+                  <Link href="/sustentabilidade" className={styles.blocoLink}>
+                    {c.titulo}
+                  </Link>
+                </h3>
+                <p className={styles.paragrafo}>{c.texto}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
 
         <section className={`${styles.cartao} ${styles.fotoMenor}`} aria-labelledby="home-quem-somos">
           <div className={styles.foto}>

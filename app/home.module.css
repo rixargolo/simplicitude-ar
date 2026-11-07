@@ -1,7 +1,8 @@
-/* Bloco de marca da home (X5): Meditação → seção nova (placeholder, só no preview) → Quem somos.
-   Três cartões divididos iguais (mesmas margens e raio das categorias), texto sempre fora da foto.
-   Zigue-zague no desktop: Meditação (foto à direita), nova (foto à direita, como lê no celular:
-   texto e depois foto) e Quem somos (foto menor à esquerda). Só papéis/tokens de app/globals.css. */
+/* Bloco de marca da home (X5): Meditação → Sustentabilidade → Quem somos.
+   Meditação (X18): sem cartão nem moldura, foto colada à borda da tela e texto direto sobre o fundo.
+   Sustentabilidade (X18): três blocos sem caixa, foto retangular simples em cima e texto embaixo.
+   Quem somos: cartão dividido (mesmas margens e raio das categorias), texto fora da foto, foto menor à esquerda.
+   Só papéis/tokens de app/globals.css. */
 .marca {
   display: flex;
   flex-direction: column;
@@ -9,6 +10,86 @@
   padding: 0 20px 72px;
   background: var(--cor-fundo);
   color: var(--cor-texto);
+}
+
+/* ---------- Meditação: sem cartão, foto de ponta a ponta ---------- */
+
+/* a margem negativa anula o padding lateral de .marca: a foto encosta nas bordas da tela */
+.meditacao {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  margin: 0 -20px;
+}
+
+/* ---------- Sustentabilidade: três blocos sem caixa, cada um inteiro é um link ---------- */
+
+.sustentabilidade {
+  padding: 48px 0;
+}
+
+.tituloSust {
+  margin: 0 0 28px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--tam-titulo-secao);
+  line-height: 1.15;
+  color: var(--cor-texto);
+}
+
+.tituloSust em {
+  font-style: italic;
+}
+
+.blocos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bloco {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* classe própria: .foto vira aspect-ratio: auto a partir de 768px */
+.blocoFoto {
+  position: relative;
+  aspect-ratio: 16 / 9;
+}
+
+.blocoTitulo {
+  margin: 4px 0 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--tam-subtitulo);
+  line-height: 1.2;
+  color: var(--cor-texto);
+}
+
+/* o ::after cobre o bloco todo: clique em qualquer ponto abre /sustentabilidade */
+.blocoLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.blocoLink::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.bloco:has(.blocoLink:focus-visible) {
+  outline: 3px solid var(--cor-destaque);
+  outline-offset: 6px;
+}
+
+.blocoLink:focus-visible {
+  outline: none;
 }
 
 /* ---------- cartões divididos ---------- */
@@ -105,6 +186,10 @@
     padding: 0 24px 96px;
   }
 
+  .meditacao {
+    margin: 0 -24px;
+  }
+
   .texto {
     padding: 32px;
   }
@@ -121,9 +206,10 @@
     aspect-ratio: auto;
   }
 
-  /* zigue-zague só no desktop; no celular a ordem do markup vale (foto em cima, exceto a nova) */
-  .fotoDireita .foto {
-    order: 2;
+  /* a foto ocupa a altura da linha; o texto já centraliza na vertical */
+  .meditacao {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-height: 440px;
   }
 
   /* Quem somos: foto menor à esquerda */
@@ -133,6 +219,17 @@
 
   .texto {
     padding: 40px 48px;
+  }
+}
+
+@media (min-width: 900px) {
+  .sustentabilidade {
+    padding: 72px 0;
+  }
+
+  .blocos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 32px;
   }
 }
 
