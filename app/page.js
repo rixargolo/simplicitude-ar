@@ -112,7 +112,7 @@ export default async function HomePage() {
       <GradeCategorias categorias={categorias} />
 
       <div className={styles.marca}>
-        <section className={styles.meditacao} aria-labelledby="home-meditacao">
+        <section className={styles.secaoFoto} aria-labelledby="home-meditacao">
           <div className={styles.foto}>
             <Image
               src="/meditacao/hero.png"
@@ -162,13 +162,13 @@ export default async function HomePage() {
           </ul>
         </section>
 
-        <section className={`${styles.cartao} ${styles.fotoMenor}`} aria-labelledby="home-quem-somos">
+        <section className={`${styles.secaoFoto} ${styles.espelhada}`} aria-labelledby="home-quem-somos">
           <div className={styles.foto}>
             <Image
               src="/quem-somos/cabruca.jpg"
               alt="Plantio de cacau em sistema Cabruca, dentro da Mata Atlântica"
               fill
-              sizes="(min-width: 768px) 40vw, 100vw"
+              sizes="(min-width: 768px) 50vw, 100vw"
               className={styles.fotoImg}
             />
           </div>

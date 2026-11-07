@@ -1,7 +1,7 @@
 /* Bloco de marca da home (X5): Meditação → Sustentabilidade → Quem somos.
-   Meditação (X18): sem cartão nem moldura, foto colada à borda da tela e texto direto sobre o fundo.
+   Meditação (X18): sem cartão nem moldura, foto colada à borda da tela e texto direto sobre o fundo (.secaoFoto).
    Sustentabilidade (X18): três blocos sem caixa, foto retangular simples em cima e texto embaixo.
-   Quem somos: cartão dividido (mesmas margens e raio das categorias), texto fora da foto, foto menor à esquerda.
+   Quem somos: a mesma .secaoFoto espelhada (.espelhada): foto à direita, colada à borda, texto à esquerda.
    Só papéis/tokens de app/globals.css. */
 .marca {
   display: flex;
@@ -12,10 +12,10 @@
   color: var(--cor-texto);
 }
 
-/* ---------- Meditação: sem cartão, foto de ponta a ponta ---------- */
+/* ---------- Meditação e Quem somos: sem cartão, foto de ponta a ponta ---------- */
 
 /* a margem negativa anula o padding lateral de .marca: a foto encosta nas bordas da tela */
-.meditacao {
+.secaoFoto {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   margin: 0 -20px;
@@ -92,15 +92,7 @@
   outline: none;
 }
 
-/* ---------- cartões divididos ---------- */
-
-.cartao {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  overflow: hidden;
-  border-radius: 24px;
-  background: var(--cor-superficie);
-}
+/* ---------- partes comuns às seções com foto ---------- */
 
 .foto {
   position: relative;
@@ -186,7 +178,7 @@
     padding: 0 24px 96px;
   }
 
-  .meditacao {
+  .secaoFoto {
     margin: 0 -24px;
   }
 
@@ -196,25 +188,20 @@
 }
 
 @media (min-width: 768px) {
-  .cartao {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    min-height: 320px;
-  }
-
   /* a foto vira a coluna inteira, sem a proporção 16:9 do celular */
   .foto {
     aspect-ratio: auto;
   }
 
   /* a foto ocupa a altura da linha; o texto já centraliza na vertical */
-  .meditacao {
+  .secaoFoto {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     min-height: 440px;
   }
 
-  /* Quem somos: foto menor à esquerda */
-  .fotoMenor {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  /* Quem somos: foto à direita (só visual; no celular segue em cima) */
+  .espelhada .foto {
+    order: 2;
   }
 
   .texto {
