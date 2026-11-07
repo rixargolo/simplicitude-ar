@@ -18,15 +18,15 @@ afterEach(() => vi.unstubAllEnvs());
 describe('menu', () => {
   it('em produção só tem os itens reais, na ordem', async () => {
     const { itensMenu } = await carregar('');
-    expect(itensMenu().map((i) => i.rotulo)).toEqual(['Loja', 'Bem-estar', 'Quem somos']);
+    expect(itensMenu().map((i) => i.rotulo)).toEqual(['Loja', 'Meditação', 'Quem somos']);
   });
 
   it('no preview tem os 5 itens', async () => {
     const { itensMenu } = await carregar('1');
     expect(itensMenu().map((i) => i.rotulo)).toEqual([
       'Loja',
-      'Bem-estar',
-      'Bem-fazer',
+      'Meditação',
+      'Sustentabilidade',
       'Quem somos',
       'Assinaturas',
     ]);

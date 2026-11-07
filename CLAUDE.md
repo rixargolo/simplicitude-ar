@@ -68,7 +68,7 @@ públicas, `proxy.js`, textos fixos ou no schema de conteúdo** (produtos, categ
   **X5 (home com Meditação, seção placeholder e Quem somos; ver `/`) está no código; falta texto e foto da seção nova
   e confirmar com a dona o título "Meditação".** **X6 (Novidades permanente, curadoria em `/admin/novidades`) está no
   código e o SQL `supabase/migrations/20261106130000_produtos_novidade_ordem.sql` **já foi aplicado (2026-11-06)**
-  (a home cai nos mais recentes enquanto a curadoria estiver vazia).** **X7 (categorias com imagem: foto no admin + desfoque que esmaece no hover) e X10 (sem chips de categoria na vitrine Novidades) estão no código e o SQL `supabase/migrations/20261106140000_categorias_imagem.sql` **já foi aplicado (2026-11-06)**.** **X11 (análise e organização do Storage: buckets por tipo, policies em SQL, limites, órfãos, público/privado) só está registrado no plano, sem implementação.** **X9 (página 404 da marca, `app/not-found.js`) está no código; texto provisório, confirmar com a dona.** **X12 (coleções dentro de categorias, produto ↔ coleção M:N, gestão em `/admin/colecoes`, par de tradução EN de categorias e coleções) está no código e concluído/testado; o SQL `20261106150000_x12_colecoes.sql` **foi aplicado (2026-11-06)**.** **X13 (campos do produto: descrição curta, descrição longa com quebras de linha, ingredientes, tags com CRUD em `/admin/tags` e tradução EN de produto e tag) está no código e concluído/testado; o SQL `20261107120000_x13_campos_produto.sql` **foi aplicado (2026-11-07)**.** **X14 (nova `/loja`: topo só de texto, filtro por categoria e coleção, carrosséis de uma linha por categoria e coleção; sem SQL) está no código, build e testes verdes; falta o dono conferir no navegador.** **Ideias registradas, nada implementado:** **X15** (destaque ou landing de Presentes/Natal), **X16** (busca no site todo, no cabeçalho) e **X17** (política de troca e devolução, dentro do A11); detalhes no plano. Próximo: mostrar o preview à dona.
+  (a home cai nos mais recentes enquanto a curadoria estiver vazia).** **X7 (categorias com imagem: foto no admin + desfoque que esmaece no hover) e X10 (sem chips de categoria na vitrine Novidades) estão no código e o SQL `supabase/migrations/20261106140000_categorias_imagem.sql` **já foi aplicado (2026-11-06)**.** **X11 (análise e organização do Storage: buckets por tipo, policies em SQL, limites, órfãos, público/privado) só está registrado no plano, sem implementação.** **X9 (página 404 da marca, `app/not-found.js`) está no código; texto provisório, confirmar com a dona.** **X12 (coleções dentro de categorias, produto ↔ coleção M:N, gestão em `/admin/colecoes`, par de tradução EN de categorias e coleções) está no código e concluído/testado; o SQL `20261106150000_x12_colecoes.sql` **foi aplicado (2026-11-06)**.** **X13 (campos do produto: descrição curta, descrição longa com quebras de linha, ingredientes, tags com CRUD em `/admin/tags` e tradução EN de produto e tag) está no código e concluído/testado; o SQL `20261107120000_x13_campos_produto.sql` **foi aplicado (2026-11-07)**.** **X14 (nova `/loja`: topo só de texto, filtro por categoria e coleção, carrosséis de uma linha por categoria e coleção; sem SQL) está no código, build e testes verdes; falta o dono conferir no navegador.** **Ideias registradas, nada implementado:** **X15** (destaque ou landing de Presentes/Natal), **X16** (busca no site todo, no cabeçalho) e **X17** (política de troca e devolução, dentro do A11); detalhes no plano. **X18 (feedback da dona, rodada 2, 3 fatias):** **fatia 1 feita** (menu Meditação/Sustentabilidade com a rota `/sustentabilidade`, categorias da home sem desfoque, frase "Acesse aqui a meditação guiada" no produto; sem SQL); **fatia 2** (seção Meditação da home sem caixa nem moldura, foto direto no fundo, botão "Conheça a Coleção Inspirar" para `/loja?colecao=inspirar`) e **fatia 3** (seção e página Sustentabilidade) ainda não feitas, detalhes no plano. Próximo: mostrar o preview à dona.
 - **Decisões vigentes:** checkout como **convidado** (a decisão antiga de login obrigatório
   está superada); vitrine da home com título derivado do critério de ordem — `novidade_ordem` (curadoria da dona,
   reserva `created_at`) = "Novidades",
@@ -90,7 +90,7 @@ públicas, `proxy.js`, textos fixos ou no schema de conteúdo** (produtos, categ
   ativo e envs configuradas no Netlify (`NEXT_PUBLIC_MOCKUPS=1` só nos contextos
   branch-deploy/deploy-preview), verificado em produção e na `v1`. **A2 (tokens + Header/Footer)
   está no código. A3 (hero da home em carrossel) está no código, com as 4 fotos reais ligadas
-  (ver `HeroCarrossel`). A5 (categorias na home) está no código, sem fotos (ver `GradeCategorias`). A6 (`/loja` com filtro por categoria) está no código (ver `CardProduto`).** Mockups existentes: só `/bem-fazer` e `/assinaturas` ("Em breve"); os de
+  (ver `HeroCarrossel`). A5 (categorias na home) está no código, sem fotos (ver `GradeCategorias`). A6 (`/loja` com filtro por categoria) está no código (ver `CardProduto`).** Mockups existentes: só `/sustentabilidade` e `/assinaturas` ("Em breve"); os de
   carrinho/checkout vêm depois — ver a lista priorizada no plano.
 - **Ordem do front:** A1 (preview) → A2 (tokens, header/footer) → A3/A4/A5 (home) → A6 → **X1 (fotos)** →
   **X2 (paleta verde)** → **X3 (tipografia)** → A7 (produto, Comprar → WhatsApp) → **X8 (slug)** → **X4 → X5 → X6 → X7 → X10 → X9 (404)** →
@@ -207,8 +207,8 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
 
 **Pendente / não implementado ainda** (ordem e dependências em
 [`docs/plano-v1.md`](docs/plano-v1.md), seção 3):
-- Conteúdo de `/bem-fazer` e `/assinaturas` (hoje mockups "Em breve" só no preview) e confirmar
-  com a dona o rótulo "Bem-estar" para `/meditacao`
+- Conteúdo de `/sustentabilidade` e `/assinaturas` (hoje mockups "Em breve" só no preview); o rótulo
+  do menu para `/meditacao` já é "Meditação" (X18)
 - Checkout real — hoje "Comprar" em `/loja/[slug]` abre o WhatsApp (A7, temporário); integração InfinitePay não
   existe (quando existir, é quem vai gerar as movimentações `venda`/`cancelamento` em
   `estoque_movimentacoes` e os registros em `pagamentos`)
@@ -317,10 +317,10 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
   (`getFotosDoProduto` → `ApresentacaoProduto` → `GaleriaProduto`); peso, preço, descrição; **Comprar =
   link do WhatsApp com mensagem pronta** (`BotaoComprar`, nova aba, sem carrinho/quantidade). Sem estoque
   (`estoque === 0`): selo "Esgotado" e o mesmo botão com o rótulo "Consultar no WhatsApp" (não perde a
-  venda; sem ramo novo). `tem_meditacao` mostra só o selo-link para `/meditacao` (sem player aqui).
+  venda; sem ramo novo). `tem_meditacao` mostra só o link "Acesse aqui a meditação guiada" para `/meditacao` (sem player aqui; frase do X18).
   `generateMetadata`: `title`, `description` e `openGraph` com título e foto principal; o resto do
   compartilhamento (imagem 1200x630, `metadataBase`) é o A11
-- **`/bem-fazer`**, **`/assinaturas`** — mockups "Em breve" (`EmBreve`); só existem com
+- **`/sustentabilidade`** (ex-`/bem-fazer`, renomeada no X18, sem redirect), **`/assinaturas`** — mockups "Em breve" (`EmBreve`); só existem com
   `NEXT_PUBLIC_MOCKUPS=1` (`exigirMockups()` → 404 em produção, e saem do menu)
 - `/contato` foi **removida** (contato vive no rodapé)
 - **404 da marca (X9)** — `app/not-found.js` + `not-found.module.css`: cobre rota inexistente, `notFound()` de
@@ -393,7 +393,7 @@ Cada um com `*.module.css` co-locado.
 
 - **`SiteChrome`** (`'use client'`) — esconde Header/Footer em `/login` e `/admin/*` via
   `usePathname()`; usado em `app/layout.js` envolvendo `{children}`
-- **`Header`** (`'use client'`) — menu LOJA, BEM-ESTAR, BEM-FAZER, QUEM SOMOS, ASSINATURAS
+- **`Header`** (`'use client'`) — menu LOJA, MEDITAÇÃO, SUSTENTABILIDADE, QUEM SOMOS, ASSINATURAS
   (vindo de `itensMenu()`, `lib/navegacao.js`); logo leva à home (sem item "Início"); item ativo
   via `usePathname()` + `aria-current`; sem linha divisória; abaixo de 960px vira botão de texto
   "Menu"/"Fechar". **`Footer`** — campo `--cor-rodape` com logo, lema, contatos (WhatsApp via
@@ -507,9 +507,8 @@ Cada um com `*.module.css` co-locado.
   usar papéis-base de `app/globals.css`. Só aparece categoria com ≥1 produto ativo (join
   `produtos!inner` em `getCategoriasComProdutos()`). `imagem_url` opcional (X7) vira faixa 16:9 no topo do
   cartão, enquadrada por `estiloFoto(foco_x, foco_y, zoom)`; o texto fica sempre abaixo da foto (o teste de
-  contraste não muda). **Desfoque:** `.foto::after` com `backdrop-filter: blur(8px)` que vai a `opacity: 0` no
-  hover do cartão e no foco de teclado do link; só dentro de `@media (hover: hover)`, então **no celular a foto fica
-  sempre nítida** (o toque já navega, não há "por cima"). Foto decorativa (`alt=""`)
+  contraste não muda). **Sem desfoque (X18, 2026-11-07):** a foto é sempre nítida, sem efeito de
+  hover (o `.foto::after` com `backdrop-filter` foi removido a pedido da dona; ficam o levantar do cartão e a seta). Foto decorativa (`alt=""`)
 - **`MeditacaoPlayer`** (`'use client'`) — player de áudio da meditação guiada
 - **`TraducaoEn`** (`'use client'`, mora em `app/admin/TraducaoEn.js`, não em `components/`) — seção recolhível "English
   (opcional)" dos formulários de categoria, coleção, produto e tag; aberta só se já há tradução. A prop `campos`

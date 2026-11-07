@@ -70,7 +70,7 @@ export default async function ProdutoPage({ params }) {
             />
             {produto.tem_meditacao && (
               <Link href="/meditacao" className={styles.meditacaoLink}>
-                Meditação guiada disponível
+                Acesse aqui a meditação guiada
               </Link>
             )}
           </div>
