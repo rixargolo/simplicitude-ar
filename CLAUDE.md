@@ -441,7 +441,8 @@ Cada um com `*.module.css` co-locado.
   vitrine. Prop `categorias` (`{ nome, slug, descricao, total, imagem_url?, imagem_foco_x?, imagem_foco_y?, imagem_zoom? }`; vazio → não renderiza).
   Um cartão por categoria no estilo do cartão do hero (claro, cantos de 24px, sem borda/sombra):
   nome em `--font-accent` itálico moderado (`--cor-texto`), `descricao` em 2 linhas (`line-clamp`),
-  "N produtos" e pílula discreta "Ver produtos →" (`--cor-botao`); o `Link` está no `h3` com
+  pílula discreta "Ver produtos →" (`--cor-botao`) à direita (sem contagem de produtos: removida a pedido da dona; `total` segue na
+  prop, sem uso no cartão); o `Link` está no `h3` com
   `::after` cobrindo o cartão (foco por `:has(.link:focus-visible)`). Celular primeiro: 1 coluna;
   ≥640px 2; ≥1100px 4. O tom de fundo varia por posição (`--cartao-fundo` = `color-mix` de
   `--cor-texto`/`--cor-destaque` sobre `--cor-fundo`, 4 tons); **`tests/paletas.test.js` lê essas
