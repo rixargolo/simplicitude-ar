@@ -43,7 +43,6 @@ export default function GradeCategorias({ categorias = [] }) {
               {c.descricao && <p className={styles.descricao}>{c.descricao}</p>}
 
               <p className={styles.chamada}>
-                {c.total} {c.total === 1 ? 'produto' : 'produtos'}
                 <span className={styles.ver} aria-hidden="true">
                   Ver produtos <span className={styles.seta}>→</span>
                 </span>
