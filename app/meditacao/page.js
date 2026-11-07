@@ -10,6 +10,9 @@ export const metadata = {
     'Coleção Inspirar — chocolates com meditações guiadas na voz de Bruna Santos.',
 };
 
+// A página é pré-renderizada; sem isso uma edição no admin só apareceria no próximo build.
+export const revalidate = 60;
+
 export default async function MeditacaoPage() {
   const produtos = await getProdutos();
   const produtosComMeditacao = produtos.filter(

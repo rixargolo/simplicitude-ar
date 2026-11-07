@@ -287,7 +287,7 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
   à esquerda, frase em `h2` itálico e pílula "Conheça nossa história" à direita. Zigue-zague só no desktop (`order`
   no `.fotoDireita`); no celular tudo empilha na ordem do markup (foto em cima, exceto a seção nova)
 - **`/quem-somos`** — institucional
-- **`/meditacao`** — hero (faixa de imagem + duotone + listras diagonais + título, no
+- **`/meditacao`** (`revalidate = 60`, como a home: sem isso a edição no admin só valeria no próximo build) — hero (faixa de imagem + duotone + listras diagonais + título, no
   padrão de `/quem-somos`) e bloco de introdução da Coleção Inspirar, seguidos da lista de
   produtos com `tem_meditacao=true` via `ApresentacaoProduto resumido` + `MeditacaoPlayer` (**só a descrição curta**:
   sem descrição longa nem ingredientes)
