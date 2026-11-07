@@ -149,7 +149,19 @@ Portuguese — English version coming soon" (`traduzir` devolve também o `audio
   fatias que as criarem (C2 ou novas), já com o par de tradução.
   **Andamento (X12, 2026-11-06):** `categoria_traducoes`, `colecao_traducoes`, `lib/i18n.js` e a seção "English
   (opcional)" já existem para categorias e coleções. O M:N `produto_colecoes` entrou sem a coluna `ordem` prevista na
-  tabela acima (nada a usa; acrescentá-la depois é aditivo). Faltam produto e tag, e as rotas (I2).
+  tabela acima (nada a usa; acrescentá-la depois é aditivo).
+  **Andamento (X13, 2026-11-07):** `produto_traducoes` e `tag_traducoes` (I1 completo), além de `produtos.descricao_curta`,
+  `produtos.ingredientes` e as tabelas `tags`/`produto_tags`. `produto_traducoes` ficou **sem `atributos`** (a descrição curta o
+  substitui na `v1`; a coluna antiga fica só para a `main`) e **sem `audio_url`** (I3, aditivo). Faltam só as rotas (I2).
+
+## Pergunta em aberto
+
+**Os slugs devem ser traduzidos nas rotas `/en`?** Hoje está decidido que **não** (seções 1 e 2: um slug por
+registro, `/en/loja/<slug>` igual ao PT). **Rever antes do I2**, porque depois que as rotas `/en` forem indexadas
+mudar vira redirect em dobro. O que pesar: a favor, URL em inglês ajuda SEO e leitura de quem compartilha o link;
+contra, exige um slug por idioma e por registro (colunas em `*_traducoes`), o histórico do X8 (`produto_slugs`, 308)
+passa a valer por idioma, o hreflang aponta para URLs diferentes e a busca do slug no `proxy.js`/rota precisa
+saber o idioma.
 
 ## Fora do escopo
 

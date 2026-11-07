@@ -42,7 +42,9 @@ export default function CardProduto({ produto, sizes, className = '', Titulo = '
           <span className={styles.categoria}>{produto.categorias.nome}</span>
         )}
         <Titulo className={styles.titulo}>{produto.nome}</Titulo>
-        {produto.descricao && <p className={styles.descricao}>{produto.descricao}</p>}
+        {(produto.descricao_curta || produto.descricao) && (
+          <p className={styles.descricao}>{produto.descricao_curta || produto.descricao}</p>
+        )}
         <span className={styles.preco}>{formatBRL(produto.preco_centavos)}</span>
       </div>
     </Link>

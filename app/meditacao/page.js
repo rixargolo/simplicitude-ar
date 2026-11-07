@@ -63,7 +63,7 @@ export default async function MeditacaoPage() {
         </p>
       ) : (
         produtosComMeditacao.map((produto) => (
-          <ApresentacaoProduto key={produto.id} produto={produto}>
+          <ApresentacaoProduto key={produto.id} produto={produto} resumido>
             <MeditacaoPlayer audioUrl={produto.audio_url} />
           </ApresentacaoProduto>
         ))

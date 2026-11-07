@@ -34,7 +34,34 @@ describe('traduzir', () => {
   });
 });
 
+describe('traduzir (produto, X13)', () => {
+  const produto = {
+    id: 'p1',
+    nome: 'Esperança',
+    descricao_curta: 'Intenso e cítrico',
+    descricao: 'Texto longo\n\nSegundo parágrafo',
+    ingredientes: 'Cacau, açúcar',
+  };
+
+  it('curta EN vazia cai no PT; ingredientes EN valem', () => {
+    const t = { produto_id: 'p1', idioma: 'en', nome: 'Hope', descricao_curta: ' ', descricao: null, ingredientes: 'Cocoa, sugar' };
+    expect(traduzir(produto, t, 'en')).toEqual({ ...produto, nome: 'Hope', ingredientes: 'Cocoa, sugar' });
+  });
+
+  it('preserva as quebras de linha da tradução', () => {
+    const r = traduzir(produto, { idioma: 'en', descricao: 'Long\n\nSecond' }, 'en');
+    expect(r.descricao).toBe('Long\n\nSecond');
+  });
+});
+
 describe('acaoTraducao', () => {
+  it('vale para os campos do produto', () => {
+    const vazio = { nome: '', descricao_curta: '', descricao: '', ingredientes: '' };
+    expect(acaoTraducao(vazio, false)).toBe('nada');
+    expect(acaoTraducao(vazio, true)).toBe('apagar');
+    expect(acaoTraducao({ ...vazio, ingredientes: 'Cocoa' }, false)).toBe('gravar');
+  });
+
   it('algum campo preenchido grava', () => {
     expect(acaoTraducao({ nome: 'A', descricao: '' }, false)).toBe('gravar');
     expect(acaoTraducao({ nome: '', descricao: 'd' }, true)).toBe('gravar');

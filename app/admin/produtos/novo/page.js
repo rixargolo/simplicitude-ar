@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getCategorias } from '@/lib/admin/produtos';
 import { getColecoes } from '@/lib/admin/colecoes';
+import { getTags } from '@/lib/admin/tags';
 import ProdutoForm from '../ProdutoForm';
 import formStyles from '../ProdutoForm.module.css';
 
@@ -9,9 +10,10 @@ export const metadata = {
 };
 
 export default async function NovoProdutoPage() {
-  const [colecoes, categorias] = await Promise.all([
+  const [colecoes, categorias, tags] = await Promise.all([
     getColecoes(),
     getCategorias(),
+    getTags(),
   ]);
 
   return (
@@ -19,7 +21,7 @@ export default async function NovoProdutoPage() {
       <Link href="/admin/produtos" className={formStyles.voltar}>
         ← Produtos
       </Link>
-      <ProdutoForm mode="create" colecoes={colecoes} categorias={categorias} />
+      <ProdutoForm mode="create" colecoes={colecoes} categorias={categorias} tags={tags} />
     </div>
   );
 }

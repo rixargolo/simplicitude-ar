@@ -6,6 +6,7 @@ vi.mock('../lib/supabase.js', () => {
   const cadeia = {
     select: () => cadeia,
     eq: (coluna, valor) => (estado.filtros.push([coluna, valor]), cadeia),
+    order: () => cadeia, // ordem das tags embutidas (X13); não é filtro
     maybeSingle: () => Promise.resolve(estado.resposta),
   };
   return { supabase: { from: (t) => ((estado.tabela = t), (estado.filtros = []), cadeia) } };
