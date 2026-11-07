@@ -2,47 +2,35 @@
    porque o trilho dos carrosséis vai até a borda direita da tela. Só papéis --cor-*, --font-*, --tam-*. */
 .pagina {
   --margem: 20px;
-  padding: 24px 0 72px;
+  padding: 0 0 72px; /* a foto do hero encosta no cabeçalho */
   border-top: 1px solid var(--cor-borda);
   background: var(--cor-fundo);
   color: var(--cor-texto);
 }
 
-/* ---------- topo: só texto sobre o fundo, curto (o 1º carrossel tem de aparecer perto da dobra no celular) ---------- */
+/* ---------- hero: só a foto, de largura total e colada ao cabeçalho (2172×724, 3:1; cover corta conforme a tela) ---------- */
 
-.topo {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  height: 7rem; /* fixo: cabe rótulo + título de 1 linha + frase de 2 linhas; o que passar é cortado (título e frase com reticências) */
+.heroFoto {
+  position: relative;
+  height: clamp(15rem, 24vw, 22rem);
   overflow: hidden;
-  margin: 0 var(--margem) 20px;
 }
 
-.titulo {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: var(--tam-titulo-pagina);
-  line-height: 1.1;
-  letter-spacing: -0.01em;
-  color: var(--cor-texto);
+.heroImg {
+  object-fit: cover;
+  object-position: 50% 40%;
+}
+
+/* h1 só para leitor de tela: a página precisa de um título, mas o hero é só imagem */
+.soLeitor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.frase {
-  max-width: 36rem;
-  margin: 0;
-  font-family: var(--font-body);
-  font-size: var(--tam-texto);
-  line-height: 1.45;
-  color: var(--cor-texto);
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
 }
 
 /* ---------- filtro: chips que sangram até a borda e rolam na horizontal no celular ---------- */
@@ -337,7 +325,7 @@
 @media (min-width: 640px) {
   .pagina {
     --margem: 24px;
-    padding: 40px 0 96px;
+    padding: 0 0 96px;
   }
 
   .grade {
@@ -346,13 +334,8 @@
   }
 }
 
-/* topo: frase embaixo do título em qualquer largura; os chips quebram em linhas em vez de rolar */
+/* os chips quebram em linhas em vez de rolar */
 @media (min-width: 900px) {
-  .topo {
-    height: 8rem;
-    margin-bottom: 32px;
-  }
-
   .chips {
     flex-wrap: wrap;
     overflow: visible;

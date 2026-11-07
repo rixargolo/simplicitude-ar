@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { getProdutos, getCategoriasComProdutos, getColecoesPublicas, montarLoja } from '@/lib/produtos';
 import CardProduto from '../components/CardProduto';
@@ -11,7 +12,6 @@ export const metadata = {
     'Chocolates artesanais Simplicitude — Da Floresta à Fábrica.',
 };
 
-const FRASE_PADRAO = 'Chocolate da floresta, feito à mão no Sul da Bahia.';
 const SIZES_CARROSSEL = '(max-width: 900px) 70vw, 18rem';
 const SIZES_GRADE = '(max-width: 640px) 50vw, (max-width: 1100px) 33vw, 18rem';
 
@@ -37,11 +37,19 @@ export default async function LojaPage({ searchParams }) {
 
   return (
     <main className={styles.pagina}>
-      {/* hero fixo: não muda com categoria nem coleção (vai evoluir depois); descrição da categoria fica de fora por enquanto */}
-      <header className={styles.topo}>
-        <h1 className={styles.titulo}>Loja</h1>
-        <p className={styles.frase}>{FRASE_PADRAO}</p>
-      </header>
+      {/* hero fixo: não muda com categoria nem coleção (vai evoluir depois); descrição da categoria fica de fora por enquanto.
+          Foto decorativa (alt vazio) de largura total; o texto fica por cima, embaixo à esquerda, sobre um fade escuro (CSS). */}
+      <div className={styles.heroFoto}>
+        <Image
+          src="/loja/hero-loja.webp"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className={styles.heroImg}
+        />
+      </div>
+      <h1 className={styles.soLeitor}>Loja</h1>
 
       {categorias.length > 0 && (
         <nav aria-label="Categorias" className={`${styles.filtro} ${styles.barra}`}>
