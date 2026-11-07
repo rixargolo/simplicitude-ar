@@ -1,7 +1,7 @@
 /* Trilho de cards (vitrine da home e carrosséis da /loja). --card dimensiona o card e posiciona as
    setas; --pad-esq é o respiro à esquerda do primeiro card (a vitrine o zera: a coluna já tem margem). */
 .trilho {
-  --card: clamp(15rem, 22vw, 18rem);
+  --card: 16rem; /* ≈ coluna da grade da /loja em desktop */
   position: relative;
   min-width: 0;
 }
@@ -12,7 +12,9 @@
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
-  padding: 4px 24px 4px var(--pad-esq, 24px);
+  /* respiro à esquerda = margem da página (--margem da /loja); o scroll-padding faz o snap parar nele em vez de colar na borda */
+  padding: 4px 24px 4px var(--pad-esq, var(--margem, 24px));
+  scroll-padding-left: var(--pad-esq, var(--margem, 24px));
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -25,6 +27,42 @@
 .slide {
   flex: 0 0 var(--card);
   scroll-snap-align: start;
+}
+
+/* título no lugar do 1º card: mesma largura, centralizado na altura da foto (não do card inteiro) */
+.cabecalho {
+  flex: 0 0 var(--card);
+  scroll-snap-align: start;
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  min-height: calc(var(--card) / var(--proporcao-produto));
+  padding-right: 8px;
+}
+
+/* pontinhos: um por "página" do trilho; só indicam, não são clicáveis */
+.pontos {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.ponto {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cor-borda);
+}
+
+.pontoAtivo {
+  background: var(--cor-botao);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ponto {
+    transition: background-color 0.3s ease;
+  }
 }
 
 /* setas na altura do centro da imagem (metade da altura do quadro: card ÷ proporção ÷ 2) */
@@ -59,7 +97,7 @@
 }
 
 .arrowPrev {
-  left: 12px;
+  left: 24px; /* simétrica à seta "seguinte" (right: 24px) */
 }
 
 .arrowNext {
@@ -69,16 +107,28 @@
 /* celular e tablet: o carrossel desliza por toque (sem setas) */
 @media (max-width: 900px) {
   .trilho {
-    --card: 70vw;
+    --card: 14rem; /* mínimo da grade da /loja em tablet */
   }
 
   .track {
-    padding: 4px 20px;
-    scroll-padding: 0 20px;
+    /* a vitrine da home zera --pad-esq no desktop; aqui ela tem sempre o respiro da página */
+    padding: 4px 20px 4px var(--margem, 20px);
+    scroll-padding: 0 20px 0 var(--margem, 20px);
   }
 
   .arrow {
     display: none;
+  }
+}
+
+/* celular: mesma largura da coluna da grade da /loja (2 colunas, margem 20px, vão 16px) */
+@media (max-width: 639px) {
+  .trilho {
+    --card: calc(50vw - 28px);
+  }
+
+  .track {
+    gap: 16px;
   }
 }
 

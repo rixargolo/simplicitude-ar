@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getProdutos, getCategoriasComProdutos, getColecoesPublicas, montarLoja } from '@/lib/produtos';
 import CardProduto from '../components/CardProduto';
 import CarrosselProdutos from '../components/CarrosselProdutos';
+import BarraDeslizante from './BarraDeslizante';
 import styles from './loja.module.css';
 
 export const metadata = {
@@ -30,33 +31,28 @@ export default async function LojaPage({ searchParams }) {
     { categoria, colecao },
   );
 
-  // h1 → (h2 da categoria, só em "Todas") → h3/h2 da lista → nome do produto
-  const comTituloDeCategoria = !ativa;
-  const Lista = comTituloDeCategoria ? 'h3' : 'h2';
-  const NomeCard = comTituloDeCategoria ? 'h4' : 'h3';
+  // h1 "Loja" (fixo) → h2 da categoria → h3 da coleção → h4 nome do produto. Só o "Todas" com uma lista só
+  // (grade sem título de categoria) tem o nome do produto direto em h2.
+  const nomeGrade = !ativa ? 'h2' : colecaoAtiva ? 'h4' : 'h3';
 
   return (
     <main className={styles.pagina}>
+      {/* hero fixo: não muda com categoria nem coleção (vai evoluir depois); descrição da categoria fica de fora por enquanto */}
       <header className={styles.topo}>
-        <div>
-          {colecaoAtiva && ativa && <span className={styles.rotulo}>{ativa.nome}</span>}
-          <h1 className={styles.titulo}>{colecaoAtiva?.nome ?? ativa?.nome ?? 'Loja'}</h1>
-        </div>
-        <p className={styles.frase}>
-          {(colecaoAtiva ? colecaoAtiva.descricao : ativa?.descricao) || FRASE_PADRAO}
-        </p>
+        <h1 className={styles.titulo}>Loja</h1>
+        <p className={styles.frase}>{FRASE_PADRAO}</p>
       </header>
 
       {categorias.length > 0 && (
-        <nav aria-label="Categorias" className={styles.filtro}>
-          <ul className={styles.chips}>
+        <nav aria-label="Categorias" className={`${styles.filtro} ${styles.barra}`}>
+          <BarraDeslizante>
             <li>
               <Link
                 href="/loja"
                 className={styles.chip}
                 aria-current={ativa || colecaoAtiva ? undefined : 'page'}
               >
-                Todas
+                Tudo
               </Link>
             </li>
             {categorias.map((c) => (
@@ -70,36 +66,39 @@ export default async function LojaPage({ searchParams }) {
                 </Link>
               </li>
             ))}
-          </ul>
+          </BarraDeslizante>
         </nav>
       )}
 
-      {ativa && colecoesDaCategoria.length > 0 && (
-        <nav aria-label={`Coleções de ${ativa.nome}`} className={styles.filtro}>
-          <ul className={styles.chips}>
-            <li>
-              <Link
-                href={`/loja?categoria=${ativa.slug}`}
-                className={`${styles.chip} ${styles.chipLeve}`}
-                aria-current={colecaoAtiva ? undefined : 'page'}
-              >
-                Tudo em {ativa.nome}
-              </Link>
-            </li>
-            {colecoesDaCategoria.map((c) => (
-              <li key={c.slug}>
+      {/* espaço da subcategoria sempre reservado: o título abaixo fica à mesma distância do menu com ou sem coleções */}
+      <div className={styles.subSlot}>
+        {ativa && colecoesDaCategoria.length > 0 && (
+          <nav aria-label={`Coleções de ${ativa.nome}`} className={`${styles.filtro} ${styles.barra} ${styles.sub}`}>
+            <BarraDeslizante>
+              <li>
                 <Link
-                  href={`/loja?colecao=${c.slug}`}
-                  className={`${styles.chip} ${styles.chipLeve}`}
-                  aria-current={colecaoAtiva?.slug === c.slug ? 'page' : undefined}
+                  href={`/loja?categoria=${ativa.slug}`}
+                  className={styles.chip}
+                  aria-current={colecaoAtiva ? undefined : 'page'}
                 >
-                  {c.nome}
+                  Tudo em {ativa.nome}
                 </Link>
               </li>
-            ))}
-          </ul>
-        </nav>
-      )}
+              {colecoesDaCategoria.map((c) => (
+                <li key={c.slug}>
+                  <Link
+                    href={`/loja?colecao=${c.slug}`}
+                    className={styles.chip}
+                    aria-current={colecaoAtiva?.slug === c.slug ? 'page' : undefined}
+                  >
+                    {c.nome}
+                  </Link>
+                </li>
+              ))}
+            </BarraDeslizante>
+          </nav>
+        )}
+      </div>
 
       {grade ? (
         grade.length === 0 ? (
@@ -111,13 +110,25 @@ export default async function LojaPage({ searchParams }) {
             .
           </p>
         ) : (
-          <ul className={styles.grade}>
-            {grade.map((produto) => (
-              <li key={produto.id}>
-                <CardProduto produto={produto} Titulo="h2" sizes={SIZES_GRADE} />
-              </li>
-            ))}
-          </ul>
+          <section className={styles.secao}>
+            {ativa && (
+              <header className={styles.secaoCab}>
+                <h2 className={styles.secaoTitulo}>{ativa.nome}</h2>
+              </header>
+            )}
+            {colecaoAtiva && (
+              <div className={styles.tituloSolto}>
+                <h3 className={styles.listaTitulo}>{colecaoAtiva.nome}</h3>
+              </div>
+            )}
+            <ul className={styles.grade}>
+              {grade.map((produto) => (
+                <li key={produto.id}>
+                  <CardProduto produto={produto} Titulo={nomeGrade} sizes={SIZES_GRADE} />
+                </li>
+              ))}
+            </ul>
+          </section>
         )
       ) : (
         secoes.map((s) => {
@@ -125,44 +136,33 @@ export default async function LojaPage({ searchParams }) {
           const varias = s.listas.length > 1;
           return (
             <section key={s.categoria?.slug ?? 'outros'} className={styles.secao}>
-              {comTituloDeCategoria && (
-                <header className={styles.secaoCab}>
-                  <div>
-                    <h2 className={styles.secaoTitulo}>{nome}</h2>
-                    {s.categoria?.descricao && <p className={styles.secaoDesc}>{s.categoria.descricao}</p>}
-                  </div>
-                  {s.categoria && (
-                    <Link href={`/loja?categoria=${s.categoria.slug}`} className={styles.verMais}>
-                      Ver tudo
-                    </Link>
-                  )}
-                </header>
-              )}
+              <header className={styles.secaoCab}>
+                <h2 className={styles.secaoTitulo}>{nome}</h2>
+              </header>
 
               {s.listas.map((l) => {
                 // "Mais {categoria}" só quando há coleção ao lado; a lista única da categoria não leva título
                 const titulo = l.colecao ? l.colecao.nome : varias ? `Mais ${nome}` : null;
                 return (
                   <div key={l.colecao?.id ?? 'resto'} className={styles.lista}>
-                    {titulo && (
-                      <div className={styles.listaCab}>
-                        <Lista className={styles.listaTitulo}>{titulo}</Lista>
-                        {l.colecao && (
-                          <Link href={`/loja?colecao=${l.colecao.slug}`} className={styles.verMais}>
-                            Ver coleção
-                          </Link>
-                        )}
-                      </div>
-                    )}
                     <CarrosselProdutos
+                      cabecalho={titulo && <h3 className={styles.listaTitulo}>{titulo}</h3>}
                       produtos={l.produtos}
                       rotulo={titulo ?? nome}
-                      Titulo={NomeCard}
+                      Titulo="h4"
                       sizes={SIZES_CARROSSEL}
                     />
                   </div>
                 );
               })}
+
+              {!ativa && s.categoria && (
+                <div className={styles.secaoRodape}>
+                  <Link href={`/loja?categoria=${s.categoria.slug}`} className={styles.verMais}>
+                    Ver tudo
+                  </Link>
+                </div>
+              )}
             </section>
           );
         })

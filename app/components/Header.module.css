@@ -53,11 +53,7 @@
   border: none;
   cursor: pointer;
   padding: 8px 0;
-  font-family: var(--font-body);
-  font-size: var(--tam-pequeno);
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  line-height: 0;
   color: var(--cor-texto);
 }
 
