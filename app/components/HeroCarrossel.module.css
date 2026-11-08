@@ -163,22 +163,25 @@
    cartão de 70%). Assim cabem na 1ª tela mesmo em notebook baixo. Setas e pontos usam as cores
    base (--cor-texto). O contraste depende da foto por trás: não é coberto por teste, conferir
    a olho ao trocar uma foto; se ficar fraco, subir o percentual. */
-@media (min-width: 641px) {
-  .sobreposto {
-    position: relative;
-  }
+.sobreposto {
+  position: relative;
+}
 
+.sobreposto .controles {
+  position: absolute;
+  z-index: 2;
+  flex-wrap: nowrap;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--cor-fundo) 30%, transparent);
+  -webkit-backdrop-filter: blur(14px); /* taste-skill-ignore: pedido explícito do usuário */
+  backdrop-filter: blur(14px); /* taste-skill-ignore: pedido explícito do usuário */
+}
+
+@media (min-width: 641px) {
   .sobreposto .controles {
-    position: absolute;
-    z-index: 2;
     bottom: 16px;
     right: 16px;
-    flex-wrap: nowrap;
-    padding: 2px 8px;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--cor-fundo) 30%, transparent);
-    -webkit-backdrop-filter: blur(14px); /* taste-skill-ignore: pedido explícito do usuário */
-    backdrop-filter: blur(14px); /* taste-skill-ignore: pedido explícito do usuário */
   }
 }
 
@@ -193,8 +196,20 @@
   }
 }
 
-/* celular: foto em cima, cartão embaixo (controles seguem abaixo, no fluxo) */
+/* celular: foto em cima, cartão embaixo; os controles ficam dentro da foto, na base, centrados
+   (sem linha própria: a linha do botão não comporta 6 alvos de 44px + o botão em 320–430px) */
 @media (max-width: 640px) {
+  /* margem em % é relativa à LARGURA do .raiz; a foto é 4:3, então 75% = altura da foto.
+     60px = pílula (48) + 12 de respiro. Largura 6×44 + 8 = 272px: cabe em 320px. */
+  .sobreposto .controles {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: calc(75% - 60px);
+    gap: 0;
+    padding: 2px 4px;
+  }
+
   .sobreposto .slide {
     display: block;
   }

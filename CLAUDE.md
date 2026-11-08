@@ -65,10 +65,9 @@ públicas, `proxy.js`, textos fixos ou no schema de conteúdo** (produtos, categ
   menor) e o A7 (produto: galeria + Comprar → WhatsApp) estão no código. **X8 (slug fixo do produto + redirect 308 do
   antigo) está no código e o SQL `supabase/migrations/20261106120000_produtos_slug.sql` **já foi aplicado
   (2026-11-06)**.** **X4 (controle do slider sem Pausar/Continuar, pílula translúcida) está no código.**
-  **X5 (home com Meditação, seção placeholder e Quem somos; ver `/`) está no código; falta texto e foto da seção nova
-  e confirmar com a dona o título "Meditação".** **X6 (Novidades permanente, curadoria em `/admin/novidades`) está no
+  **X5 (home com Meditação, seção do meio e Quem somos; ver `/`) está no código; a seção do meio virou a Sustentabilidade no X18.** **X6 (Novidades permanente, curadoria em `/admin/novidades`) está no
   código e o SQL `supabase/migrations/20261106130000_produtos_novidade_ordem.sql` **já foi aplicado (2026-11-06)**
-  (a home cai nos mais recentes enquanto a curadoria estiver vazia).** **X7 (categorias com imagem: foto no admin + desfoque que esmaece no hover) e X10 (sem chips de categoria na vitrine Novidades) estão no código e o SQL `supabase/migrations/20261106140000_categorias_imagem.sql` **já foi aplicado (2026-11-06)**.** **X11 (análise e organização do Storage: buckets por tipo, policies em SQL, limites, órfãos, público/privado) só está registrado no plano, sem implementação.** **X9 (página 404 da marca, `app/not-found.js`) está no código; texto provisório, confirmar com a dona.** **X12 (coleções dentro de categorias, produto ↔ coleção M:N, gestão em `/admin/colecoes`, par de tradução EN de categorias e coleções) está no código e concluído/testado; o SQL `20261106150000_x12_colecoes.sql` **foi aplicado (2026-11-06)**.** **X13 (campos do produto: descrição curta, descrição longa com quebras de linha, ingredientes, tags com CRUD em `/admin/tags` e tradução EN de produto e tag) está no código e concluído/testado; o SQL `20261107120000_x13_campos_produto.sql` **foi aplicado (2026-11-07)**.** **Ideias registradas, nada implementado:** **X14** (nova `/loja`: topo de impacto, filtro por categoria/coleção, carrosséis de uma linha), **X15** (destaque ou landing de Presentes/Natal), **X16** (busca no site todo, no cabeçalho) e **X17** (política de troca e devolução, dentro do A11); detalhes no plano. Próximo: mostrar o preview à dona.
+  (a home cai nos mais recentes enquanto a curadoria estiver vazia).** **X7 (categorias com imagem: foto no admin + desfoque que esmaece no hover) e X10 (sem chips de categoria na vitrine Novidades) estão no código e o SQL `supabase/migrations/20261106140000_categorias_imagem.sql` **já foi aplicado (2026-11-06)**.** **X11 (análise e organização do Storage: buckets por tipo, policies em SQL, limites, órfãos, público/privado) só está registrado no plano, sem implementação.** **X9 (página 404 da marca, `app/not-found.js`) está no código; texto provisório, confirmar com a dona.** **X12 (coleções dentro de categorias, produto ↔ coleção M:N, gestão em `/admin/colecoes`, par de tradução EN de categorias e coleções) está no código e concluído/testado; o SQL `20261106150000_x12_colecoes.sql` **foi aplicado (2026-11-06)**.** **X13 (campos do produto: descrição curta, descrição longa com quebras de linha, ingredientes, tags com CRUD em `/admin/tags` e tradução EN de produto e tag) está no código e concluído/testado; o SQL `20261107120000_x13_campos_produto.sql` **foi aplicado (2026-11-07)**.** **X14 (nova `/loja`: topo só de texto, filtro por categoria e coleção, carrosséis de uma linha por categoria e coleção; sem SQL) está no código, build e testes verdes; falta o dono conferir no navegador.** **Ideias registradas, nada implementado:** **X15** (destaque ou landing de Presentes/Natal), **X16** (busca no site todo, no cabeçalho) e **X17** (política de troca e devolução, dentro do A11); detalhes no plano. **X18 (feedback da dona, rodada 2, 3 fatias):** **fatia 1 feita** (menu Meditação/Sustentabilidade com a rota `/sustentabilidade`, categorias da home sem desfoque, frase "Acesse aqui a meditação guiada" no produto; sem SQL); **fatia 2 feita** (seção Meditação da home sem caixa nem moldura, foto direto no fundo, título "Chocolates para Meditação" e botão "Conheça a Coleção Inspirar" para `/loja?colecao=inspirar`; sem SQL); **fatia 3 feita** (seção Sustentabilidade na home no lugar do placeholder, "Um mundo melhor com simples atitudes", 3 blocos que levam a `/sustentabilidade`; a página agora existe em produção, só com título e aviso de "em breve"; sem SQL) — **X18 concluído**; ajuste pós-X18 (2026-11-07): Quem somos também saiu do cartão (home sem caixa em todas as seções); **ajuste pós-X18 (2026-11-08, sem SQL):** novos slides do hero (Presentes, Floresta, Meditação, Loja, textos e links da dona; ver "Fotos do hero"), frase do manifesto entre o hero e a vitrine, e controles do slider sobre a foto no celular (sem linha própria). Próximo: mostrar o preview à dona.
 - **Decisões vigentes:** checkout como **convidado** (a decisão antiga de login obrigatório
   está superada); vitrine da home com título derivado do critério de ordem — `novidade_ordem` (curadoria da dona,
   reserva `created_at`) = "Novidades",
@@ -90,7 +89,7 @@ públicas, `proxy.js`, textos fixos ou no schema de conteúdo** (produtos, categ
   ativo e envs configuradas no Netlify (`NEXT_PUBLIC_MOCKUPS=1` só nos contextos
   branch-deploy/deploy-preview), verificado em produção e na `v1`. **A2 (tokens + Header/Footer)
   está no código. A3 (hero da home em carrossel) está no código, com as 4 fotos reais ligadas
-  (ver `HeroCarrossel`). A5 (categorias na home) está no código, sem fotos (ver `GradeCategorias`). A6 (`/loja` com filtro por categoria) está no código (ver `CardProduto`).** Mockups existentes: só `/bem-fazer` e `/assinaturas` ("Em breve"); os de
+  (ver `HeroCarrossel`). A5 (categorias na home) está no código, sem fotos (ver `GradeCategorias`). A6 (`/loja` com filtro por categoria) está no código (ver `CardProduto`).** Mockups existentes: só `/assinaturas` ("Em breve"); os de
   carrinho/checkout vêm depois — ver a lista priorizada no plano.
 - **Ordem do front:** A1 (preview) → A2 (tokens, header/footer) → A3/A4/A5 (home) → A6 → **X1 (fotos)** →
   **X2 (paleta verde)** → **X3 (tipografia)** → A7 (produto, Comprar → WhatsApp) → **X8 (slug)** → **X4 → X5 → X6 → X7 → X10 → X9 (404)** →
@@ -152,9 +151,9 @@ licenças em `app/fonts/LEIA-ME.md`). Nenhum CSS cita as famílias direto.
 - Zips originais em `docs/Fontes da marca/` (fora do git). Grandeurs e Simplicity não são usadas.
 
 **Contato vigente:** WhatsApp **(73) 9 2002-6708**; e-mail `viva@simplicitude.com.br`
-(inalterado); Instagram `@simplicitude.co`. O `Footer` já usa esses dados. **CNPJ/razão
-social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a confirmar" só com
-`NEXT_PUBLIC_MOCKUPS=1`; em produção a linha some até o dado chegar (check do D2).
+(inalterado); Instagram `@simplicitude.co`. O `Footer` já usa esses dados. **CNPJ:** `44.387.834/0001-77`
+(2026-11-08), sempre visível na linha legal do rodapé. **Razão social:** `44387834 SHEYLLA TOMÁS SILVA ME`
+(2026-11-08), também sempre visível, na linha acima do CNPJ.
 
 ---
 
@@ -190,7 +189,7 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   estoque)
 - Loja conectada ao Supabase (produtos reais, imagens via Storage, preços, coleções,
   categorias)
-- `/` (home) — hero em carrossel (`HeroCarrossel`, 4 slides: Loja, Bem-estar, Quem somos, Presentes, todos com
+- `/` (home) — hero em carrossel (`HeroCarrossel`, 4 slides, pós-X18 (2026-11-08): Presentes, Floresta, Meditação, Loja, todos com
   foto real; slide sem foto vira placeholder no preview e é omitido em produção) e, logo abaixo, a vitrine de produtos
   em duas colunas (título derivado do critério de ordem — hoje "Novidades" —, botão "Ver toda a loja"
   e carrossel de cards; sem chips de categoria, X10), via `VitrineProdutos`; logo abaixo, a seção de categorias
@@ -207,8 +206,9 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
 
 **Pendente / não implementado ainda** (ordem e dependências em
 [`docs/plano-v1.md`](docs/plano-v1.md), seção 3):
-- Conteúdo de `/bem-fazer` e `/assinaturas` (hoje mockups "Em breve" só no preview) e confirmar
-  com a dona o rótulo "Bem-estar" para `/meditacao`
+- Conteúdo de `/sustentabilidade` (hoje só título e aviso "em breve", **já visível em produção e no menu**; no D2 confirmar
+  o conteúdo ou remover o item do menu e os links da home) e de `/assinaturas` (mockup "Em breve" só no preview); o rótulo
+  do menu para `/meditacao` já é "Meditação" (X18)
 - Checkout real — hoje "Comprar" em `/loja/[slug]` abre o WhatsApp (A7, temporário); integração InfinitePay não
   existe (quando existir, é quem vai gerar as movimentações `venda`/`cancelamento` em
   `estoque_movimentacoes` e os registros em `pagamentos`)
@@ -218,8 +218,15 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
 - Baseline do schema (`supabase db pull`, B-1b) **ainda não existe**: o resto do schema só está no
   painel do Supabase; no repo há só as mudanças desde o A6b, em `supabase/migrations/` (B-1a). Sem
   ambiente de staging — B-2 do plano
-- **Fotos do hero:** as 4 de `public/home/hero_slide_{1..4}.webp` já estão ligadas aos slides
-  (ordem 1→4 = Loja, Bem-estar, Quem somos, Presentes). Se a dona trocar alguma, **receita de
+- **Home sem caixa e sem borda na foto:** a dona quer as seções da home sem caixa demarcada e sem bordas na foto. **Feito em todas:
+  Meditação (X18, fatia 2), Sustentabilidade (fatia 3) e Quem somos (ajuste de 2026-11-07)** (registrado em `docs/plano-v1.md`,
+  pendências)
+- **Fotos do hero (ajuste pós-X18, 2026-11-08):** ordem 1→4 = Presentes (`hero-presentear.webp`, nova), Floresta
+  (`hero_slide_1.webp`, homem abrindo cacau), Meditação (`hero-meditacao.webp`, nova) e Loja (`hero_slide_2.webp`, barra de
+  chocolate). `hero_slide_3/4.webp` saíram do repo. **PROVISÓRIAS: slides 1, 2 e 4** (a dona manda as finais depois). A do slide 1
+  mede 1928×851 (2,27:1, abaixo de 1080 de altura) e traz texto e ícones na coluna direita ("Veganos / Artesanais / Personalize"):
+  `posicao: '0% 50%'` ancora à esquerda e o esconde no desktop; no celular (4:3) o corte mostra o lado esquerdo. A do slide 3 mede
+  1536×864 (16:9, também abaixo de 1920×1080; sem ampliar). Se a dona trocar alguma, **receita de
   otimização**: WebP `quality: 85` (`effort: 6`, `smartSubsample: true`) com `sharp` (já está em
   `node_modules`, vem do Next; comando avulso, sem script no repo), **mesmas dimensões** (16:9,
   mín. 1920×1080, ideal 2400×1350, sem upscale), PSNR ≥ ~38 dB contra o original (a foto 3, com céu,
@@ -227,10 +234,10 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   check do D2: todo slide do hero com foto real
 - **X1 (várias fotos):** SQL aplicado em produção em 2026-11-05 (`supabase/migrations/20261105181330_produto_imagens.sql`). **Rodar de novo no D2** o script de reconciliação `supabase/scripts/x1_reconciliar_produto_imagens.sql` (a `main` só grava em `produtos`). A galeria em `/loja/[slug]` já usa `produto_imagens` (A7)
 - **Foto de categoria (X7):** código pronto (upload no `CategoriaForm`, `getCategoriasComProdutos()` e `GradeCategorias`); o SQL `20261106140000_categorias_imagem.sql` já foi aplicado (2026-11-06); falta a dona enviar as fotos (cada categoria sem foto segue com o cartão de sempre). O mesmo SQL cria o bucket próprio `categorias` com as policies (ver Storage)
-- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive hero e cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam sem uso até autorização), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `filtrarPorCategoria`, `lib/foco.js`, `lib/fotos.js`, `lib/whatsapp.js`, `lib/i18n.js` e os slugs do X8: `slugValido`, `getProdutoBySlug`, `getSlugAtual`). Sem lint nem CI
+- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive hero e cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam sem uso até autorização), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `montarLoja`, `lib/foco.js`, `lib/fotos.js`, `lib/whatsapp.js`, `lib/i18n.js`, `lib/texto.js` e os slugs do X8: `slugValido`, `getProdutoBySlug`, `getSlugAtual`). Sem lint nem CI
 - Admin de pedidos
-- **Coleções (X12):** gestão no admin pronta (`/admin/colecoes`); falta só o uso público (filtro/página por coleção
-  não existe) e excluir coleção (de propósito, fora do X12)
+- **Coleções (X12):** gestão no admin pronta (`/admin/colecoes`); uso público só na `/loja` (X14: `?colecao=slug`
+  e carrossel por coleção; sem página própria de coleção) e excluir coleção (de propósito, fora do X12)
 - **X12 (taxonomia + par EN de categorias e coleções):** concluído e testado; SQL
   `supabase/migrations/20261106150000_x12_colecoes.sql` **aplicado em 2026-11-06**
 - **X13 (campos do produto):** concluído e testado; SQL `supabase/migrations/20261107120000_x13_campos_produto.sql`
@@ -275,33 +282,64 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
 
 Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
 - **`/`** (`app/page.js`) — Home: `HeroCarrossel` (array `SLIDES` no próprio arquivo, filtrado
-  por `slidesVisiveis()`; sem slide com foto o hero não renderiza), `VitrineProdutos`,
+  por `slidesVisiveis()`; sem slide com foto o hero não renderiza), **a frase do manifesto** (ajuste pós-X18, 2026-11-08: `<p
+  className={styles.manifesto}>` em `app/page.js`, entre o hero e a vitrine; "Chocolates **plant-based**, feitos com ingredientes da
+  floresta, que **nutrem** corpo e alma, quebra de linha, e **regeneram a Mata Atlântica**." em Fraunces itálico, centralizada, `62ch` (2 linhas no desktop), sem caixa
+  nem borda), `VitrineProdutos`,
   `GradeCategorias` e o **bloco de marca (X5, sem componente próprio: markup em `app/page.js`, estilo em
-  `app/home.module.css`)**, na ordem Meditação → seção nova → Quem somos. **Três cartões divididos iguais**
-  (`--cor-superficie`, raio 24px, mesmas margens das categorias, texto sempre fora da foto, sem texto sobre
-  foto nem degradê), ≥768px em 2 colunas: (1) **Meditação**, texto e pílula "Acesse a meditação guiada" (texto do
-  git, `8a10f58^`) à esquerda, foto `/meditacao/hero.png` à direita; (2) **seção nova**, texto à esquerda e
-  `FotoPendente` à direita (escolha: é a ordem em que ela já se lê no celular, texto e depois foto; título e
-  texto provisórios), **renderizada só com `mockupsLigados()`** (em produção some até haver conteúdo: o bloco fica
-  com Meditação e Quem somos, que alternam); (3) **Quem somos**, foto menor (`cabruca.jpg`, natural, coluna 2fr/3fr)
-  à esquerda, frase em `h2` itálico e pílula "Conheça nossa história" à direita. Zigue-zague só no desktop (`order`
-  no `.fotoDireita`); no celular tudo empilha na ordem do markup (foto em cima, exceto a seção nova)
+  `app/home.module.css`)**, na ordem Meditação → Sustentabilidade → Quem somos. (1) **Meditação** (X18 fatia 2) **sem cartão,
+  sem moldura e sem cantos arredondados**: foto `/meditacao/hero.png` direto sobre o fundo, colada às bordas da tela (a
+  `.secaoFoto` anula com margem negativa o padding lateral de `.marca`), e texto direto sobre `--cor-fundo`; ≥768px em 2
+  colunas, **foto à esquerda** ocupando a altura do bloco (`min-height: 440px`) e texto à direita centrado na vertical;
+  no celular, foto em cima e texto embaixo. Título "Chocolates para Meditação", parágrafo da dona e pílula
+  "Conheça a Coleção Inspirar →" para `/loja?colecao=inspirar`. (2) **Sustentabilidade** (X18 fatia 3, aparece em
+  produção; array `CUIDADOS` no topo de `app/page.js`): também **sem caixa, sem borda e sem cantos arredondados**;
+  `h2` "*Um mundo melhor* com simples atitudes" (Fraunces, só "Um mundo melhor" em itálico) e três blocos (Cuidar de Si,
+  do Outro, do Todo; fotos `public/home/home-cuidar-*.webp`, 16:9, WebP q85, originais em `_DOCS/Seção sustentabilidade/`)
+  numa `ul`, 1 coluna no celular e 3 a partir de 900px, foto em cima e título + texto embaixo. **O bloco inteiro é link
+  para `/sustentabilidade`** (sem botão): o `Link` está no `h3` e o `::after` cobre o `li`, foco visível no bloco por
+  `:has(.blocoLink:focus-visible)` (mesmo padrão da `GradeCategorias`). (3) **Quem somos** (ajuste de 2026-11-07, **sem cartão**): a mesma
+  `.secaoFoto` da Meditação com a variante `.espelhada` (`order: 2` na foto só ≥768px): foto `cabruca.jpg` **à direita**,
+  colada à borda da tela e na altura do bloco, frase em `h2` itálico e pílula "Conheça nossa história →" à esquerda,
+  centradas na vertical; no celular, foto em cima e texto embaixo. Não há mais `.cartao`/`.fotoMenor` na home
 - **`/quem-somos`** — institucional
 - **`/meditacao`** (`revalidate = 60`, como a home: sem isso a edição no admin só valeria no próximo build) — hero (faixa de imagem + duotone + listras diagonais + título, no
   padrão de `/quem-somos`) e bloco de introdução da Coleção Inspirar, seguidos da lista de
   produtos com `tem_meditacao=true` via `ApresentacaoProduto resumido` + `MeditacaoPlayer` (**só a descrição curta**:
   sem descrição longa nem ingredientes)
-- **`/loja`** — `h1` (nome da categoria ativa ou "Loja") + frase, chips de categoria ("Todas" + só categorias com ≥1 produto ativo, `getCategoriasComProdutos()`; rolam na horizontal no celular, quebram linha a partir de 900px) e grade de `CardProduto` (2 colunas no celular). Filtro por `?categoria=slug`, no servidor (`searchParams`, links `<Link>`, funciona sem JS). **Slug desconhecido, vazio ou repetido = "Todas"** (`filtrarPorCategoria`), nunca página vazia. Zero produtos ativos → frase de estado vazio com link para `/quem-somos`. A página é dinâmica (`ƒ`) por causa do `searchParams`
+- **`/loja`** (X14; markup em `app/loja/page.js`, sem componente próprio além de `CarrosselProdutos`) — **topo só de texto** (2026-11-07: sem foto,
+  sem cartão, sem caixa nem borda, direto sobre `--cor-fundo`; curto, para o 1º carrossel aparecer perto da dobra em 375×667):
+  rótulo pequeno (só com coleção ativa: nome da categoria dela), `h1` (coleção ativa, categoria ativa ou "Loja") e frase
+  (`descricao` ou a frase padrão). Celular: empilhado; ≥900px, título à esquerda e frase à direita, alinhada à base. A foto de
+  categoria (`imagem_url`) **não é mais usada na `/loja`** (segue na `GradeCategorias` da home). **Filtro** (links, sem JS): 1ª fileira "Todas" + categorias com ≥1 produto ativo
+  (`getCategoriasComProdutos()`; rola na horizontal no celular, quebra linha a partir de 900px); 2ª fileira só com categoria
+  ativa que tenha coleção com produto: "Tudo em {categoria}" + as coleções dela (chip só de contorno). **URLs:** `?categoria=slug`
+  (os links antigos seguem valendo) e `?colecao=slug` (a coleção já implica a categoria dela; **coleção válida vence categoria**).
+  **Slug desconhecido, vazio ou repetido = "Todas"**, coleção sem produto ativo conta como desconhecida: nunca página vazia.
+  **Conteúdo** (tudo em `montarLoja`, `lib/produtos.js`): em "Todas" e na categoria, **carrosséis de uma linha** (`CarrosselProdutos`)
+  — por seção de categoria (`h2` + descrição + "Ver tudo", separador de 1px `--cor-borda` entre seções; as categorias ficam em ordem
+  alfabética), um carrossel por coleção dela (`h3` + "Ver coleção") e, no fim, "Mais {categoria}" **só se sobrar produto**; categoria sem
+  coleção tem um carrossel só, sem título de lista. Dentro de uma categoria só entram produtos **daquela** categoria (um produto aparece
+  em uma só seção; ex.: o Chocobook, de Presentes, está na coleção Inspirar, de Chocolates, e só aparece em Presentes), e produto sem
+  categoria vai para uma seção final "Outros" (só em "Todas"). Resultado com **uma lista só** (categoria com um carrossel, ou
+  coleção filtrada, que mostra **todos** os produtos da coleção) vira a **grade** de `CardProduto` (2 colunas no celular). Níveis de
+  título: `h1` → `h2` (categoria, só em "Todas") → `h3`/`h2` (lista) → nome do card. Zero produtos ativos → frase de estado vazio com
+  link para `/quem-somos`. A página é dinâmica (`ƒ`) por causa do `searchParams`. **Fora:** `/en`, filtro por tag, busca, página própria de
+  coleção, ordem manual de categorias, foto própria de coleção
 - **`/loja/[slug]`** — detalhe do produto (X13: texto na ordem categoria, nome, descrição curta, tags, preço/Comprar, descrição longa e ingredientes, ver `ApresentacaoProduto`; X8: o slug é a coluna `produtos.slug`, fixa; slug antigo que
   consta em `produto_slugs` responde **308** para o atual via `permanentRedirect`, senão 404). Dinâmica (`ƒ`: lê `headers()` para o endereço absoluto). `h1` = nome; galeria
   (`getFotosDoProduto` → `ApresentacaoProduto` → `GaleriaProduto`); peso, preço, descrição; **Comprar =
   link do WhatsApp com mensagem pronta** (`BotaoComprar`, nova aba, sem carrinho/quantidade). Sem estoque
   (`estoque === 0`): selo "Esgotado" e o mesmo botão com o rótulo "Consultar no WhatsApp" (não perde a
-  venda; sem ramo novo). `tem_meditacao` mostra só o selo-link para `/meditacao` (sem player aqui).
+  venda; sem ramo novo). `tem_meditacao` mostra só o link "Acesse aqui a meditação guiada" para `/meditacao` (sem player aqui; frase do X18).
   `generateMetadata`: `title`, `description` e `openGraph` com título e foto principal; o resto do
   compartilhamento (imagem 1200x630, `metadataBase`) é o A11
-- **`/bem-fazer`**, **`/assinaturas`** — mockups "Em breve" (`EmBreve`); só existem com
-  `NEXT_PUBLIC_MOCKUPS=1` (`exigirMockups()` → 404 em produção, e saem do menu)
+- **`/sustentabilidade`** (ex-`/bem-fazer`, renomeada no X18, sem redirect) — **página real, em produção e no menu** (`status: 'real'`):
+  só `h1` "Sustentabilidade" e um aviso de que o conteúdo chega em breve (texto provisório), CSS próprio
+  (`app/sustentabilidade/page.module.css`, no molde do 404, sem `EmBreve` nem `exigirMockups`). Os 3 blocos da home levam para cá.
+  **Antes do go-live (D2): confirmar o conteúdo ou remover o item do menu e os links da home**
+- **`/assinaturas`** — mockup "Em breve" (`EmBreve`); só existe com
+  `NEXT_PUBLIC_MOCKUPS=1` (`exigirMockups()` → 404 em produção, e sai do menu)
 - `/contato` foi **removida** (contato vive no rodapé)
 - **404 da marca (X9)** — `app/not-found.js` + `not-found.module.css`: cobre rota inexistente, `notFound()` de
   `/loja/[slug]` e `exigirMockups()` em produção; dentro do layout raiz (Header/Footer via `SiteChrome`), uma coluna
@@ -373,11 +411,11 @@ Cada um com `*.module.css` co-locado.
 
 - **`SiteChrome`** (`'use client'`) — esconde Header/Footer em `/login` e `/admin/*` via
   `usePathname()`; usado em `app/layout.js` envolvendo `{children}`
-- **`Header`** (`'use client'`) — menu LOJA, BEM-ESTAR, BEM-FAZER, QUEM SOMOS, ASSINATURAS
+- **`Header`** (`'use client'`) — menu LOJA, MEDITAÇÃO, SUSTENTABILIDADE, QUEM SOMOS, ASSINATURAS
   (vindo de `itensMenu()`, `lib/navegacao.js`); logo leva à home (sem item "Início"); item ativo
   via `usePathname()` + `aria-current`; sem linha divisória; abaixo de 960px vira botão de texto
   "Menu"/"Fechar". **`Footer`** — campo `--cor-rodape` com logo, lema, contatos (WhatsApp via
-  `linkWhatsApp()` de `lib/whatsapp.js`), links do mesmo `itensMenu()` e linha legal (CNPJ só no preview).
+  `linkWhatsApp()` de `lib/whatsapp.js`), links do mesmo `itensMenu()` e linha legal (©, razão social e CNPJ).
 - **`EmBreve`** — página mockup "Em breve" com botão pílula para `/loja`
 - **`LogoAnimado`** (`'use client'`) — usado dentro do `<Link href="/">` do `Header` no
   lugar do `<Image>` direto da wordmark. Na **1ª carga da Home (`/`) em cada sessão do
@@ -417,7 +455,7 @@ Cada um com `*.module.css` co-locado.
   da Home o clique só navega para `/` via o `<Link>` do `Header`.
 - **`ApresentacaoProduto`** (server) — bloco de apresentação de produto (`GaleriaProduto`, rótulo
   de categoria via `rotuloCategoria()`, nome, **descrição curta** em Fraunces itálico, **tags** como chips (`produto.tags`,
-  só vem de `getProdutoBySlug`), `children`, **descrição longa** (`white-space: pre-line`) e **ingredientes** (`dl`); a
+  só vem de `getProdutoBySlug`), `children`, **descrição longa** (via `TextoFormatado`, com formatação; ver "Formatação da descrição longa") e **ingredientes** (`dl`, texto puro); a
   ordem põe preço/Comprar (ou o player, em `/meditacao`) antes do texto longo; `atributos` não aparece mais, X13); usado em
   `/loja/[slug]` e `/meditacao`. Props `produto`, `resumido` (padrão `false`; `/meditacao` o liga: omite descrição longa e
   ingredientes, fica só a curta), `fotos` (opcional, de `getFotosDoProduto`; sem ela cai na
@@ -428,13 +466,16 @@ Cada um com `*.module.css` co-locado.
   de M", `aria-current`, foco visível; Tab + Enter/Espaço; fileira rolável no celular, quebra linha ≥700px).
   Sem foto: inicial do nome. Sem setas de teclado, deslize nem lightbox (de propósito)
 - **`BotaoComprar`** (server) — **único** lugar que monta o link de compra: `<a>` pílula para
-  `linkCompra(nome, url)`, `target="_blank"`, `rel="noopener noreferrer"`. **Ponto de extensão do clique:** para
+  `linkCompra(nome, url)`, `target="_blank"`, `rel="noopener noreferrer"`. **Ícone do WhatsApp** (SVG inline,
+  `aria-hidden`) depois do rótulo, para avisar que o botão leva a uma conversa e não ao checkout: surge suavemente no
+  hover/foco e fica sempre visível em tela de toque (`@media (hover: none)`); o texto só para leitor de tela é
+  "Comprar pelo WhatsApp (abre em nova aba)" (`.aviso`). **Ponto de extensão do clique:** para
   registrar no futuro, virar `'use client'` com `onClick` + `navigator.sendBeacon` para uma rota do servidor;
   o link continua direto ao `wa.me` (sem redirecionamento, por causa do navegador interno do Instagram)
 - **`HeroCarrossel`** (`'use client'`) — hero da home. Props `slides` (`{ id, rotulo, titulo,
   texto, cta: { rotulo, href }, imagem?: { src, alt, posicao? } }`; `posicao` = `object-position`
-  para enquadrar a foto quando a tela larga corta o 16:9 em cima e embaixo — slide 3 com
-  `'50% 0%'` para não cortar as cabeças; slide 1 com `'50% 70%'` (cabeça no topo e cacau na base:
+  para enquadrar a foto quando a tela larga corta o 16:9 em cima e embaixo — slide 1 (Presentes) com
+  `'0% 50%'` para o corte cair sobre o texto da foto; slide 2 (Floresta) com `'50% 70%'` (cabeça no topo e cacau na base:
   mostra o rosto com os óculos e o cacau inteiro; em notebook bem baixo o rosto corta na boca)) e `layout` (padrão `sobreposto`: foto em
   largura total, cartão **translúcido** (70% de `--cor-fundo` + blur, cantos de 24px; no celular
   volta a sólido, fora da foto) no canto inferior esquerdo — o teste de paletas lê esse 70% do
@@ -442,8 +483,10 @@ Cada um com `*.module.css` co-locado.
   botão Pausar/Continuar**) numa pílula translúcida (30% de `--cor-fundo` + blur, mais leve que o
   cartão; setas e pontos em `--cor-texto`) **dentro da foto**, embaixo — o contraste dela depende da
   foto por trás e **não tem teste** (conferir a olho ao trocar foto; se fraco, subir o 30%) — centralizada só a partir de 1440px; abaixo disso, no canto direito, para não
-  encostar no cartão (corte a rever se mudar o nº de slides ou o tamanho do cartão); no celular, foto em cima, cartão embaixo e controles
-  abaixo, no fluxo). **O markup é o mesmo para todo layout**; o que muda
+  encostar no cartão (corte a rever se mudar o nº de slides ou o tamanho do cartão); **no celular (≤640px), foto em cima, cartão
+  embaixo e a mesma pílula dentro da foto, centrada na base, sem linha própria** (ajuste pós-X18, 2026-11-08: posicionada por
+  `top: 0` + `margin-top: calc(75% - 60px)`, que depende da foto 4:3 do celular; "controles na linha do botão" não cabia em 320–430px)).
+  **O markup é o mesmo para todo layout**; o que muda
   fica no mapa `LAYOUTS` do componente (`sizes` da imagem e `especFoto`, a **constante única** do
   texto de especificação da foto) e em blocos `.<layout> …` do CSS — um 2º layout (ex.: tela
   dividida) é uma entrada nova no mapa + um bloco de CSS. Rolagem automática de 6 s, pausa por
@@ -455,12 +498,15 @@ Cada um com `*.module.css` co-locado.
   pai posicionado; fundo `--cor-destaque` com texto `--cor-fundo`, para contrastar com o cartão
   claro do hero; par já testado a 4,5:1). Usado pelo hero quando o slide não tem `imagem`; quem
   usa decide não renderizá-lo em produção.
-- **`VitrineProdutos`** (`'use client'`) — vitrine da home em duas colunas. Props `titulo`,
+- **`CarrosselProdutos`** (`'use client'`, X14; extraído da `VitrineProdutos`) — trilho scroll-snap de `CardProduto` que vai até a borda
+  direita da tela (próximo card cortado), setas no desktop e toque no celular (≤900px, `--card` 70vw, sem setas). Props `produtos`,
+  `rotulo` (entra no `aria-label` das setas: "{rotulo}: produtos anteriores/seguintes", para distinguir vários na página), `sizes`,
+  `Titulo` (nível do nome no card, padrão `h3`) e `className` (raiz). `--card` e o respiro à esquerda (`--pad-esq`, padrão 24px) saem
+  do próprio CSS; a vitrine zera o respiro. **Não tem título nem link**: quem usa põe o cabeçalho. Usado por `VitrineProdutos` e `/loja`
+- **`VitrineProdutos`** (server, sem `'use client'`; o trilho é o `CarrosselProdutos`) — vitrine da home em duas colunas. Props `titulo`,
   `produtos`. Esquerda: `h2` "{titulo} *da floresta*" e botão "Ver toda a loja" (os chips de categoria
-  saíram no X10: eram redundantes com a `GradeCategorias` logo abaixo). Direita:
-  carrossel scroll-snap que vai até a borda da tela (próximo card cortado), setas no desktop e
-  toque no celular (≤900px a intro vira cabeçalho). Cada card é um `CardProduto`
-  (`className={styles.slide}` só dimensiona no trilho). Só papéis `--cor-*`.
+  saíram no X10: eram redundantes com a `GradeCategorias` logo abaixo). Direita: o `CarrosselProdutos`
+  (≤900px a intro vira cabeçalho). Só papéis `--cor-*`.
 - **`CardProduto`** (server-safe, sem `'use client'`) — card de produto compartilhado por `VitrineProdutos` e
   `/loja`. Props `produto`, `sizes`, `className` (no `<Link>`), `Titulo` (`h3` padrão; a loja passa `h2`). Foto em
   quadro de proporção fixa (`--proporcao-produto` em `globals.css`, 0.8 = 4:5; é o único lugar da proporção, a
@@ -484,16 +530,27 @@ Cada um com `*.module.css` co-locado.
   usar papéis-base de `app/globals.css`. Só aparece categoria com ≥1 produto ativo (join
   `produtos!inner` em `getCategoriasComProdutos()`). `imagem_url` opcional (X7) vira faixa 16:9 no topo do
   cartão, enquadrada por `estiloFoto(foco_x, foco_y, zoom)`; o texto fica sempre abaixo da foto (o teste de
-  contraste não muda). **Desfoque:** `.foto::after` com `backdrop-filter: blur(8px)` que vai a `opacity: 0` no
-  hover do cartão e no foco de teclado do link; só dentro de `@media (hover: hover)`, então **no celular a foto fica
-  sempre nítida** (o toque já navega, não há "por cima"). Foto decorativa (`alt=""`)
+  contraste não muda). **Sem desfoque (X18, 2026-11-07):** a foto é sempre nítida, sem efeito de
+  hover (o `.foto::after` com `backdrop-filter` foi removido a pedido da dona; ficam o levantar do cartão e a seta). Foto decorativa (`alt=""`)
 - **`MeditacaoPlayer`** (`'use client'`) — player de áudio da meditação guiada
 - **`TraducaoEn`** (`'use client'`, mora em `app/admin/TraducaoEn.js`, não em `components/`) — seção recolhível "English
   (opcional)" dos formulários de categoria, coleção, produto e tag; aberta só se já há tradução. A prop `campos`
-  (`[{ chave, rotulo, multilinha?, maxLength? }]`, padrão nome + descrição) define os campos; `valores` tem uma chave por
+  (`[{ chave, rotulo, multilinha?, maxLength?, formatado? }]`, padrão nome + descrição) define os campos; `formatado: true` troca o
+  textarea pela `BarraFormatacao` (só a descrição longa EN do produto); `valores` tem uma chave por
   campo. Exporta também `traducaoEnInicial(linhas, campos)` e `salvarTraducao(supabase, tabela, fk, id, valores, existia)`
   (grava as colunas = chaves de `valores`; upsert, apaga ou nada,
   conforme `acaoTraducao` de `lib/i18n.js`; erro com `exibir`). O formulário dono guarda o estado
+- **`BarraFormatacao`** (`'use client'`, `app/admin/BarraFormatacao.js`, não em `components/`) — textarea da descrição longa do
+  produto (PT no `ProdutoForm`, EN via `TraducaoEn`) com botões em português (Negrito, Itálico, Lista, Lista numerada, Link) e
+  "Pré-visualizar"/"Voltar a editar" (mostra o `TextoFormatado`, sem sair do form), pensada para quem **não conhece Markdown**: a
+  palavra não aparece na tela, a ajuda diz que os sinais `*` e `-` são as marcas e não se apagam. Props `id`, `value`,
+  `onChange(string)`, `className` (do textarea), `rows`, `lang`. Aplica as edições de `lib/texto.js` com
+  `document.execCommand('insertText')` para o Ctrl+Z seguir funcionando (reserva: grava o valor direto). Link usa `window.prompt`
+  (texto e endereço) e `alert` se o endereço for inválido
+- **`TextoFormatado`** (server-safe, `components/`) — renderiza a descrição longa (`lib/texto.js`) em `<p>`/`<br>`/`<ul>`/`<ol>`/
+  `<strong>`/`<em>`/`<a target="_blank" rel="noopener noreferrer">`, sempre elementos React (nunca HTML cru). Prop `texto` e
+  `className`. Estilo em `TextoFormatado.module.css` (só papéis; `em` em Fraunces itálico, porque Assistant não tem itálico).
+  Usado por `ApresentacaoProduto` e pela pré-visualização do admin
 - **`LogoutButton`** (`'use client'`) — `signOut()` + redirect para `/login`, usado dentro
   de `AdminNav` (`app/admin/AdminNav.js`, ver seção de Rotas — não faz parte de
   `app/components/`, mas segue o mesmo padrão de client component com CSS module)
@@ -532,8 +589,13 @@ com `NEXT_PUBLIC_MOCKUPS=1` e, sem a flag, só os que têm `imagem`. Cobertos em
 ### Storefront — `lib/produtos.js`
 
 - `getProdutos()` — `select('*, categorias(nome, slug)')` onde `ativo=true`
-- `filtrarPorCategoria(produtos, categorias, slug)` — `{ ativa, produtos }`; `slug` que não esteja em
-  `categorias` (desconhecido, vazio, array) → `ativa: null` e todos os produtos ("Todas"). Usada em `/loja`
+- `montarLoja(produtos, categorias, colecoes, { categoria, colecao })` (X14, puro; **substituiu `filtrarPorCategoria`**) —
+  `{ categoria, colecao, colecoesDaCategoria, secoes, grade }`. `secoes` = `[{ categoria|null, listas: [{ colecao|null, produtos }] }]`;
+  `grade` = produtos (ou `[]`) quando há no máximo uma lista ou uma coleção ativa, senão `null`. Regras (slug inválido = "Todas",
+  coleção vence categoria, produto só na própria categoria, "resto" só se sobrar produto) descritas na rota `/loja`. Coberto em
+  `tests/loja.test.js`
+- `getColecoesPublicas()` (X14) — `[{ id, nome, slug, descricao, ordem, categoria_id }]` por `ordem` (null por último) e nome; a `/loja`
+  passa o resultado a `montarLoja`, que descarta as sem produto ativo. `getProdutos()` embute também `produto_colecoes(colecao_id)`
 - `getVitrine(criterio = CRITERIO_VITRINE, limite = MAX_VITRINE)` — `{ titulo, produtos }`: produtos
   ativos ordenados pela coluna do critério e o título que deriva dele. Critérios em
   **`lib/vitrine.js`** (`novidades`/`novidade_ordem` = curadoria do X6, `recentes`/`created_at` = reserva,
@@ -542,7 +604,7 @@ com `NEXT_PUBLIC_MOCKUPS=1` e, sem a flag, só os que têm `imagem`. Cobertos em
   desc; **curadoria vazia (nada marcado, marcados inativos, ou coluna inexistente `42703`) cai em `recentes`**, ainda
   "Novidades". Consulta e título saem da mesma entrada para não divergirem; "Mais vendidos" nunca com `created_at`
   (`tests/vitrine.test.js`). A home tem `revalidate = 60` (senão a curadoria só valeria no próximo build)
-- `getCategoriasComProdutos()` — `[{ nome, slug, descricao, imagem_url, imagem_foco_x, imagem_foco_y,
+- `getCategoriasComProdutos()` — `[{ id, nome, slug, descricao, imagem_url, imagem_foco_x, imagem_foco_y,
   imagem_zoom, total }]` das categorias com ao menos um produto ativo (join `produtos!inner`; `total` = nº de
   produtos ativos); alimenta os chips da `/loja` e `GradeCategorias`. Coluna da foto inexistente (`42703`, ex.: SQL
   do X7 não aplicado em outro banco) → refaz a consulta sem as colunas de foto, nunca quebra
@@ -574,7 +636,29 @@ clique/arrasto na foto (ponteiro, funciona com o dedo), três deslizantes (Horiz
 "Centralizar" (só a posição) e prévia no quadro do card; foto nova volta ao centro e 100%. Cobertos em
 `tests/foco.test.js`.
 
+### Formatação da descrição longa — `lib/texto.js`
+
+`produtos.descricao` e `produto_traducoes.descricao` guardam **texto com marcas** (sem migração, coluna segue `text`): `**negrito**`,
+`*itálico*` (**sem `_…_`**: underscore aparece em URL e palavra), linha `- ` (lista), `1. ` (lista numerada), `[texto](endereço)`;
+linha em branco = parágrafo, quebra simples = `<br>`. **Texto puro antigo continua igual** (risco aceito: `*palavra*` ou linha
+começando com `- `/`1. ` num texto antigo passa a sair formatada). Só a descrição longa: **descrição curta (≤120), ingredientes e
+`/meditacao` (só a curta) seguem texto puro**. Funções puras: `blocosTexto` (parágrafos/listas, linha a linha), `inlineTexto` (**links
+primeiro**: a URL nunca passa pelo negrito/itálico; depois `**`, depois `*`; marca que não fecha fica literal), `textoSimples` (sem
+marcas, numa linha: usado no `CardProduto` e na `description` de `/loja/[slug]`), `urlSegura` (só `https`, `http`, `mailto`;
+`javascript:`/`data:` viram texto), `normalizarUrl` (digitação da dona: `www.x.com` ganha `https://`, e-mail vira `mailto:`) e as
+edições da barra (`envolverSelecao`, `formatarLista`, `inserirLink`, devolvem `{ de, ate, texto, selIni, selFim }`). **Segurança:**
+só produz dados; `TextoFormatado` monta elementos React, sem `dangerouslySetInnerHTML`, então não há sanitizador nem dependência.
+Cobertos em `tests/texto.test.js`.
+
 ### Fotos do produto (X1) — `lib/fotos.js`
+
+**Produtos de teste (2026-11-07, temporários):** `supabase/scripts/teste_inserir_produtos.sql` cria 22 produtos (slug
+`teste-*`, tags `teste-*`) cobrindo Chocolates, Presentes, Empório e Dia-a-Dia e as coleções Inspirar e Bombons (alguns
+em duas coleções, vários sem coleção, um esgotado, um com estoque `null`); `teste_remover_produtos.sql` os apaga (só por
+SQL, o admin tentaria apagar do Storage). Fotos WebP 4:5 em `public/teste/` (geradas à mão, fora do Storage): o
+`caminho` de `produto_imagens` e `produtos.imagem_url` apontam para `/teste/...`, e `fotosDoProduto` devolve caminho com
+`/` como URL direta. **v1 e `main` leem o mesmo banco: a produção mostra esses produtos (sem foto) até a remoção.**
+Remover no D2 (item no plano): rodar o SQL de remoção e apagar `public/teste/`.
 
 Várias fotos por produto na tabela `produto_imagens`; a primeira por `ordem` é a principal. Funções puras
 (testadas em `tests/fotos.test.js`): `ordenarFotos`, `fotosDoProduto(produto, linhas, urlDe)` (sem linhas cai em
@@ -665,7 +749,7 @@ Cobertos em `tests/i18n.test.js`.
   `on delete restrict`, not null; backfill = Chocolates), `ordem` (smallint nullable, `check > 0`; posição dentro da
   categoria, null = fim), slug `unique` + `check` de formato (`not valid`), slug da Inspirar `cole-o-inspirar` →
   `inspirar`, seed "Bombons" (`bombons`, Chocolates, ordem 2) e policy `"colecoes admin"` (escrita `authenticated`;
-  a migration não liga nem desliga RLS: estado atual não versionado, B-1b). Slug de coleção não é usado em link público
+  a migration não liga nem desliga RLS: estado atual não versionado, B-1b). O slug da coleção é usado em link público só na `/loja` (`?colecao=slug`, X14)
 - **`produto_colecoes`** (X12, mesma migration) — M:N produto ↔ coleção: `produto_id`, `colecao_id` (FKs, `on delete
   cascade`), `created_at`, PK `(produto_id, colecao_id)`. RLS no padrão de `produto_imagens` (anon lê só de produto ativo,
   `authenticated` tudo). **`produtos.colecao_id` segue como CÓPIA da 1ª coleção** (a `main` só conhece essa coluna);
@@ -794,7 +878,8 @@ implementado — ver pendência de segurança #3.
   `tests/paletas.test.js`): sem isso o Next não inlina a env no client e o código de mockup não é
   descartado do bundle de produção; headers de segurança em todas as rotas (CSP com
   `frame-ancestors 'none'`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy`,
-  `nosniff`) — a CSP libera só o Storage do Supabase e precisará liberar a InfinitePay quando
+  `nosniff`) — a CSP ganha `'unsafe-eval'` em `script-src` **só com `NODE_ENV=development`** (React em dev usa eval;
+  produção idêntica, travada em `tests/preview.test.js`) — a CSP libera só o Storage do Supabase e precisará liberar a InfinitePay quando
   o checkout existir
 - `.mcp.json` (Playwright + Context7 MCP) existe só localmente, **não está versionado**
 - `_DOCS/` (auditorias de segurança e de design, assets de marca) está no `.gitignore`

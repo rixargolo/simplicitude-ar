@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { acaoTraducao } from '@/lib/i18n';
+import BarraFormatacao from './BarraFormatacao';
 import styles from './categorias/CategoriaForm.module.css';
 
 // Campos padrão (categoria e coleção); produto e tag passam o próprio `campos`.
@@ -11,7 +12,8 @@ export const CAMPOS_NOME_DESCRICAO = [
 ];
 
 // Seção "English (opcional)" dos formulários do admin (ADR 0002). Vazia = o site usa o PT.
-// `valores` = { [chave]: texto } para cada item de `campos` ({ chave, rotulo, multilinha?, maxLength? });
+// `valores` = { [chave]: texto } para cada item de `campos` ({ chave, rotulo, multilinha?, maxLength?, formatado? });
+// `formatado` troca o textarea pela BarraFormatacao (negrito, itálico, listas, link);
 // o formulário dono guarda o estado e chama salvarTraducao() ao salvar.
 export default function TraducaoEn({ valores, onChange, campos = CAMPOS_NOME_DESCRICAO }) {
   // aberta só se já há tradução ao carregar; fixa depois, senão recolheria ao apagar o texto
@@ -20,7 +22,7 @@ export default function TraducaoEn({ valores, onChange, campos = CAMPOS_NOME_DES
     <details className={styles.field} open={aberta}>
       <summary className={styles.resumo}>English (opcional)</summary>
       <div className={styles.field}>
-        {campos.map(({ chave, rotulo, multilinha, maxLength }) => {
+        {campos.map(({ chave, rotulo, multilinha, maxLength, formatado }) => {
           const props = {
             id: `en-${chave}`,
             className: multilinha ? styles.textarea : styles.input,
@@ -32,7 +34,20 @@ export default function TraducaoEn({ valores, onChange, campos = CAMPOS_NOME_DES
           return (
             <div key={chave} className={styles.field}>
               <label htmlFor={props.id} className={styles.label}>{rotulo}</label>
-              {multilinha ? <textarea {...props} rows={3} /> : <input {...props} type="text" />}
+              {formatado ? (
+                <BarraFormatacao
+                  id={props.id}
+                  className={props.className}
+                  lang="en"
+                  rows={5}
+                  value={props.value}
+                  onChange={(v) => onChange({ ...valores, [chave]: v })}
+                />
+              ) : multilinha ? (
+                <textarea {...props} rows={3} />
+              ) : (
+                <input {...props} type="text" />
+              )}
             </div>
           );
         })}

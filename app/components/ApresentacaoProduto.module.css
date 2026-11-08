@@ -92,15 +92,9 @@
   padding: 4px 12px;
 }
 
-/* pre-line preserva as quebras de linha digitadas no admin (X13) */
+/* a tipografia da descrição longa mora em TextoFormatado.module.css */
 .desc {
-  font-family: var(--font-body);
-  font-size: var(--tam-texto);
-  font-weight: 400;
-  line-height: 1.7;
-  color: var(--cor-texto);
   margin-top: 32px;
-  white-space: pre-line;
 }
 
 .ingredientes {

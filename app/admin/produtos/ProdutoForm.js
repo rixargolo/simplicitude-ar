@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import { slugify, slugValido } from '@/lib/produtos';
 import { caminhoDaUrl, fotosDoProduto } from '@/lib/fotos';
 import FotosProduto from './FotosProduto';
+import BarraFormatacao from '../BarraFormatacao';
 import TraducaoEn, { salvarTraducao, traducaoEnInicial } from '../TraducaoEn';
 import styles from './ProdutoForm.module.css';
 
@@ -17,7 +18,7 @@ const LIMITE_DESCRICAO_CURTA = 120; // mesmo limite do check no banco (X13)
 const CAMPOS_EN = [
   { chave: 'nome', rotulo: 'Name' },
   { chave: 'descricao_curta', rotulo: 'Short description', maxLength: LIMITE_DESCRICAO_CURTA },
-  { chave: 'descricao', rotulo: 'Long description', multilinha: true },
+  { chave: 'descricao', rotulo: 'Long description', multilinha: true, formatado: true },
   { chave: 'ingredientes', rotulo: 'Ingredients', multilinha: true },
 ];
 
@@ -241,15 +242,7 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias, tags 
 
       <div className={styles.field}>
         <label htmlFor="produto-descricao" className={styles.label}>Descrição longa</label>
-        <textarea
-          id="produto-descricao"
-          className={styles.textarea}
-          value={descricao}
-          onChange={(e) => setDescricao(e.target.value)}
-          rows={6}
-          aria-describedby="descricao-ajuda"
-        />
-        <span id="descricao-ajuda" className={styles.ajuda}>As quebras de linha aparecem na página.</span>
+        <BarraFormatacao id="produto-descricao" className={styles.textarea} value={descricao} onChange={setDescricao} />
       </div>
 
       <div className={styles.field}>

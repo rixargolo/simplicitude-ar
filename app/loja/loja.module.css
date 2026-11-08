@@ -1,47 +1,49 @@
-/* Celular primeiro: 2 colunas de cards, chips numa linha que rola na horizontal.
-   Margens iguais dos dois lados (20px; 24px a partir de 640px). Só papéis --cor-*. */
-.section {
-  padding: 48px 20px 72px;
+/* Celular primeiro. Sem padding lateral no <main>: cada bloco leva o seu (20px; 24px a partir de 640px),
+   porque o trilho dos carrosséis vai até a borda direita da tela. Só papéis --cor-*, --font-*, --tam-*. */
+.pagina {
+  --margem: 20px;
+  padding: 0 0 72px; /* a foto do hero encosta no cabeçalho */
+  border-top: 1px solid var(--cor-borda);
   background: var(--cor-fundo);
   color: var(--cor-texto);
 }
 
-.cabecalho {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 28px;
+/* ---------- hero: só a foto, de largura total e colada ao cabeçalho (2172×724, 3:1; cover corta conforme a tela) ---------- */
+
+.heroFoto {
+  position: relative;
+  height: clamp(15rem, 24vw, 22rem);
+  overflow: hidden;
 }
 
-.titulo {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: var(--tam-titulo-pagina);
-  line-height: 1.15;
-  color: var(--cor-texto);
-  overflow-wrap: break-word;
+.heroImg {
+  object-fit: cover;
+  object-position: 50% 40%;
 }
 
-.frase {
-  max-width: 40rem;
-  margin: 0;
-  font-family: var(--font-body);
-  font-size: var(--tam-chamada);
-  line-height: 1.5;
-  color: var(--cor-texto);
+/* h1 só para leitor de tela: a página precisa de um título, mas o hero é só imagem */
+.soLeitor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-/* chips: sangram até a borda da tela no celular e rolam na horizontal se não couberem */
+/* ---------- filtro: chips que sangram até a borda e rolam na horizontal no celular ---------- */
+
 .filtro {
-  margin: 0 -20px 32px;
+  margin-bottom: 0;
 }
 
 .chips {
   display: flex;
   gap: 8px;
   margin: 0;
-  padding: 4px 20px;
+  padding: 4px var(--margem);
   list-style: none;
   overflow-x: auto;
   scrollbar-width: none;
@@ -72,7 +74,7 @@
 }
 
 .chip:hover,
-.chip[aria-current='page'] {
+.chip[aria-current] {
   background: var(--cor-botao);
   color: var(--cor-botao-texto);
 }
@@ -82,18 +84,232 @@
   outline-offset: 2px;
 }
 
+/* 1ª fileira (categorias) como barra verde de borda a borda: botões retos, sem espaço vertical extra (o chip mantém 44px de toque) */
+.barra {
+  background: color-mix(in srgb, var(--cor-botao) 12%, var(--cor-botao-texto));
+}
+
+.barra .chips {
+  position: relative;
+  gap: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.barra .chip {
+  position: relative;
+  z-index: 1; /* acima do realce */
+  border-radius: 0;
+  background: transparent;
+  color: var(--cor-botao);
+  font-size: var(--tam-texto);
+}
+
+.realceItem {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.realce {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  opacity: 0;
+  background: var(--cor-botao);
+}
+
+/* o texto claro acompanha o chip sob o realce (data-alvo, posto por BarraDeslizante) */
+.barra .chip[data-alvo] {
+  color: var(--cor-botao-texto);
+}
+
+/* sem JS (antes de hidratar) não há realce deslizante: o chip ativo/hover leva o fundo verde */
+.barra .chips:not([data-pronto]) .chip:hover,
+.barra .chips:not([data-pronto]) .chip[aria-current] {
+  background: var(--cor-botao);
+  color: var(--cor-botao-texto);
+}
+
+/* hover bem suave, sem deslizar: o realce muda de lugar na hora e aparece em fade (BarraDeslizante zera a opacity ao trocar);
+   o texto troca de cor no mesmo ritmo. Sem animação com prefers-reduced-motion. */
+.barra .chip {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .barra .chip {
+    transition: color 0.6s ease;
+  }
+
+  .realce {
+    transition: opacity 0.6s ease;
+  }
+}
+
+.barra .chip:focus-visible {
+  outline-color: var(--cor-botao);
+  outline-offset: -3px;
+}
+
+/* esmaecido escuro nas bordas, por cima dos chips: aparece só do lado que tem conteúdo escondido
+   (BarraDeslizante põe data-fade-esq / data-fade-dir no <ul>) */
+.barra {
+  position: relative;
+}
+
+.barra::before,
+.barra::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  width: 22px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.barra::before {
+  left: 0;
+  background: linear-gradient(to right, color-mix(in srgb, var(--cor-botao) 55%, transparent), transparent);
+}
+
+.barra::after {
+  right: 0;
+  background: linear-gradient(to left, color-mix(in srgb, var(--cor-botao) 55%, transparent), transparent);
+}
+
+.barra:has(.chips[data-fade-esq])::before,
+.barra:has(.chips[data-fade-dir])::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .barra::before,
+  .barra::after {
+    transition: opacity 0.3s ease;
+  }
+}
+
+/* altura reservada = a da barra de subcategorias (chip de 40px + linha de 1px), com ou sem coleções */
+.subSlot {
+  min-height: 41px;
+}
+
+.subSlot + .secao {
+  margin-top: 20px;
+}
+
+/* subcategorias (coleções): a barra de baixo, sem fundo, com linha fina e um traço verde que desliza sob a opção */
+.sub {
+  background: transparent;
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.sub .chip {
+  min-height: 40px;
+  font-size: var(--tam-pequeno);
+}
+
+.sub .realce {
+  top: auto;
+  height: 2px;
+  background: var(--cor-botao);
+}
+
+.sub .chip[data-alvo] {
+  color: var(--cor-botao);
+}
+
+.sub .chips:not([data-pronto]) .chip:hover,
+.sub .chips:not([data-pronto]) .chip[aria-current] {
+  background: transparent;
+  box-shadow: inset 0 -2px 0 var(--cor-botao);
+  color: var(--cor-botao);
+}
+
+/* ---------- seções e carrosséis (em "Todas" e na categoria) ---------- */
+
+.secao {
+  margin-top: 36px;
+}
+
+/* linha sob o nome da categoria: largura inteira da tela (sem margem lateral; o texto leva o recuo) */
+.secaoCab {
+  padding: 0 var(--margem) 6px;
+  border-bottom: 2px solid var(--cor-borda);
+}
+
+.secaoTitulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--tam-titulo-secao);
+  line-height: 1.15;
+  color: var(--cor-texto);
+}
+
+.lista {
+  margin-top: 20px;
+}
+
+/* nome da coleção sobre a grade (coleção filtrada): a linha fica só sob o texto */
+.tituloSolto {
+  display: flex;
+  margin: 20px var(--margem) 0;
+}
+
+.listaTitulo {
+  margin: 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--cor-borda); /* linha suave só sob o nome da coleção */
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--tam-subtitulo);
+  line-height: 1.2;
+  color: var(--cor-texto);
+}
+
+/* "Ver tudo" no fim de cada seção de categoria */
+.secaoRodape {
+  margin: 8px var(--margem) 0;
+}
+
+/* "Ver tudo": link de texto, alvo de 44px de altura */
+.verMais {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  flex: none;
+  font-family: var(--font-body);
+  font-size: var(--tam-pequeno);
+  font-weight: 600;
+  color: var(--cor-destaque);
+  text-underline-offset: 4px;
+}
+
+.verMais:focus-visible {
+  outline: 3px solid var(--cor-destaque);
+  outline-offset: 2px;
+}
+
+/* ---------- grade (coleção filtrada, ou uma lista só) ---------- */
+
 .grade {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 32px 16px;
-  margin: 0;
+  margin: 24px var(--margem) 0;
   padding: 0;
   list-style: none;
 }
 
 .vazio {
   max-width: 32rem;
-  margin: 0;
+  margin: 24px var(--margem) 0;
   font-family: var(--font-display);
   font-style: italic;
   font-size: var(--tam-subtitulo);
@@ -107,20 +323,9 @@
 }
 
 @media (min-width: 640px) {
-  .section {
-    padding: 72px 24px 96px;
-  }
-
-  .cabecalho {
-    margin-bottom: 36px;
-  }
-
-  .filtro {
-    margin: 0 -24px 40px;
-  }
-
-  .chips {
-    padding: 4px 24px;
+  .pagina {
+    --margem: 24px;
+    padding: 0 0 96px;
   }
 
   .grade {
@@ -129,16 +334,15 @@
   }
 }
 
-/* com espaço, os chips quebram em linhas em vez de rolar */
+/* os chips quebram em linhas em vez de rolar */
 @media (min-width: 900px) {
-  .filtro {
-    margin: 0 0 48px;
-  }
-
   .chips {
     flex-wrap: wrap;
-    padding: 0;
     overflow: visible;
+  }
+
+  .secao {
+    margin-top: 48px;
   }
 }
 

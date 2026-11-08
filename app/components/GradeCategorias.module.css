@@ -68,24 +68,6 @@
   object-fit: cover;
 }
 
-/* Desfoque que esmaece no hover/foco. Só onde há hover de verdade: em tela de toque não existe
-   "por cima" (o toque já navega), então lá a foto fica sempre nítida. */
-@media (hover: hover) {
-  .foto::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
-    transition: opacity 0.3s ease;
-  }
-
-  .cartao:hover .foto::after,
-  .cartao:has(.link:focus-visible) .foto::after {
-    opacity: 0;
-  }
-}
-
 .corpo {
   flex: 1;
   display: flex;
@@ -203,8 +185,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .cartao,
-  .seta,
-  .foto::after {
+  .seta {
     transition: none;
   }
 

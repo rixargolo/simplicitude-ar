@@ -1,7 +1,6 @@
-/* Duas colunas: intro à esquerda, trilho à direita sem margem direita (o próximo card
-   aparece cortado na borda da tela). --card dimensiona o card e posiciona as setas. */
+/* Duas colunas: intro à esquerda, trilho (CarrosselProdutos) à direita sem margem direita (o próximo card
+   aparece cortado na borda da tela). */
 .section {
-  --card: clamp(15rem, 22vw, 18rem);
   display: grid;
   grid-template-columns: minmax(16rem, 22rem) minmax(0, 1fr);
   align-items: center;
@@ -52,70 +51,14 @@
   text-underline-offset: 4px;
 }
 
+/* a coluna já tem a margem à esquerda: o primeiro card encosta nela */
 .trilho {
-  position: relative;
-  min-width: 0;
+  --pad-esq: 0px;
 }
 
-.track {
-  display: flex;
-  gap: 24px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  padding: 4px 24px 4px 0;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.track::-webkit-scrollbar {
-  display: none;
-}
-
-/* dimensionamento do CardProduto dentro do trilho */
-.slide {
-  flex: 0 0 var(--card);
-  scroll-snap-align: start;
-}
-
-/* setas na altura do centro da imagem (metade da altura do quadro: card ÷ proporção ÷ 2) */
-.arrow {
-  position: absolute;
-  top: calc(var(--card) / var(--proporcao-produto) / 2);
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  margin-top: -24px;
-  border: none;
-  border-radius: 50%;
-  background: var(--cor-fundo);
-  color: var(--cor-texto);
-  font-size: 1.75rem;
-  line-height: 1;
-  cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.arrow:hover {
-  background: var(--cor-botao);
-  color: var(--cor-botao-texto);
-}
-
-.arrowPrev {
-  left: 12px;
-}
-
-.arrowNext {
-  right: 24px;
-}
-
-/* celular e tablet: a intro vira cabeçalho e o carrossel desliza por toque (sem setas) */
+/* celular e tablet: a intro vira cabeçalho e o carrossel desliza por toque */
 @media (max-width: 900px) {
   .section {
-    --card: 70vw;
     grid-template-columns: minmax(0, 1fr);
     align-items: start;
     gap: 32px;
@@ -124,24 +67,5 @@
 
   .intro {
     padding: 0 20px;
-  }
-
-  .track {
-    padding: 4px 20px;
-    scroll-padding: 0 20px;
-  }
-
-  .arrow {
-    display: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .arrow {
-    transition: none;
-  }
-
-  .track {
-    scroll-behavior: auto;
   }
 }

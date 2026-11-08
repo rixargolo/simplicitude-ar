@@ -30,6 +30,36 @@ describe('noindex', () => {
   });
 });
 
+describe('CSP', () => {
+  async function csp(nodeEnv) {
+    vi.stubEnv('NODE_ENV', nodeEnv);
+    const [{ headers }] = await (await carregarConfig({})).headers();
+    return headers.find((h) => h.key === 'Content-Security-Policy').value;
+  }
+
+  it('produção não tem unsafe-eval e segue idêntica à de antes', async () => {
+    expect(await csp('production')).toBe(
+      [
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-inline'",
+        "style-src 'self' 'unsafe-inline'",
+        'img-src \'self\' data: blob: https://jlvpfwyixftybtwnuvxl.supabase.co',
+        "media-src 'self' https://jlvpfwyixftybtwnuvxl.supabase.co",
+        "font-src 'self' data:",
+        "connect-src 'self' https://jlvpfwyixftybtwnuvxl.supabase.co",
+        "frame-ancestors 'none'",
+        "base-uri 'self'",
+        "form-action 'self'",
+        "object-src 'none'",
+      ].join('; '),
+    );
+  });
+
+  it('desenvolvimento libera unsafe-eval em script-src', async () => {
+    expect(await csp('development')).toContain("script-src 'self' 'unsafe-inline' 'unsafe-eval';");
+  });
+});
+
 describe('trava de build', () => {
   it('falha com SITE_INDEXAVEL=1 e NEXT_PUBLIC_MOCKUPS=1', async () => {
     await expect(carregarConfig({ indexavel: '1', mockups: '1' })).rejects.toThrow(/Build abortado/);

@@ -63,6 +63,11 @@ describe('fotosDoProduto', () => {
     expect(r[1]).toMatchObject({ url: `${BASE}p/2.jpg`, alt: 'lado', foco_x: 10, zoom: 120 });
   });
 
+  it('caminho local (com "/") vira a própria URL, sem passar pelo Storage', () => {
+    const r = fotosDoProduto({}, [{ caminho: '/teste/a-1.webp', ordem: 0 }], urlDe);
+    expect(r[0].url).toBe('/teste/a-1.webp');
+  });
+
   it('sem linhas cai em imagem_url e no foco do produto', () => {
     const r = fotosDoProduto(
       { imagem_url: `${BASE}p/principal.jpg?v=1`, imagem_foco_x: 30, imagem_foco_y: 70, imagem_zoom: 150 },

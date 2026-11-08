@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import styles from './Footer.module.css';
-import { itensMenu, mockupsLigados } from '@/lib/navegacao';
+import { itensMenu } from '@/lib/navegacao';
 import { WHATSAPP_EXIBICAO, linkWhatsApp } from '@/lib/whatsapp';
 
 export default function Footer() {
@@ -42,8 +42,8 @@ export default function Footer() {
 
       <div className={styles.bottom}>
         <p>© {year} Simplicitude. Todos os direitos reservados.</p>
-        {/* Só no preview: em produção a linha some até a dona enviar os dados (check do D2). */}
-        {mockupsLigados() && <p>Razão social e CNPJ a confirmar.</p>}
+        <p>Razão social: 44387834 SHEYLLA TOMÁS SILVA ME</p>
+        <p>CNPJ 44.387.834/0001-77</p>
       </div>
     </footer>
   );

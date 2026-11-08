@@ -2,6 +2,7 @@ import { notFound, permanentRedirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import Link from 'next/link';
 import { getProdutoBySlug, getSlugAtual, getFotosDoProduto } from '@/lib/produtos';
+import { textoSimples } from '@/lib/texto';
 import ApresentacaoProduto from '../../components/ApresentacaoProduto';
 import BotaoComprar from '../../components/BotaoComprar';
 import styles from './produto.module.css';
@@ -22,7 +23,7 @@ export async function generateMetadata({ params }) {
 
   return {
     title: `${produto.nome} — Simplicitude`,
-    description: produto.descricao_curta || produto.descricao,
+    description: produto.descricao_curta || textoSimples(produto.descricao) || undefined,
     // O resto do compartilhamento (imagem 1200x630, metadataBase) é o A11.
     openGraph: {
       title: produto.nome,
@@ -70,7 +71,7 @@ export default async function ProdutoPage({ params }) {
             />
             {produto.tem_meditacao && (
               <Link href="/meditacao" className={styles.meditacaoLink}>
-                Meditação guiada disponível
+                Acesse aqui a meditação guiada
               </Link>
             )}
           </div>

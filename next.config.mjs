@@ -14,9 +14,10 @@ const supabaseOrigin = `https://${supabaseHost}`;
 // 'unsafe-inline' em script/style é intencional para não quebrar os scripts de
 // hidratação do Next e o next/font — próximo passo de endurecimento é migrar
 // para CSP baseada em nonce.
+// 'unsafe-eval' só no next dev (o React em dev usa eval); a CSP de produção não muda.
 const contentSecurityPolicy = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === 'development' ? " 'unsafe-eval'" : ''}`,
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: blob: ${supabaseOrigin}`,
   `media-src 'self' ${supabaseOrigin}`,
