@@ -1,0 +1,98 @@
+/* Desktop: a lupa fica à direita do menu e o campo abre para a esquerda, POR CIMA dos links (nada se desloca). */
+.busca {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.soLeitor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.lupa {
+  position: relative;
+  z-index: 1;
+  padding: 8px;
+  border: none;
+  background: none;
+  color: var(--cor-texto);
+  line-height: 0;
+  cursor: pointer;
+}
+
+.lupa:hover {
+  color: var(--cor-destaque);
+}
+
+.campo {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 0;
+  padding: 8px 40px 8px 0;
+  border: none;
+  border-bottom: 1px solid var(--cor-texto);
+  border-radius: 0;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-family: var(--font-body);
+  font-size: var(--tam-pequeno);
+  transform: translateY(-50%);
+  visibility: hidden; /* fechado: fora da ordem de Tab */
+  opacity: 0;
+  transition: width 0.2s ease, opacity 0.2s ease, visibility 0.2s;
+}
+
+.aberta .campo {
+  width: 15rem;
+  visibility: visible;
+  opacity: 1;
+}
+
+.campo::placeholder {
+  color: var(--cor-texto-suave);
+}
+
+.lupa:focus-visible,
+.campo:focus-visible {
+  outline: 2px solid var(--cor-destaque);
+  outline-offset: 2px;
+}
+
+/* Celular: a lupa fica na barra e o campo vira uma faixa de largura total logo abaixo dela (a barra é o Header, sticky).
+   16px de texto: abaixo disso o iOS dá zoom ao focar. */
+@media (max-width: 960px) {
+  .busca {
+    position: static;
+  }
+
+  .campo {
+    top: 100%;
+    right: 0;
+    left: 0;
+    width: auto;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--cor-borda);
+    background: var(--cor-superficie);
+    font-size: var(--tam-texto);
+    transform: none;
+    transition: none;
+  }
+
+  .aberta .campo {
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .campo {
+    transition: none;
+  }
+}

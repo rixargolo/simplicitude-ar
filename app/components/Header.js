@@ -5,10 +5,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import styles from './Header.module.css';
 import LogoAnimado from './LogoAnimado';
+import BuscaHeader from './BuscaHeader';
 import { itensMenu } from '@/lib/navegacao';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const [buscaAberta, setBuscaAberta] = useState(false);
   const pathname = usePathname();
   const links = itensMenu();
 
@@ -39,18 +41,31 @@ export default function Header() {
           {renderLinks()}
         </nav>
 
-        <button
-          type="button"
-          className={styles.menuBtn}
-          aria-label={open ? 'Fechar menu' : 'Abrir menu'}
-          aria-expanded={open}
-          aria-controls="menu-mobile"
-          onClick={() => setOpen((v) => !v)}
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-            {open ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
-          </svg>
-        </button>
+        <div className={styles.acoes}>
+          <BuscaHeader
+            aberta={buscaAberta}
+            onAbrir={() => {
+              setBuscaAberta(true);
+              setOpen(false);
+            }}
+            onFechar={() => setBuscaAberta(false)}
+          />
+          <button
+            type="button"
+            className={styles.menuBtn}
+            aria-label={open ? 'Fechar menu' : 'Abrir menu'}
+            aria-expanded={open}
+            aria-controls="menu-mobile"
+            onClick={() => {
+              setOpen((v) => !v);
+              setBuscaAberta(false);
+            }}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              {open ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
+            </svg>
+          </button>
+        </div>
       </div>
 
       {open && (

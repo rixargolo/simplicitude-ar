@@ -49,6 +49,13 @@
   text-underline-offset: 8px;
 }
 
+/* lupa (sempre visível) + botão do menu (só no celular); sem position: no celular o campo da busca se ancora no header */
+.acoes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .menuBtn {
   display: none;
   background: none;
