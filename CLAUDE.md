@@ -121,8 +121,8 @@ admin); decisão de manter o 72% do suave. O
 > `--border`, `--cream`, `--cream-name` seguem existindo em `globals.css` só como aliases dos
 > papéis (as páginas ainda não refeitas já pegam a paleta nova); `--gold` é o único hex antigo
 > (só o admin usa). Cada item do plano (A4–A7, A12) troca pelos papéis nos arquivos que
-> reescreve; o bloco some quando ninguém usar. Hex soltos remanescentes: admin e os scrims
-> pretos de `/quem-somos`. O hero da home (A3) e o bloco de marca (X5, `app/home.module.css`) já
+> reescreve; o bloco some quando ninguém usar. Hex soltos remanescentes: só o admin
+> (os scrims pretos de `/quem-somos` saíram com o redesign da página, 2026-11-08). O hero da home (A3) e o bloco de marca (X5, `app/home.module.css`) já
 > usam só papéis.
 
 **Tipografia da marca (X3, 2026-11-06):** três famílias por papel, em tokens de `app/globals.css` sobre as
@@ -308,7 +308,15 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
   `.secaoFoto` da Meditação com a variante `.espelhada` (`order: 2` na foto só ≥768px): foto `cabruca.jpg` **à direita**,
   colada à borda da tela e na altura do bloco, frase em `h2` itálico e pílula "Conheça nossa história →" à esquerda,
   centradas na vertical; no celular, foto em cima e texto embaixo. Não há mais `.cartao`/`.fotoMenor` na home
-- **`/quem-somos`** — institucional
+- **`/quem-somos`** (redesenhada em 2026-11-08, sem SQL; `status: 'real'` e item de menu inalterados; falta o dono conferir no navegador) —
+  **topo no padrão do `/meditacao`**, reaproveitando `meditacao.module.css` (`topoWrap`, `faixa`, `foto`, `topo`, `titulo`, `texto`, `corpo`):
+  faixa de 3 fotos (`public/quem-somos/capa-{1,2,3}.webp`, 587px de altura, recortes de `_DOCS/quem-somos/capa quem somos.png`; array `FOTOS` em
+  `page.js` com a largura real de cada uma, mesma técnica de `flex-grow` + `aspect-ratio`, sem cortar) e, embaixo, **2 colunas** (1 no celular):
+  esquerda `h1` "Quem somos", subtítulo "Nossa origem e nossa missão", frase em itálico "Quatro gerações plantando cacau na Mata Atlântica." (`.lema`; "Mata Atlântica" com maiúsculas, como no resto do texto) e, abaixo, o texto do bloco 1 (3 parágrafos com 4 trechos em
+  `<strong>`, escritos em JSX e não via `TextoFormatado`, como no `/meditacao`); **direita** a foto `quem-somos.webp` (4:3, `.foto`, no topo da linha; celular: depois do texto). **Mexer em `meditacao.module.css` muda o topo desta página também.**
+  **Corpo:** seção "Made in Bahia!" **no mesmo padrão da foto do topo** (`.fabrica`/`.fabricaGrid` em `quem-somos.module.css`): mesmo contêiner de 1200px e mesmas duas colunas do topo, foto `fabrica.webp` **4:3 na largura da coluna esquerda (igual à `quem-somos.webp`, classe `.foto`)** e o texto (`.texto`/`.corpo` do `/meditacao`) centrado na altura da foto, à direita; celular, foto em cima. Sem cartão, sem cantos arredondados e **sem foto de ponta a ponta** (não usa mais o `.secaoFoto` da home: a foto de metade da tela ficava bem maior que a do topo). Sem botão nem link.
+  `hero_agricultores.jpg` e `ingredientes.jpg` foram apagados; `cabruca.jpg` ficou na pasta sem uso (só citado no histórico do plano). Receita
+  das imagens em `public/quem-somos/README.md`
 - **`/meditacao`** (`revalidate = 60`, como a home: sem isso a edição no admin só valeria no próximo build) — **topo (2026-11-08, sem SQL)**, tudo
   numa coluna de 1200px (`.topoWrap`): **faixa de 3 fotos** lado a lado (`public/meditacao/inspirar-{1,2,3}.webp`, recortadas de
   `_DOCS/meditação/capa página meditar.png`, 575px de altura, WebP q85, ≥ 39 dB; array `FOTOS` em `page.js` com a largura real de cada uma,

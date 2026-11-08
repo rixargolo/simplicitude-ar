@@ -1,206 +1,71 @@
-.hero {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1270 / 446;
-  max-height: 60vh;
-  overflow: hidden;
-  background: var(--green);
-}
+/* Quem somos. O topo reaproveita o padrão de /meditacao (meditacao.module.css: faixa, duas colunas, texto).
+   Aqui fica só o que é da página. As duas fotos de corpo (bloco 1 e fábrica) seguem o mesmo padrão: 4:3, na largura
+   de uma coluna do mesmo contêiner de 1200px, em lados alternados (bloco 1 à direita, fábrica à esquerda). */
 
-.heroImg {
-  object-fit: cover;
-  filter: contrast(1.1) brightness(0.9);
-  animation: heroKenBurns 20s ease-out forwards;
-}
-
-.heroDuotone {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: var(--green);
-  mix-blend-mode: multiply;
-  opacity: 0.55;
-  pointer-events: none;
-}
-
-.heroStripes {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    -30deg,
-    rgba(0, 0, 0, 0.08) 0px,
-    rgba(0, 0, 0, 0.08) 3px,
-    rgba(255, 255, 255, 0.05) 3px,
-    rgba(255, 255, 255, 0.05) 6px
-  );
-}
-
-.heroGradient {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    transparent 40%,
-    color-mix(in srgb, var(--cor-destaque) 88%, transparent) 100%
-  );
-  pointer-events: none;
-}
-
-.heroCaption {
-  position: absolute;
-  left: 24px;
-  bottom: 32px;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  animation: heroCaptionIn 0.8s ease-out 0.2s both;
-}
-
-.heroTitle {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 500;
-  color: var(--bg);
-  font-size: var(--tam-titulo-pagina);
-  line-height: 1.15;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
-}
-
-.heroUnderline {
-  width: 60px;
-  height: 3px;
-  background: var(--caramel);
-}
-
-@keyframes heroKenBurns {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.06);
-  }
-}
-
-@keyframes heroCaptionIn {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.section {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 72px 24px;
-}
-
-.section + .section {
-  border-top: 1px solid var(--border);
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  align-items: center;
-}
-
-.gridReverse .textCol {
-  order: 2;
-}
-
-.gridReverse .sectionImg {
-  order: 1;
-}
-
-.textCol {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.sectionTitle {
-  font-family: var(--font-display);
-  font-weight: 500;
-  color: var(--green-nav);
-  font-size: var(--tam-titulo-secao);
-  padding-bottom: 14px;
-  border-bottom: 2px solid var(--caramel);
-  width: fit-content;
-}
-
-.body {
-  font-family: var(--font-body);
-  font-size: var(--tam-texto);
-  line-height: 1.7;
-  color: var(--brown);
-}
-
-.emphasis {
+/* Coluna da esquerda do topo: h1, subtítulo, frase em itálico e o texto do bloco 1 */
+.lema {
+  margin: 12px 0 0;
+  max-width: 28ch;
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 400;
-  font-size: var(--tam-chamada);
-  line-height: 1.6;
-  color: var(--brown);
+  font-size: var(--tam-subtitulo);
+  line-height: 1.4;
+  color: var(--cor-texto);
 }
 
-.playful {
-  font-family: var(--font-body);
-  font-size: var(--tam-texto);
-  line-height: 1.8;
-  font-weight: 600;
-  color: var(--caramel);
+.textoBloco {
+  margin-top: 32px;
 }
 
-.sectionImg {
+/* Foto 4:3 na largura da coluna (as duas fotos de corpo) */
+.foto {
   width: 100%;
   height: auto;
-  display: block;
-  border-radius: 4px;
+}
+
+/* "Made in Bahia!": mesmo contêiner e mesmas colunas do topo, texto centrado na altura da foto */
+.fabrica {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 24px 72px;
+}
+
+.fabricaGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
+
+.tituloSecao {
+  margin: 0 0 20px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--tam-titulo-secao);
+  line-height: 1.15;
+  color: var(--cor-destaque);
+}
+
+@media (min-width: 900px) {
+  /* texto à esquerda e foto à direita, as duas coladas no topo da linha */
+  .titulos,
+  .fotoTopo {
+    align-self: start;
+  }
+
+  .fabrica {
+    padding-bottom: 96px;
+  }
+
+  .fabricaGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
 }
 
 @media (max-width: 640px) {
-  .hero {
-    aspect-ratio: 3 / 2;
-    max-height: none;
-  }
-
-  .heroCaption {
-    left: 20px;
-    bottom: 20px;
-  }
-
-  .section {
-    padding: 48px 20px;
-  }
-
-  .grid {
-    grid-template-columns: 1fr;
-    gap: 28px;
-  }
-
-  .gridReverse .textCol,
-  .gridReverse .sectionImg {
-    order: initial;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .heroImg {
-    animation: none;
-  }
-
-  .heroCaption {
-    animation: none;
+  .fabrica {
+    padding: 16px 16px 56px;
   }
 }
