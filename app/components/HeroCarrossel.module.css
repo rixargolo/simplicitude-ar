@@ -142,10 +142,10 @@
   height: min(80svh, 760px);
 }
 
-/* Cartão translúcido sobre a foto, cantos arredondados. 70% de --cor-fundo é o piso: mesmo com
-   uma foto preta por baixo o texto mantém ≥ 4,5:1 (na paleta verde dá 4,9; a 65% cairia para
-   4,3). tests/paletas.test.js lê este percentual e confere. O blur separa o
-   cartão da foto e segura o contraste em fotos agitadas. */
+/* Cartão translúcido sobre a foto, cantos arredondados. 65% de --cor-fundo é o piso medido nas fotos
+   reais do hero: no ponto mais escuro da área do cartão o texto ainda dá ≥ 4,5:1 (a 60% a Floresta cai
+   para 4,0). tests/paletas.test.js lê este percentual e confere com as fotos de public/home. O blur
+   separa o cartão da foto e segura o contraste em fotos agitadas. */
 .sobreposto .cartao {
   position: relative;
   align-self: end;
@@ -154,7 +154,7 @@
   margin: 0 0 32px 32px;
   padding: 28px 32px 32px;
   border-radius: 24px;
-  background: color-mix(in srgb, var(--cor-fundo) 70%, transparent);
+  background: color-mix(in srgb, var(--cor-fundo) 65%, transparent);
   -webkit-backdrop-filter: blur(14px); /* taste-skill-ignore: pedido explícito do usuário */
   backdrop-filter: blur(14px); /* taste-skill-ignore: pedido explícito do usuário */
 }

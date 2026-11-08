@@ -238,7 +238,7 @@ licenças em `app/fonts/LEIA-ME.md`). Nenhum CSS cita as famílias direto.
   check do D2: todo slide do hero com foto real
 - **X1 (várias fotos):** SQL aplicado em produção em 2026-11-05 (`supabase/migrations/20261105181330_produto_imagens.sql`). **Rodar de novo no D2** o script de reconciliação `supabase/scripts/x1_reconciliar_produto_imagens.sql` (a `main` só grava em `produtos`). A galeria em `/loja/[slug]` já usa `produto_imagens` (A7)
 - **Foto de categoria (X7):** código pronto (upload no `CategoriaForm`, `getCategoriasComProdutos()` e `GradeCategorias`); o SQL `20261106140000_categorias_imagem.sql` já foi aplicado (2026-11-06); falta a dona enviar as fotos (cada categoria sem foto segue com o cartão de sempre). O mesmo SQL cria o bucket próprio `categorias` com as policies (ver Storage)
-- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive hero e cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam sem uso até autorização), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `montarLoja`, `lib/foco.js`, `lib/fotos.js`, `lib/whatsapp.js`, `lib/i18n.js`, `lib/texto.js`, os textos legais (`tests/legal.test.js`: só **avisa** quantas `[CONFIRMAR]` restam, nunca falha por elas; para ver o aviso com o reporter padrão, `npx vitest run tests/legal.test.js --silent=false`) e os slugs do X8: `slugValido`, `getProdutoBySlug`, `getSlugAtual`). Sem lint nem CI
+- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive o cartão do hero medido nas fotos reais, e os cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam sem uso até autorização), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `montarLoja`, `lib/foco.js`, `lib/fotos.js`, `lib/whatsapp.js`, `lib/i18n.js`, `lib/texto.js`, os textos legais (`tests/legal.test.js`: só **avisa** quantas `[CONFIRMAR]` restam, nunca falha por elas; para ver o aviso com o reporter padrão, `npx vitest run tests/legal.test.js --silent=false`) e os slugs do X8: `slugValido`, `getProdutoBySlug`, `getSlugAtual`). Sem lint nem CI
 - Admin de pedidos
 - **Créditos do Netlify (D3 no plano):** o site ainda não está publicado e já gasta créditos com requisições e tráfego; investigar o consumo antes do go-live (deploys, banda, funções, `next/image`, páginas dinâmicas e `revalidate`; avaliar CDN ou ajustes de cache). Decisão atual: seguir no plano grátis até o go-live
 - **Build local com EPERM:** `npm run build` falha com EPERM na pasta `.next` por causa do OneDrive (o projeto mora dentro dele); resolver movendo o projeto para fora do OneDrive. Enquanto isso, o build exigido antes do deploy pode falhar por esse motivo, não por erro de código
@@ -503,9 +503,11 @@ Cada um com `*.module.css` co-locado.
   texto, cta: { rotulo, href }, imagem?: { src, alt, posicao? } }`; `posicao` = `object-position`
   para enquadrar a foto quando a tela larga corta o 16:9 em cima e embaixo — slide 1 (Presentes) com
   `'0% 50%'` para o corte cair sobre o texto da foto; slide 4 (Loja) com `'75% 50%'` (o texto da foto fica à direita e assim aparece inteiro no celular); os slides 2 e 3 ficam no centro) e `layout` (padrão `sobreposto`: foto em
-  largura total, cartão **translúcido** (70% de `--cor-fundo` + blur, cantos de 24px; no celular
-  volta a sólido, fora da foto) no canto inferior esquerdo — o teste de paletas lê esse 70% do
-  CSS e exige 4,5:1 do texto com foto preta ou branca por trás —, controles (só setas e pontos, **sem
+  largura total, cartão **translúcido** (65% de `--cor-fundo` + blur, cantos de 24px; no celular
+  volta a sólido, fora da foto) no canto inferior esquerdo — o teste de paletas lê esse 65% do
+  CSS e exige 4,5:1 do texto com foto branca por trás **e no ponto mais escuro (5º percentil) da área do cartão em cada
+  `public/home/hero-*.webp`** (ajuste de 2026-11-08: antes 70%, a pedido da dona de deixar o cartão como a pílula, a 30%; a 30% o texto cai a
+  1,5:1 na Floresta, e 65% é o piso medido, 60% reprova; foto nova mais escura ou percentual menor derruba o teste) —, controles (só setas e pontos, **sem
   botão Pausar/Continuar**) numa pílula translúcida (30% de `--cor-fundo` + blur, mais leve que o
   cartão; setas e pontos em `--cor-texto`) **dentro da foto**, embaixo — o contraste dela depende da
   foto por trás e **não tem teste** (conferir a olho ao trocar foto; se fraco, subir o 30%) — centralizada só a partir de 1440px; abaixo disso, no canto direito, para não
