@@ -74,7 +74,7 @@ const CUIDADOS = [
   {
     titulo: 'Cuidar de Si',
     texto:
-      'Ingredientes naturais, formulações minimalistas e 100% à base de plantas. Nossos produtos foram pensados para cuidar da saúde do corpo, da mente e do meio-ambiente.',
+      'Ingredientes naturais, formulações minimalistas e 100% à base de plantas. Nossos produtos foram pensados para cuidar da saúde do corpo, da mente e do meio ambiente.',
     src: '/home/home-cuidar-de-si.webp',
     alt: 'Duas colheres de madeira sobre pedra, uma com açúcar mascavo e outra com nibs de cacau',
   },
@@ -169,8 +169,8 @@ export default async function HomePage() {
         <section className={`${styles.secaoFoto} ${styles.espelhada}`} aria-labelledby="home-quem-somos">
           <div className={styles.foto}>
             <Image
-              src="/quem-somos/cabruca.jpg"
-              alt="Plantio de cacau em sistema Cabruca, dentro da Mata Atlântica"
+              src="/home/home-quem-somos.webp"
+              alt="Homem de camisa jeans abrindo um fruto de cacau com uma faca, entre cacaueiros na agrofloresta"
               fill
               sizes="(min-width: 768px) 50vw, 100vw"
               className={styles.fotoImg}
@@ -178,7 +178,7 @@ export default async function HomePage() {
           </div>
           <div className={styles.texto}>
             <h2 id="home-quem-somos" className={styles.frase}>
-              Da floresta à fábrica — cacau de agrofloresta, cultivado por quatro gerações.
+              <strong>Da floresta à fábrica</strong> — cacau de agrofloresta, cultivado por quatro gerações.
             </h2>
             <Link href="/quem-somos" className={styles.cta}>
               Conheça nossa história <span aria-hidden="true">→</span>

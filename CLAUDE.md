@@ -151,9 +151,9 @@ licenças em `app/fonts/LEIA-ME.md`). Nenhum CSS cita as famílias direto.
 - Zips originais em `docs/Fontes da marca/` (fora do git). Grandeurs e Simplicity não são usadas.
 
 **Contato vigente:** WhatsApp **(73) 9 2002-6708**; e-mail `viva@simplicitude.com.br`
-(inalterado); Instagram `@simplicitude.co`. O `Footer` já usa esses dados. **CNPJ/razão
-social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a confirmar" só com
-`NEXT_PUBLIC_MOCKUPS=1`; em produção a linha some até o dado chegar (check do D2).
+(inalterado); Instagram `@simplicitude.co`. O `Footer` já usa esses dados. **CNPJ:** `44.387.834/0001-77`
+(2026-11-08), sempre visível na linha legal do rodapé. **Razão social:** `44387834 SHEYLLA TOMÁS SILVA ME`
+(2026-11-08), também sempre visível, na linha acima do CNPJ.
 
 ---
 
@@ -415,7 +415,7 @@ Cada um com `*.module.css` co-locado.
   (vindo de `itensMenu()`, `lib/navegacao.js`); logo leva à home (sem item "Início"); item ativo
   via `usePathname()` + `aria-current`; sem linha divisória; abaixo de 960px vira botão de texto
   "Menu"/"Fechar". **`Footer`** — campo `--cor-rodape` com logo, lema, contatos (WhatsApp via
-  `linkWhatsApp()` de `lib/whatsapp.js`), links do mesmo `itensMenu()` e linha legal (CNPJ só no preview).
+  `linkWhatsApp()` de `lib/whatsapp.js`), links do mesmo `itensMenu()` e linha legal (©, razão social e CNPJ).
 - **`EmBreve`** — página mockup "Em breve" com botão pílula para `/loja`
 - **`LogoAnimado`** (`'use client'`) — usado dentro do `<Link href="/">` do `Header` no
   lugar do `<Image>` direto da wordmark. Na **1ª carga da Home (`/`) em cada sessão do
