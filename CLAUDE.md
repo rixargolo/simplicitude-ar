@@ -315,7 +315,7 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
   que vira `flex-grow` + `aspect-ratio`: as três dividem a largura na mesma altura, **sem cortar nada**; no celular segue **numa linha só**, só com gap menor; **não usar grid
   aí**: trilha `fr` não encolhe abaixo da largura da imagem e a faixa estourava a tela, com barra de rolagem horizontal). Embaixo, **2 colunas** (1 no celular, título e botão antes do
   texto): esquerda `h1` "Coleção Inspirar", subtítulo "Chocolates para Meditação", frase itálica e pílula "Acesse as meditações guiadas ↓"
-  (âncora `#meditacoes`, sem JS; o `h2` da lista tem `scroll-margin-top` por causa do `Header` sticky); direita o texto da dona (não alterar palavra), com a 1ª linha
+  (âncora `#meditacoes`, sem JS, **com deslize suave**: `scroll-behavior: smooth` só nesta página, via `:global(html):has(.sectionTitle)` em `meditacao.module.css`, desligado com `prefers-reduced-motion`; no CSS global faria o Next deslizar também ao trocar de página; o `h2` da lista tem `scroll-margin-top` por causa do `Header` sticky); direita o texto da dona (não alterar palavra), com a 1ª linha
   como `.abertura` (Fraunces 500 em `--cor-destaque`, com quebra de linha antes de "Esse, não.") e o resto em Assistant com 5 trechos em negrito (`<strong>`, peso 600: "harmoniza os benefícios nutricionais", "com práticas de meditação", "momento de presença", "ervas e especiarias", "meditação guiada"). O `hero.png` antigo segue só para a home. Depois, a lista (`h2`
   "Meditações guiadas") de produtos com `tem_meditacao=true` via `ApresentacaoProduto resumido` + `MeditacaoPlayer` (**só a descrição curta**:
   sem descrição longa nem ingredientes). **X20:** o título de cada bloco é `produto.titulo_meditacao || produto.nome` (prop `titulo`

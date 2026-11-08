@@ -169,6 +169,14 @@
   outline-offset: 3px;
 }
 
+/* Deslize suave até #meditacoes: só enquanto esta página está na tela (não afeta a troca de página) e só para
+   quem não pediu menos movimento. */
+@media (prefers-reduced-motion: no-preference) {
+  :global(html):has(.sectionTitle) {
+    scroll-behavior: smooth;
+  }
+}
+
 .empty {
   font-family: var(--font-body);
   font-size: var(--tam-texto);
