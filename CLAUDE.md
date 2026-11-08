@@ -310,8 +310,8 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
 - **`/meditacao`** (`revalidate = 60`, como a home: sem isso a edição no admin só valeria no próximo build) — **topo (2026-11-08, sem SQL)**, tudo
   numa coluna de 1200px (`.topoWrap`): **faixa de 3 fotos** lado a lado (`public/meditacao/inspirar-{1,2,3}.webp`, recortadas de
   `_DOCS/meditação/capa página meditar.png`, 575px de altura, WebP q85, ≥ 39 dB; array `FOTOS` em `page.js` com a largura real de cada uma,
-  que vira `flex-grow` + `aspect-ratio`: as três dividem a largura na mesma altura, **sem cortar nada**; no celular, grid com a foto 1 na linha
-  toda e as 2 e 3 embaixo — os `739fr 1189fr` do CSS repetem as larguras de `FOTOS`, mudou foto, mudar nos dois). Embaixo, **2 colunas** (1 no celular, título e botão antes do
+  que vira `flex-grow` + `aspect-ratio`: as três dividem a largura na mesma altura, **sem cortar nada**; no celular segue **numa linha só**, só com gap menor; **não usar grid
+  aí**: trilha `fr` não encolhe abaixo da largura da imagem e a faixa estourava a tela, com barra de rolagem horizontal). Embaixo, **2 colunas** (1 no celular, título e botão antes do
   texto): esquerda `h1` "Coleção Inspirar", subtítulo "Chocolates para Meditação", frase itálica e pílula "Acesse as meditações guiadas ↓"
   (âncora `#meditacoes`, sem JS; o `h2` da lista tem `scroll-margin-top` por causa do `Header` sticky); direita o texto da dona (não alterar palavra), com a 1ª linha
   como `.abertura` (Fraunces 500 em `--cor-destaque`, com quebra de linha antes de "Esse, não.") e o resto em Assistant com 5 trechos em negrito (`<strong>`, peso 600: "harmoniza os benefícios nutricionais", "com práticas de meditação", "momento de presença", "ervas e especiarias", "meditação guiada"). O `hero.png` antigo segue só para a home. Depois, a lista (`h2`

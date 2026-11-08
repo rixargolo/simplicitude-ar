@@ -189,21 +189,15 @@
   }
 }
 
-/* Celular: a foto 1 ocupa a linha toda e as fotos 2 e 3 dividem a de baixo, todas inteiras.
-   shortcut: 739fr/1189fr repetem as larguras de FOTOS (page.js); mudou a foto, mudar aqui. */
+/* Celular: a faixa continua numa linha só, encolhendo proporcionalmente (nada de grid: trilha `fr` não
+   encolhe abaixo da largura da imagem e estoura a tela). */
 @media (max-width: 640px) {
   .topoWrap {
     padding: 16px 16px 40px;
   }
 
   .faixa {
-    display: grid;
-    grid-template-columns: 739fr 1189fr;
-    align-items: start;
-  }
-
-  .faixa .foto:first-child {
-    grid-column: 1 / -1;
+    gap: 4px;
   }
 
   .topo {

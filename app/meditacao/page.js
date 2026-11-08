@@ -35,6 +35,8 @@ const FOTOS = [
   },
 ];
 
+const LARGURA_TOTAL = FOTOS.reduce((soma, foto) => soma + foto.largura, 0);
+
 export default async function MeditacaoPage() {
   const produtos = await getProdutos();
   const produtosComMeditacao = produtos.filter(
@@ -52,7 +54,7 @@ export default async function MeditacaoPage() {
               alt={foto.alt}
               width={foto.largura}
               height={ALTURA_FOTOS}
-              sizes={i === 0 ? '(max-width: 640px) 100vw, 640px' : '(max-width: 640px) 50vw, 400px'}
+              sizes={`(max-width: 1200px) ${Math.round((100 * foto.largura) / LARGURA_TOTAL)}vw, ${Math.round((1200 * foto.largura) / LARGURA_TOTAL)}px`}
               className={styles.foto}
               style={{ flexGrow: foto.largura, aspectRatio: `${foto.largura} / ${ALTURA_FOTOS}` }}
               priority={i === 0}
