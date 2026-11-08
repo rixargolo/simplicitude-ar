@@ -1,0 +1,53 @@
+/* Descrição longa do produto (lib/texto.js). Só papéis; sem opacity (contraste, tests/paletas.test.js). */
+.texto {
+  font-family: var(--font-body);
+  font-size: var(--tam-texto);
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--cor-texto);
+  overflow-wrap: break-word;
+}
+
+.texto p,
+.texto ul,
+.texto ol {
+  margin: 0;
+}
+
+.texto > * + * {
+  margin-top: 1em;
+}
+
+.texto ul,
+.texto ol {
+  padding-left: 1.4em;
+}
+
+.texto li + li {
+  margin-top: 0.25em;
+}
+
+.texto strong {
+  font-weight: 600;
+}
+
+/* Assistant não tem itálico: o itálico de leitura da marca é Fraunces */
+.texto em {
+  font-family: var(--font-display);
+  font-style: italic;
+}
+
+.texto a {
+  color: var(--cor-destaque);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.texto a:hover {
+  text-decoration-thickness: 2px;
+}
+
+.texto a:focus-visible {
+  outline: 2px solid var(--cor-destaque);
+  outline-offset: 2px;
+}

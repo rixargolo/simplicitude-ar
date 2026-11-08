@@ -234,7 +234,7 @@ licenças em `app/fonts/LEIA-ME.md`). Nenhum CSS cita as famílias direto.
   check do D2: todo slide do hero com foto real
 - **X1 (várias fotos):** SQL aplicado em produção em 2026-11-05 (`supabase/migrations/20261105181330_produto_imagens.sql`). **Rodar de novo no D2** o script de reconciliação `supabase/scripts/x1_reconciliar_produto_imagens.sql` (a `main` só grava em `produtos`). A galeria em `/loja/[slug]` já usa `produto_imagens` (A7)
 - **Foto de categoria (X7):** código pronto (upload no `CategoriaForm`, `getCategoriasComProdutos()` e `GradeCategorias`); o SQL `20261106140000_categorias_imagem.sql` já foi aplicado (2026-11-06); falta a dona enviar as fotos (cada categoria sem foto segue com o cartão de sempre). O mesmo SQL cria o bucket próprio `categorias` com as policies (ver Storage)
-- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive hero e cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam sem uso até autorização), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `montarLoja`, `lib/foco.js`, `lib/fotos.js`, `lib/whatsapp.js`, `lib/i18n.js` e os slugs do X8: `slugValido`, `getProdutoBySlug`, `getSlugAtual`). Sem lint nem CI
+- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive hero e cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam sem uso até autorização), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `montarLoja`, `lib/foco.js`, `lib/fotos.js`, `lib/whatsapp.js`, `lib/i18n.js`, `lib/texto.js` e os slugs do X8: `slugValido`, `getProdutoBySlug`, `getSlugAtual`). Sem lint nem CI
 - Admin de pedidos
 - **Coleções (X12):** gestão no admin pronta (`/admin/colecoes`); uso público só na `/loja` (X14: `?colecao=slug`
   e carrossel por coleção; sem página própria de coleção) e excluir coleção (de propósito, fora do X12)
@@ -455,7 +455,7 @@ Cada um com `*.module.css` co-locado.
   da Home o clique só navega para `/` via o `<Link>` do `Header`.
 - **`ApresentacaoProduto`** (server) — bloco de apresentação de produto (`GaleriaProduto`, rótulo
   de categoria via `rotuloCategoria()`, nome, **descrição curta** em Fraunces itálico, **tags** como chips (`produto.tags`,
-  só vem de `getProdutoBySlug`), `children`, **descrição longa** (`white-space: pre-line`) e **ingredientes** (`dl`); a
+  só vem de `getProdutoBySlug`), `children`, **descrição longa** (via `TextoFormatado`, com formatação; ver "Formatação da descrição longa") e **ingredientes** (`dl`, texto puro); a
   ordem põe preço/Comprar (ou o player, em `/meditacao`) antes do texto longo; `atributos` não aparece mais, X13); usado em
   `/loja/[slug]` e `/meditacao`. Props `produto`, `resumido` (padrão `false`; `/meditacao` o liga: omite descrição longa e
   ingredientes, fica só a curta), `fotos` (opcional, de `getFotosDoProduto`; sem ela cai na
@@ -535,10 +535,22 @@ Cada um com `*.module.css` co-locado.
 - **`MeditacaoPlayer`** (`'use client'`) — player de áudio da meditação guiada
 - **`TraducaoEn`** (`'use client'`, mora em `app/admin/TraducaoEn.js`, não em `components/`) — seção recolhível "English
   (opcional)" dos formulários de categoria, coleção, produto e tag; aberta só se já há tradução. A prop `campos`
-  (`[{ chave, rotulo, multilinha?, maxLength? }]`, padrão nome + descrição) define os campos; `valores` tem uma chave por
+  (`[{ chave, rotulo, multilinha?, maxLength?, formatado? }]`, padrão nome + descrição) define os campos; `formatado: true` troca o
+  textarea pela `BarraFormatacao` (só a descrição longa EN do produto); `valores` tem uma chave por
   campo. Exporta também `traducaoEnInicial(linhas, campos)` e `salvarTraducao(supabase, tabela, fk, id, valores, existia)`
   (grava as colunas = chaves de `valores`; upsert, apaga ou nada,
   conforme `acaoTraducao` de `lib/i18n.js`; erro com `exibir`). O formulário dono guarda o estado
+- **`BarraFormatacao`** (`'use client'`, `app/admin/BarraFormatacao.js`, não em `components/`) — textarea da descrição longa do
+  produto (PT no `ProdutoForm`, EN via `TraducaoEn`) com botões em português (Negrito, Itálico, Lista, Lista numerada, Link) e
+  "Pré-visualizar"/"Voltar a editar" (mostra o `TextoFormatado`, sem sair do form), pensada para quem **não conhece Markdown**: a
+  palavra não aparece na tela, a ajuda diz que os sinais `*` e `-` são as marcas e não se apagam. Props `id`, `value`,
+  `onChange(string)`, `className` (do textarea), `rows`, `lang`. Aplica as edições de `lib/texto.js` com
+  `document.execCommand('insertText')` para o Ctrl+Z seguir funcionando (reserva: grava o valor direto). Link usa `window.prompt`
+  (texto e endereço) e `alert` se o endereço for inválido
+- **`TextoFormatado`** (server-safe, `components/`) — renderiza a descrição longa (`lib/texto.js`) em `<p>`/`<br>`/`<ul>`/`<ol>`/
+  `<strong>`/`<em>`/`<a target="_blank" rel="noopener noreferrer">`, sempre elementos React (nunca HTML cru). Prop `texto` e
+  `className`. Estilo em `TextoFormatado.module.css` (só papéis; `em` em Fraunces itálico, porque Assistant não tem itálico).
+  Usado por `ApresentacaoProduto` e pela pré-visualização do admin
 - **`LogoutButton`** (`'use client'`) — `signOut()` + redirect para `/login`, usado dentro
   de `AdminNav` (`app/admin/AdminNav.js`, ver seção de Rotas — não faz parte de
   `app/components/`, mas segue o mesmo padrão de client component com CSS module)
@@ -623,6 +635,20 @@ upload). No admin, o `SeletorFoco` (`app/admin/produtos/SeletorFoco.js`, dentro 
 clique/arrasto na foto (ponteiro, funciona com o dedo), três deslizantes (Horizontal, Vertical, Zoom; teclado),
 "Centralizar" (só a posição) e prévia no quadro do card; foto nova volta ao centro e 100%. Cobertos em
 `tests/foco.test.js`.
+
+### Formatação da descrição longa — `lib/texto.js`
+
+`produtos.descricao` e `produto_traducoes.descricao` guardam **texto com marcas** (sem migração, coluna segue `text`): `**negrito**`,
+`*itálico*` (**sem `_…_`**: underscore aparece em URL e palavra), linha `- ` (lista), `1. ` (lista numerada), `[texto](endereço)`;
+linha em branco = parágrafo, quebra simples = `<br>`. **Texto puro antigo continua igual** (risco aceito: `*palavra*` ou linha
+começando com `- `/`1. ` num texto antigo passa a sair formatada). Só a descrição longa: **descrição curta (≤120), ingredientes e
+`/meditacao` (só a curta) seguem texto puro**. Funções puras: `blocosTexto` (parágrafos/listas, linha a linha), `inlineTexto` (**links
+primeiro**: a URL nunca passa pelo negrito/itálico; depois `**`, depois `*`; marca que não fecha fica literal), `textoSimples` (sem
+marcas, numa linha: usado no `CardProduto` e na `description` de `/loja/[slug]`), `urlSegura` (só `https`, `http`, `mailto`;
+`javascript:`/`data:` viram texto), `normalizarUrl` (digitação da dona: `www.x.com` ganha `https://`, e-mail vira `mailto:`) e as
+edições da barra (`envolverSelecao`, `formatarLista`, `inserirLink`, devolvem `{ de, ate, texto, selIni, selFim }`). **Segurança:**
+só produz dados; `TextoFormatado` monta elementos React, sem `dangerouslySetInnerHTML`, então não há sanitizador nem dependência.
+Cobertos em `tests/texto.test.js`.
 
 ### Fotos do produto (X1) — `lib/fotos.js`
 

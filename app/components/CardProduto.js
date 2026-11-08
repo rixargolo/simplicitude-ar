@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { estiloFoto } from '@/lib/foco';
+import { textoSimples } from '@/lib/texto';
 import styles from './CardProduto.module.css';
 
 const formatBRL = (centavos) =>
@@ -14,6 +15,8 @@ const formatBRL = (centavos) =>
 // (lib/foco.js), categoria, nome, descrição em 2 linhas e preço. `className` entra no <Link>
 // (o pai decide o dimensionamento); `Titulo` é o nível do título (h3 na home, h2 sob o h1 da loja).
 export default function CardProduto({ produto, sizes, className = '', Titulo = 'h3' }) {
+  // a descrição longa pode ter marcas de formatação: no card vai sem elas
+  const resumo = produto.descricao_curta || textoSimples(produto.descricao);
   return (
     <Link
       href={`/loja/${produto.slug}`}
@@ -42,9 +45,7 @@ export default function CardProduto({ produto, sizes, className = '', Titulo = '
           <span className={styles.categoria}>{produto.categorias.nome}</span>
         )}
         <Titulo className={styles.titulo}>{produto.nome}</Titulo>
-        {(produto.descricao_curta || produto.descricao) && (
-          <p className={styles.descricao}>{produto.descricao_curta || produto.descricao}</p>
-        )}
+        {resumo && <p className={styles.descricao}>{resumo}</p>}
         <span className={styles.preco}>{formatBRL(produto.preco_centavos)}</span>
       </div>
     </Link>

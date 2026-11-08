@@ -1,6 +1,7 @@
 import { rotuloCategoria } from '@/lib/produtos';
 import { fotosDoProduto } from '@/lib/fotos';
 import GaleriaProduto from './GaleriaProduto';
+import TextoFormatado from './TextoFormatado';
 import styles from './ApresentacaoProduto.module.css';
 
 // Replica o bloco de apresentação de produto da tela de boas-vindas do antigo app AR
@@ -31,7 +32,7 @@ export default function ApresentacaoProduto({ produto, fotos, Titulo = 'h2', res
           </ul>
         )}
         {children}
-        {!resumido && produto.descricao && <p className={styles.desc}>{produto.descricao}</p>}
+        {!resumido && produto.descricao && <TextoFormatado texto={produto.descricao} className={styles.desc} />}
         {!resumido && produto.ingredientes && (
           <dl className={styles.ingredientes}>
             <dt>Ingredientes</dt>
