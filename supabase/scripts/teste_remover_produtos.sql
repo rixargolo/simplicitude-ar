@@ -1,6 +1,6 @@
 -- Remove os produtos de TESTE (slug "teste-%") e as tags "teste-%". Reexecutável.
 -- Só por SQL: excluir pelo admin tenta apagar do Storage (as fotos de teste ficam em public/teste/).
--- Depois de rodar, apagar a pasta public/teste/ do repositório (item do D2 em docs/plano-v1.md).
+-- A pasta public/teste/ já foi apagada do repositório (2026-11-08); se for recriada para reutilizar o inserir, apagar de novo.
 -- Cascade leva junto produto_imagens, produto_colecoes, produto_tags, produto_slugs e produto_traducoes.
 
 begin;

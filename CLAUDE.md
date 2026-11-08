@@ -240,6 +240,8 @@ licenças em `app/fonts/LEIA-ME.md`). Nenhum CSS cita as famílias direto.
 - **Foto de categoria (X7):** código pronto (upload no `CategoriaForm`, `getCategoriasComProdutos()` e `GradeCategorias`); o SQL `20261106140000_categorias_imagem.sql` já foi aplicado (2026-11-06); falta a dona enviar as fotos (cada categoria sem foto segue com o cartão de sempre). O mesmo SQL cria o bucket próprio `categorias` com as policies (ver Storage)
 - Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive hero e cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam sem uso até autorização), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `montarLoja`, `lib/foco.js`, `lib/fotos.js`, `lib/whatsapp.js`, `lib/i18n.js`, `lib/texto.js`, os textos legais (`tests/legal.test.js`: só **avisa** quantas `[CONFIRMAR]` restam, nunca falha por elas; para ver o aviso com o reporter padrão, `npx vitest run tests/legal.test.js --silent=false`) e os slugs do X8: `slugValido`, `getProdutoBySlug`, `getSlugAtual`). Sem lint nem CI
 - Admin de pedidos
+- **Créditos do Netlify (D3 no plano):** o site ainda não está publicado e já gasta créditos com requisições e tráfego; investigar o consumo antes do go-live (deploys, banda, funções, `next/image`, páginas dinâmicas e `revalidate`; avaliar CDN ou ajustes de cache). Decisão atual: seguir no plano grátis até o go-live
+- **Build local com EPERM:** `npm run build` falha com EPERM na pasta `.next` por causa do OneDrive (o projeto mora dentro dele); resolver movendo o projeto para fora do OneDrive. Enquanto isso, o build exigido antes do deploy pode falhar por esse motivo, não por erro de código
 - **Coleções (X12):** gestão no admin pronta (`/admin/colecoes`); uso público só na `/loja` (X14: `?colecao=slug`
   e carrossel por coleção; sem página própria de coleção) e excluir coleção (de propósito, fora do X12)
 - **X12 (taxonomia + par EN de categorias e coleções):** concluído e testado; SQL
@@ -681,13 +683,12 @@ Cobertos em `tests/texto.test.js`.
 
 ### Fotos do produto (X1) — `lib/fotos.js`
 
-**Produtos de teste (2026-11-07, temporários):** `supabase/scripts/teste_inserir_produtos.sql` cria 22 produtos (slug
-`teste-*`, tags `teste-*`) cobrindo Chocolates, Presentes, Empório e Dia-a-Dia e as coleções Inspirar e Bombons (alguns
-em duas coleções, vários sem coleção, um esgotado, um com estoque `null`); `teste_remover_produtos.sql` os apaga (só por
-SQL, o admin tentaria apagar do Storage). Fotos WebP 4:5 em `public/teste/` (geradas à mão, fora do Storage): o
-`caminho` de `produto_imagens` e `produtos.imagem_url` apontam para `/teste/...`, e `fotosDoProduto` devolve caminho com
-`/` como URL direta. **v1 e `main` leem o mesmo banco: a produção mostra esses produtos (sem foto) até a remoção.**
-Remover no D2 (item no plano): rodar o SQL de remoção e apagar `public/teste/`.
+**Produtos de teste (2026-11-07; removidos em 2026-11-08):** `supabase/scripts/teste_inserir_produtos.sql` cria 22 produtos (slug
+`teste-*`, tags `teste-*`) cobrindo Chocolates, Presentes, Empório e Dia-a-Dia e as coleções Inspirar e Bombons;
+`teste_remover_produtos.sql` os apaga (só por SQL, o admin tentaria apagar do Storage). Os produtos já saíram do banco e a
+pasta `public/teste/` (WebP 4:5) foi **apagada do repo**: os dois scripts ficam para reuso, mas o inserir **depende dessas
+imagens** (`/teste/{slug}-N.webp`) e elas precisam ser geradas de novo antes. `fotosDoProduto` segue devolvendo caminho com `/`
+como URL direta (só o inserir usa isso).
 
 Várias fotos por produto na tabela `produto_imagens`; a primeira por `ordem` é a principal. Funções puras
 (testadas em `tests/fotos.test.js`): `ordenarFotos`, `fotosDoProduto(produto, linhas, urlDe)` (sem linhas cai em
