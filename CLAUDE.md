@@ -93,7 +93,7 @@ públicas, `proxy.js`, textos fixos ou no schema de conteúdo** (produtos, categ
   carrinho/checkout vêm depois — ver a lista priorizada no plano.
 - **Ordem do front:** A1 (preview) → A2 (tokens, header/footer) → A3/A4/A5 (home) → A6 → **X1 (fotos)** →
   **X2 (paleta verde)** → **X3 (tipografia)** → A7 (produto, Comprar → WhatsApp) → **X8 (slug)** → **X4 → X5 → X6 → X7 → X10 → X9 (404)** →
-  mostrar o preview à dona → A11 (**no código, 2026-11-08; textos com 9 marcas `[CONFIRMAR]` a resolver**) → go-live (D); o contrato de dados
+  mostrar o preview à dona → A11 (**no código, 2026-11-08; textos com 7 marcas `[CONFIRMAR]` a resolver**) → go-live (D); o contrato de dados
   (A0) e carrinho/checkout/pedido (A8–A10, bloco C) ficam para depois do go-live.
 
 ---
@@ -361,8 +361,8 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
   "… — Simplicitude" e `description` próprios. **Texto em Markdown editável, fora do código: `content/legal/{privacidade,entrega,trocas}.md`**
   (lido no build por `lib/legal.js`; trocar o texto = novo deploy). Sintaxe de `lib/texto.js` (`##`/`###`, listas, `**`, `*`, links;
   link `(/trocas)` = interno). O título (`h1`) e "Atualizado em {data}" vêm da página e da constante `DATA_ATUALIZACAO_LEGAL`
-  (`lib/legal.js`, a única data: mudou um texto, muda ali), não do arquivo. **Texto jurídico ainda NÃO final: 9 marcas `[CONFIRMAR …]`**
-  (privacidade 2: cookies/GA/Pixel inexistentes e cartão/checkout; entrega 2: entrega local e cobertura; trocas 5: lacre, frete em defeito e três
+  (`lib/legal.js`, a única data: mudou um texto, muda ali), não do arquivo. **Texto jurídico ainda NÃO final: 7 marcas `[CONFIRMAR …]`**
+  (privacidade 2: cookies/GA/Pixel inexistentes e cartão/checkout; **entrega 0: texto revisado pela dona em 2026-11-08, seis seções**; trocas 5: lacre, frete em defeito e três
   pontos do CDC para o advogado). **Não apagar nem inventar:** resolver com a dona/advogado antes do go-live (D2). O número do WhatsApp
   está repetido em `wa.me` nos `.md` (a fonte única segue em `lib/whatsapp.js`). Links na coluna "Políticas" do rodapé (`Footer`)
 - **`/busca`** (X16, 2026-11-08, sem SQL) — dinâmica (`ƒ`), `noindex` por `generateMetadata` (vale também depois do go-live). `?q=` passa por `normalizarTermo` (só texto, ≤ 60, ≥ 2 letras; senão mostra a instrução **sem consultar o banco**); `getProdutosBusca()` (consulta fixa, só as colunas do card e dos campos pesquisados) + `buscarProdutos` (`lib/busca.js`) → até 24 `CardProduto` (`Titulo="h2"`), `<p role="status">` com o resultado, "Nada encontrado" com link para `/loja`. Tem o próprio campo (`next/form`, `prefetch={false}`) preenchido. Sem cache de dados: cache só pouparia o Supabase, não a função do Netlify
