@@ -24,7 +24,6 @@ export async function generateMetadata({ params }) {
   return {
     title: `${produto.nome} — Simplicitude`,
     description: produto.descricao_curta || textoSimples(produto.descricao) || undefined,
-    // O resto do compartilhamento (imagem 1200x630, metadataBase) é o A11.
     openGraph: {
       title: produto.nome,
       ...(produto.imagem_url && { images: [produto.imagem_url] }),

@@ -93,7 +93,7 @@ públicas, `proxy.js`, textos fixos ou no schema de conteúdo** (produtos, categ
   carrinho/checkout vêm depois — ver a lista priorizada no plano.
 - **Ordem do front:** A1 (preview) → A2 (tokens, header/footer) → A3/A4/A5 (home) → A6 → **X1 (fotos)** →
   **X2 (paleta verde)** → **X3 (tipografia)** → A7 (produto, Comprar → WhatsApp) → **X8 (slug)** → **X4 → X5 → X6 → X7 → X10 → X9 (404)** →
-  mostrar o preview à dona → A11 → go-live (D); o contrato de dados
+  mostrar o preview à dona → A11 (**no código, 2026-11-08; textos com 9 marcas `[CONFIRMAR]` a resolver**) → go-live (D); o contrato de dados
   (A0) e carrinho/checkout/pedido (A8–A10, bloco C) ficam para depois do go-live.
 
 ---
@@ -234,7 +234,7 @@ licenças em `app/fonts/LEIA-ME.md`). Nenhum CSS cita as famílias direto.
   check do D2: todo slide do hero com foto real
 - **X1 (várias fotos):** SQL aplicado em produção em 2026-11-05 (`supabase/migrations/20261105181330_produto_imagens.sql`). **Rodar de novo no D2** o script de reconciliação `supabase/scripts/x1_reconciliar_produto_imagens.sql` (a `main` só grava em `produtos`). A galeria em `/loja/[slug]` já usa `produto_imagens` (A7)
 - **Foto de categoria (X7):** código pronto (upload no `CategoriaForm`, `getCategoriasComProdutos()` e `GradeCategorias`); o SQL `20261106140000_categorias_imagem.sql` já foi aplicado (2026-11-06); falta a dona enviar as fotos (cada categoria sem foto segue com o cartão de sempre). O mesmo SQL cria o bucket próprio `categorias` com as policies (ver Storage)
-- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive hero e cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam sem uso até autorização), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `montarLoja`, `lib/foco.js`, `lib/fotos.js`, `lib/whatsapp.js`, `lib/i18n.js`, `lib/texto.js` e os slugs do X8: `slugValido`, `getProdutoBySlug`, `getSlugAtual`). Sem lint nem CI
+- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive hero e cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam sem uso até autorização), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `montarLoja`, `lib/foco.js`, `lib/fotos.js`, `lib/whatsapp.js`, `lib/i18n.js`, `lib/texto.js`, os textos legais (`tests/legal.test.js`: só **avisa** quantas `[CONFIRMAR]` restam, nunca falha por elas; para ver o aviso com o reporter padrão, `npx vitest run tests/legal.test.js --silent=false`) e os slugs do X8: `slugValido`, `getProdutoBySlug`, `getSlugAtual`). Sem lint nem CI
 - Admin de pedidos
 - **Coleções (X12):** gestão no admin pronta (`/admin/colecoes`); uso público só na `/loja` (X14: `?colecao=slug`
   e carrossel por coleção; sem página própria de coleção) e excluir coleção (de propósito, fora do X12)
@@ -332,8 +332,16 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
   link do WhatsApp com mensagem pronta** (`BotaoComprar`, nova aba, sem carrinho/quantidade). Sem estoque
   (`estoque === 0`): selo "Esgotado" e o mesmo botão com o rótulo "Consultar no WhatsApp" (não perde a
   venda; sem ramo novo). `tem_meditacao` mostra só o link "Acesse aqui a meditação guiada" para `/meditacao` (sem player aqui; frase do X18).
-  `generateMetadata`: `title`, `description` e `openGraph` com título e foto principal; o resto do
-  compartilhamento (imagem 1200x630, `metadataBase`) é o A11
+  `generateMetadata`: `title`, `description` e `openGraph` com título e foto principal (sem foto, vale a imagem OG padrão da raiz;
+  `openGraph` da página substitui o do layout por inteiro, então `siteName`/`locale` não chegam aqui: não conferido, sem banco local)
+- **`/privacidade`, `/entrega`, `/trocas`** (A11, 2026-11-08; `/trocas` cobre o X17) — páginas estáticas (`○`) de `PaginaLegal`, com `title`
+  "… — Simplicitude" e `description` próprios. **Texto em Markdown editável, fora do código: `content/legal/{privacidade,entrega,trocas}.md`**
+  (lido no build por `lib/legal.js`; trocar o texto = novo deploy). Sintaxe de `lib/texto.js` (`##`/`###`, listas, `**`, `*`, links;
+  link `(/trocas)` = interno). O título (`h1`) e "Atualizado em {data}" vêm da página e da constante `DATA_ATUALIZACAO_LEGAL`
+  (`lib/legal.js`, a única data: mudou um texto, muda ali), não do arquivo. **Texto jurídico ainda NÃO final: 9 marcas `[CONFIRMAR …]`**
+  (privacidade 2: cookies/GA/Pixel inexistentes e cartão/checkout; entrega 2: entrega local e cobertura; trocas 5: lacre, frete em defeito e três
+  pontos do CDC para o advogado). **Não apagar nem inventar:** resolver com a dona/advogado antes do go-live (D2). O número do WhatsApp
+  está repetido em `wa.me` nos `.md` (a fonte única segue em `lib/whatsapp.js`). Links na coluna "Políticas" do rodapé (`Footer`)
 - **`/sustentabilidade`** (ex-`/bem-fazer`, renomeada no X18, sem redirect) — **página real, em produção e no menu** (`status: 'real'`):
   só `h1` "Sustentabilidade" e um aviso de que o conteúdo chega em breve (texto provisório), CSS próprio
   (`app/sustentabilidade/page.module.css`, no molde do 404, sem `EmBreve` nem `exigirMockups`). Os 3 blocos da home levam para cá.
@@ -413,9 +421,11 @@ Cada um com `*.module.css` co-locado.
   `usePathname()`; usado em `app/layout.js` envolvendo `{children}`
 - **`Header`** (`'use client'`) — menu LOJA, MEDITAÇÃO, SUSTENTABILIDADE, QUEM SOMOS, ASSINATURAS
   (vindo de `itensMenu()`, `lib/navegacao.js`); logo leva à home (sem item "Início"); item ativo
-  via `usePathname()` + `aria-current`; sem linha divisória; abaixo de 960px vira botão de texto
+  via `usePathname()` + `aria-current`; **linha de 1px `--cor-borda` embaixo do `Header` em todas as páginas** (separa menu e corpo, que têm o mesmo fundo; antes só a `/loja` tinha, no `border-top` da página, hoje removido de lá); abaixo de 960px vira botão de texto
   "Menu"/"Fechar". **`Footer`** — campo `--cor-rodape` com logo, lema, contatos (WhatsApp via
-  `linkWhatsApp()` de `lib/whatsapp.js`), links do mesmo `itensMenu()` e linha legal (©, razão social e CNPJ).
+  `linkWhatsApp()` de `lib/whatsapp.js`), links do mesmo `itensMenu()`, **4ª coluna "Políticas" (A11: título em Fraunces itálico e, embaixo, Privacidade, Entrega e Trocas e devoluções no estilo `navLink`; no celular as colunas empilham)** e linha legal (©, razão social e CNPJ).
+- **`PaginaLegal`** (server, A11) — `h1` (prop `titulo`), "Atualizado em {`DATA_ATUALIZACAO_LEGAL`}" e `TextoFormatado` com o texto de
+  `content/legal/{arquivo}.md` (prop `arquivo`); coluna de leitura de 68ch, só papéis. Usado por `/privacidade`, `/entrega` e `/trocas`.
 - **`EmBreve`** — página mockup "Em breve" com botão pílula para `/loja`
 - **`LogoAnimado`** (`'use client'`) — usado dentro do `<Link href="/">` do `Header` no
   lugar do `<Image>` direto da wordmark. Na **1ª carga da Home (`/`) em cada sessão do
@@ -547,10 +557,10 @@ Cada um com `*.module.css` co-locado.
   `onChange(string)`, `className` (do textarea), `rows`, `lang`. Aplica as edições de `lib/texto.js` com
   `document.execCommand('insertText')` para o Ctrl+Z seguir funcionando (reserva: grava o valor direto). Link usa `window.prompt`
   (texto e endereço) e `alert` se o endereço for inválido
-- **`TextoFormatado`** (server-safe, `components/`) — renderiza a descrição longa (`lib/texto.js`) em `<p>`/`<br>`/`<ul>`/`<ol>`/
-  `<strong>`/`<em>`/`<a target="_blank" rel="noopener noreferrer">`, sempre elementos React (nunca HTML cru). Prop `texto` e
-  `className`. Estilo em `TextoFormatado.module.css` (só papéis; `em` em Fraunces itálico, porque Assistant não tem itálico).
-  Usado por `ApresentacaoProduto` e pela pré-visualização do admin
+- **`TextoFormatado`** (server-safe, `components/`) — renderiza a descrição longa e os textos legais (`lib/texto.js`) em `<p>`/`<br>`/`<h2>`/`<h3>`/`<ul>`/`<ol>`/
+  `<strong>`/`<em>`/`<a target="_blank" rel="noopener noreferrer">` (link interno `/…` vira `next/link`, mesma aba), sempre elementos React
+  (nunca HTML cru). Prop `texto` e `className`. Estilo em `TextoFormatado.module.css` (só papéis; `h2`/`h3` em Fraunces; `em` em Fraunces itálico,
+  porque Assistant não tem itálico). Usado por `ApresentacaoProduto`, `PaginaLegal` e pela pré-visualização do admin
 - **`LogoutButton`** (`'use client'`) — `signOut()` + redirect para `/login`, usado dentro
   de `AdminNav` (`app/admin/AdminNav.js`, ver seção de Rotas — não faz parte de
   `app/components/`, mas segue o mesmo padrão de client component com CSS module)
@@ -636,7 +646,12 @@ clique/arrasto na foto (ponteiro, funciona com o dedo), três deslizantes (Horiz
 "Centralizar" (só a posição) e prévia no quadro do card; foto nova volta ao centro e 100%. Cobertos em
 `tests/foco.test.js`.
 
-### Formatação da descrição longa — `lib/texto.js`
+### Formatação da descrição longa e dos textos legais — `lib/texto.js`
+
+**A11:** a mesma sintaxe formata `content/legal/*.md` e ganhou `## ` / `### ` (título de uma linha, blocos `h2`/`h3`; `#`, `####` e `##` sem
+texto seguem texto comum) e caminho interno em `urlSegura` (`/trocas` vale; `//host` e `/\host` não). Vale também para a descrição longa do
+produto (risco aceito: linha começando com `## ` num texto antigo vira título). `lib/legal.js`: `DATA_ATUALIZACAO_LEGAL` e `lerTextoLegal(nome)`
+(`fs`, só servidor).
 
 `produtos.descricao` e `produto_traducoes.descricao` guardam **texto com marcas** (sem migração, coluna segue `text`): `**negrito**`,
 `*itálico*` (**sem `_…_`**: underscore aparece em URL e palavra), linha `- ` (lista), `1. ` (lista numerada), `[texto](endereço)`;
@@ -872,7 +887,11 @@ implementado — ver pendência de segurança #3.
   `NEXT_PUBLIC_MOCKUPS=1` (só nos contextos branch-deploy/deploy-preview; liga mockups e o 404
   de `/admin`/`/login` no `proxy.js`) e `SITE_INDEXAVEL=1` (só produção, no go-live; remove o
   `noindex`). **O build aborta se as duas estiverem juntas** (trava em `next.config.mjs`).
-  Sem `SITE_INDEXAVEL=1` toda rota sai com `X-Robots-Tag: noindex, nofollow`.
+  Sem `SITE_INDEXAVEL=1` toda rota sai com `X-Robots-Tag: noindex, nofollow`. **`SITE_URL`** (A11, opcional, só a URL pública sem barra
+  final): base de `metadataBase` em `app/layout.js`; sem ela cai em `https://simplicitude-ar.netlify.app`; URL inválida aborta o build.
+  **No go-live definir `SITE_URL=https://simplicitude.com.br` no Netlify (D2).** Imagem OG padrão: `app/opengraph-image.png` (1200×630,
+  logo verde sobre bege, gerada com `sharp` a partir de `public/marca/logo-simplicitude-677w.png`; refazer só se a marca mudar) +
+  `opengraph-image.alt.txt`. **Não há sitemap nem `robots`** no projeto (item do A11 não aplicado; criar no D se quiserem)
 - `next.config.mjs` — `images.remotePatterns` liberando o host do Storage do Supabase;
   `poweredByHeader: false`; `env.NEXT_PUBLIC_MOCKUPS` **fixado** (`''` se ausente, coberto em
   `tests/paletas.test.js`): sem isso o Next não inlina a env no client e o código de mockup não é

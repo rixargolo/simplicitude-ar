@@ -4,6 +4,8 @@
   z-index: 20;
   background: var(--cor-fundo);
   color: var(--cor-texto);
+  /* linha que separa o menu do corpo (mesmo fundo): em todas as páginas e fixa junto com o menu na rolagem */
+  border-bottom: 1px solid var(--cor-borda);
 }
 
 .bar {

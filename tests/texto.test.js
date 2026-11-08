@@ -38,6 +38,21 @@ describe('blocosTexto', () => {
   it('**negrito** no começo da linha não é lista', () => {
     expect(blocosTexto('**forte** e doce')[0].tipo).toBe('p');
   });
+
+  it('## e ### viram título de uma linha, sem grudar no que vem depois', () => {
+    expect(blocosTexto('## 1. Quem somos\nTexto\n### Detalhe\n- item')).toEqual([
+      { tipo: 'h2', linhas: ['1. Quem somos'] },
+      { tipo: 'p', linhas: ['Texto'] },
+      { tipo: 'h3', linhas: ['Detalhe'] },
+      { tipo: 'ul', linhas: ['item'] },
+    ]);
+  });
+
+  it('# sozinho, #### e ## sem texto continuam texto comum', () => {
+    expect(blocosTexto('# um')[0].tipo).toBe('p');
+    expect(blocosTexto('#### quatro')[0].tipo).toBe('p');
+    expect(blocosTexto('##')[0].tipo).toBe('p');
+  });
 });
 
 describe('inlineTexto', () => {
@@ -102,6 +117,13 @@ describe('urlSegura / normalizarUrl', () => {
     expect(urlSegura('javascript:alert(1)')).toBeNull();
     expect(urlSegura('ftp://e.com')).toBeNull();
     expect(urlSegura('abc')).toBeNull();
+  });
+
+  it('caminho interno vale; "//host" e "/\\host" não', () => {
+    expect(urlSegura('/trocas')).toBe('/trocas');
+    expect(urlSegura('//evil.com')).toBeNull();
+    expect(urlSegura('/\\evil.com')).toBeNull();
+    expect(inlineTexto('veja [trocas](/trocas)')[1]).toMatchObject({ tipo: 'a', href: '/trocas' });
   });
 
   it('www., domínio solto e e-mail ganham o protocolo', () => {
