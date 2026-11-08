@@ -226,9 +226,9 @@ licenças em `app/fonts/LEIA-ME.md`). Nenhum CSS cita as famílias direto.
   chocolate branco, foto final). `hero_slide_1..4.webp` saíram do repo. **PROVISÓRIA: só o slide 1** (a dona manda a final depois). A do slide 1
   mede 1928×851 (2,27:1, abaixo de 1080 de altura) e traz texto e ícones na coluna direita ("Veganos / Artesanais / Personalize"):
   `posicao: '0% 50%'` ancora à esquerda e o esconde no desktop; no celular (4:3) o corte mostra o lado esquerdo. A do slide 3 mede
-  1536×864 (16:9, também abaixo de 1920×1080; sem ampliar). A do slide 2 mede 1928×851 e a do slide 4, também 1928×851 e **com texto
-  na imagem à direita** ("deliciosamente VEGANO! / Coleção Jandê / …", de 67% a 82% da largura; versão de 2026-11-08, antes o texto estava à esquerda; `posicao: '75% 50%'` o mantém inteiro no celular; o alt reproduz o
-  texto; o cartão do slide fica embaixo à esquerda e não o cobre). Na do slide 2 o canto inferior direito é mata escura: conferir o contraste da pílula de
+  1536×864 (16:9, também abaixo de 1920×1080; sem ampliar). A do slide 2 mede 1928×851 e a do slide 4, **2560×1440 (16:9, atende a receita; 3ª versão, de 2026-11-08)** e **com texto
+  na imagem embaixo à direita** ("deliciosamente VEGANO! / Coleção Jandê / …", de 66% a 77% da largura e de 53% a 84% da altura; `posicao: '75% 70%'`: x mantém o texto inteiro no celular, y evita que ele encoste na borda de baixo em tela larga e baixa, ~1920×760; o alt reproduz o
+  texto; o cartão do slide fica embaixo à esquerda e não o cobre; PSNR 42,8). Na do slide 2 o canto inferior direito é mata escura: conferir o contraste da pílula de
   controles (30%). A do slide 2 ficou em q90 (**35 dB, não chega a 38**: com folhagem densa o WebP com perda não passa de ~35,8 mesmo em q95);
   as demais passam de 38 dB (a de Presentear, atualizada em 2026-11-08, dá 38,8). Se a dona trocar alguma, **receita de
   otimização**: WebP `quality: 85` (`effort: 6`, `smartSubsample: true`) com `sharp` (já está em
@@ -502,7 +502,7 @@ Cada um com `*.module.css` co-locado.
 - **`HeroCarrossel`** (`'use client'`) — hero da home. Props `slides` (`{ id, rotulo, titulo,
   texto, cta: { rotulo, href }, imagem?: { src, alt, posicao? } }`; `posicao` = `object-position`
   para enquadrar a foto quando a tela larga corta o 16:9 em cima e embaixo — slide 1 (Presentes) com
-  `'0% 50%'` para o corte cair sobre o texto da foto; slide 4 (Loja) com `'75% 50%'` (o texto da foto fica à direita e assim aparece inteiro no celular); os slides 2 e 3 ficam no centro) e `layout` (padrão `sobreposto`: foto em
+  `'0% 50%'` para o corte cair sobre o texto da foto; slide 4 (Loja) com `'75% 70%'` (o texto da foto fica embaixo à direita; x o mantém inteiro no celular e y o afasta da borda de baixo em tela larga); os slides 2 e 3 ficam no centro) e `layout` (padrão `sobreposto`: foto em
   largura total, cartão **translúcido** (65% de `--cor-fundo` + blur, cantos de 24px; no celular
   volta a sólido, fora da foto) no canto inferior esquerdo — o teste de paletas lê esse 65% do
   CSS e exige 4,5:1 do texto com foto branca por trás **e no ponto mais escuro (5º percentil) da área do cartão em cada

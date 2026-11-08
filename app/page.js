@@ -16,7 +16,7 @@ export const metadata = {
 // Slides do hero. `imagem` é opcional ({ src, alt, posicao? }; `posicao` = object-position): sem ela o slide mostra um
 // placeholder no preview e é omitido em produção (ver slidesVisiveis). Fotos 16:9 em WebP (receita no CLAUDE.md).
 // Textos, botões e links da dona, literais (ajuste pós-X18, 2026-11-08). Foto do slide 1 PROVISÓRIA: a final
-// virá depois (é 2,27:1 e traz texto na coluna direita, que o `posicao` esconde no desktop). A do slide 4 também traz texto (à esquerda).
+// virá depois (é 2,27:1 e traz texto na coluna direita, que o `posicao` esconde no desktop). A do slide 4 também traz texto (embaixo à direita).
 const SLIDES = [
   {
     id: 'presentes',
@@ -62,8 +62,8 @@ const SLIDES = [
     cta: { rotulo: 'Ver a Loja →', href: '/loja' },
     imagem: {
       src: '/home/hero-veganos.webp',
-      // o texto da foto fica à direita: 75% mantém ele inteiro no celular (4:3)
-      posicao: '75% 50%',
+      // texto da foto embaixo à direita: x 75% o mantém inteiro no celular (4:3); y 70% evita que telas largas e baixas o encostem na borda de baixo
+      posicao: '75% 70%',
       alt: 'Lascas de chocolate branco com flores de primavera e jenipapo sobre uma tábua de bambu, com o texto: deliciosamente vegano! Coleção Jandê. Chocolate em lascas branco, 30% cacau, com jenipapo cristalizado e flor de primavera',
     },
   },
