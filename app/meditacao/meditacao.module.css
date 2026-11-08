@@ -134,6 +134,36 @@
   color: var(--brown);
 }
 
+/* Pílula do mesmo estilo da home (app/home.module.css .cta) */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 10px 20px;
+  border-radius: var(--raio-botao);
+  background: var(--cor-botao);
+  color: var(--cor-botao-texto);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--tam-pequeno);
+  text-decoration: none;
+}
+
+.cta span {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.cta:hover span {
+  transform: translateX(3px);
+}
+
+.cta:focus-visible {
+  outline: 3px solid var(--cor-destaque);
+  outline-offset: 3px;
+}
+
 /* ============================================================
    Lista de produtos
    ============================================================ */

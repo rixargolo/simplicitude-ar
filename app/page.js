@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { getVitrine, getCategoriasComProdutos } from '@/lib/produtos';
+import { getVitrine, getCategoriasComProdutos, COLECAO_MEDITACAO } from '@/lib/produtos';
 import { slidesVisiveis } from '@/lib/carrossel';
 import HeroCarrossel from './components/HeroCarrossel';
 import VitrineProdutos from './components/VitrineProdutos';
@@ -15,8 +15,8 @@ export const metadata = {
 
 // Slides do hero. `imagem` é opcional ({ src, alt, posicao? }; `posicao` = object-position): sem ela o slide mostra um
 // placeholder no preview e é omitido em produção (ver slidesVisiveis). Fotos 16:9 em WebP (receita no CLAUDE.md).
-// Textos, botões e links da dona, literais (ajuste pós-X18, 2026-11-08). Fotos dos slides 1, 2 e 4 PROVISÓRIAS: as
-// finais virão depois (a do slide 1 é 2,27:1 e traz texto na coluna direita, que o `posicao` esconde no desktop).
+// Textos, botões e links da dona, literais (ajuste pós-X18, 2026-11-08). Foto do slide 1 PROVISÓRIA: a final
+// virá depois (é 2,27:1 e traz texto na coluna direita, que o `posicao` esconde no desktop). A do slide 4 também traz texto (à esquerda).
 const SLIDES = [
   {
     id: 'presentes',
@@ -38,10 +38,8 @@ const SLIDES = [
     texto: 'Cada barra protege a Mata Atlântica e aumenta a renda de agricultores familiares.',
     cta: { rotulo: 'Impacto Positivo →', href: '/sustentabilidade' },
     imagem: {
-      src: '/home/hero_slide_1.webp',
-      // cabeça no topo e cacau na base: 70% mostra o rosto (óculos) e o cacau inteiro na mão
-      posicao: '50% 70%',
-      alt: 'Homem de camisa jeans abrindo um fruto de cacau com uma faca, entre cacaueiros na agrofloresta',
+      src: '/home/hero-floresta.webp',
+      alt: 'Casal sorrindo, sentado entre as raízes de uma grande árvore na Mata Atlântica, cercado de folhagens',
     },
   },
   {
@@ -63,8 +61,10 @@ const SLIDES = [
       'Sabores clássicos e inusitados, tudo vegano, sem lactose, sem glúten e sem medo de ser feliz!',
     cta: { rotulo: 'Ver a Loja →', href: '/loja' },
     imagem: {
-      src: '/home/hero_slide_2.webp',
-      alt: 'Barra de chocolate escuro sobre uma travessa branca, cercada de folhas de cacau, laranja desidratada e cardamomo',
+      src: '/home/hero-veganos.webp',
+      // o texto da foto fica à direita: 75% mantém ele inteiro no celular (4:3)
+      posicao: '75% 50%',
+      alt: 'Lascas de chocolate branco com flores de primavera e jenipapo sobre uma tábua de bambu, com o texto: deliciosamente vegano! Coleção Jandê. Chocolate em lascas branco, 30% cacau, com jenipapo cristalizado e flor de primavera',
     },
   },
 ];
@@ -133,7 +133,7 @@ export default async function HomePage() {
               jornada sensorial e emocional. Cada sabor vem acompanhado de uma meditação guiada,
               pensada para você degustar com presença — sem pressa, sem distração.
             </p>
-            <Link href="/loja?colecao=inspirar" className={styles.cta}>
+            <Link href={`/loja?colecao=${COLECAO_MEDITACAO}`} className={styles.cta}>
               Conheça a Coleção Inspirar <span aria-hidden="true">→</span>
             </Link>
           </div>

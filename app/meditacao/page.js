@@ -1,5 +1,6 @@
 import Image from 'next/image';
-import { getProdutos } from '@/lib/produtos';
+import Link from 'next/link';
+import { getProdutos, getColecoesPublicas, montarLoja, COLECAO_MEDITACAO } from '@/lib/produtos';
 import ApresentacaoProduto from '../components/ApresentacaoProduto';
 import MeditacaoPlayer from '../components/MeditacaoPlayer';
 import styles from './meditacao.module.css';
@@ -14,7 +15,9 @@ export const metadata = {
 export const revalidate = 60;
 
 export default async function MeditacaoPage() {
-  const produtos = await getProdutos();
+  const [produtos, colecoes] = await Promise.all([getProdutos(), getColecoesPublicas()]);
+  // Mesma regra da /loja: coleção inexistente ou sem produto ativo = link some.
+  const temColecao = montarLoja(produtos, [], colecoes, { colecao: COLECAO_MEDITACAO }).colecao !== null;
   const produtosComMeditacao = produtos.filter(
     (produto) => produto.tem_meditacao,
   );
@@ -56,6 +59,11 @@ export default async function MeditacaoPage() {
           mente de forma holística, através de meditações guiadas pela voz
           serena de Bruna Santos.
         </p>
+        {temColecao && (
+          <Link href={`/loja?colecao=${COLECAO_MEDITACAO}`} className={styles.cta}>
+            Ver a Coleção Inspirar na loja <span aria-hidden="true">→</span>
+          </Link>
+        )}
       </section>
 
       <h2 className={styles.sectionTitle}>Chocolates para Meditação</h2>
