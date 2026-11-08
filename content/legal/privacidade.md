@@ -8,10 +8,8 @@ O site é operado por 44387834 SHEYLLA TOMÁS SILVA ME, CNPJ 44.387.834/0001-77,
 
 - Dados que você nos envia: nome, telefone, endereço de entrega e as informações do pedido, quando você conversa conosco pelo WhatsApp ou por outro canal de contato para comprar ou tirar dúvidas.
 - Dados de navegação: endereço IP, tipo de navegador e dispositivo, páginas acessadas e data e hora do acesso. São registrados automaticamente pela hospedagem do site por razões de segurança e funcionamento.
-- Cookies e armazenamento local: usamos cookies necessários ao funcionamento do site (por exemplo, lembrar o idioma escolhido) e, com o seu consentimento, cookies de medição e publicidade do Google Analytics (Google) e do Meta Pixel (Meta). Eles registram como você navega (páginas vistas, cliques, origem do acesso) para medirmos o uso do site e mostrarmos nossos anúncios a pessoas com interesse parecido. Você pode recusar ou apagar esses cookies a qualquer momento, no aviso de cookies do site ou nas configurações do navegador. [CONFIRMAR: Google Analytics, Meta Pixel, aviso de cookies e cookie de idioma ainda não existem no site.]
-
-Não coletamos dados de cartão de crédito no site. [CONFIRMAR: ajustar quando o checkout automático e o meio de pagamento forem ativados.]
-
+- Cookies e armazenamento local: usamos cookies necessários ao funcionamento do site (por exemplo, lembrar o idioma escolhido) e, com o seu consentimento, cookies de medição e publicidade do Google Analytics (Google) e do Meta Pixel (Meta). Eles registram como você navega (páginas vistas, cliques, origem do acesso) para medirmos o uso do site e mostrarmos nossos anúncios a pessoas com interesse parecido. Você pode recusar ou apagar esses cookies a qualquer momento, no aviso de cookies do site ou nas configurações do navegador.
+Não coletamos dados de cartão de crédito no site.
 ## 3. Para que usamos seus dados
 
 - Atender seu pedido, combinar pagamento, entrega e prazos.
@@ -28,7 +26,7 @@ Não vendemos seus dados. O Google e a Meta recebem dados de navegação por mei
 
 - Hospedagem e infraestrutura do site: Netlify e Supabase, que armazenam e processam dados em servidores que podem estar fora do Brasil, com medidas de segurança adequadas.
 - Transportadoras e Correios: nome, telefone e endereço, para entregar o pedido.
-- Meios de pagamento e contabilidade: apenas o necessário para receber e registrar a venda. Hoje o pagamento é feito por Pix, pela instituição financeira de sua escolha e pela nossa conta. Quando o pagamento automático no site for ativado, a empresa processadora de pagamento também receberá os dados necessários para concluir a compra, e esta política será atualizada com o nome dela. Também compartilhamos dados com nossa contabilidade, para registro fiscal.
+- Meios de pagamento e contabilidade: apenas o necessário para receber e registrar a venda. Hoje o pagamento é combinado pelo WhatsApp e pode ser feito por Pix ou cartão, por meio da instituição financeira ou da operadora de pagamento usada na venda. Quando o pagamento automático no site for ativado, a empresa processadora de pagamento também receberá os dados necessários para concluir a compra, e esta política será atualizada com o nome dela. Também compartilhamos dados com nossa contabilidade, para registro fiscal.
 - WhatsApp (Meta): ao conversar conosco por lá, valem também os termos e a política de privacidade do WhatsApp.
 - Autoridades, quando houver obrigação legal ou ordem judicial.
 
