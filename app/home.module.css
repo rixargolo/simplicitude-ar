@@ -12,6 +12,31 @@
   color: var(--cor-texto);
 }
 
+/* ---------- Frase do manifesto: entre o hero e a vitrine, sem caixa nem borda ---------- */
+
+.manifesto {
+  width: min(100% - 40px, 62ch);
+  margin: 0 auto;
+  padding-top: 48px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: var(--tam-subtitulo);
+  line-height: 1.45;
+  color: var(--cor-texto);
+}
+
+.manifesto strong {
+  font-weight: 600;
+}
+
+@media (min-width: 640px) {
+  .manifesto {
+    padding-top: 72px;
+  }
+}
+
 /* ---------- Meditação e Quem somos: sem cartão, foto de ponta a ponta ---------- */
 
 /* a margem negativa anula o padding lateral de .marca: a foto encosta nas bordas da tela */

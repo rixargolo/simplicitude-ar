@@ -67,7 +67,7 @@ públicas, `proxy.js`, textos fixos ou no schema de conteúdo** (produtos, categ
   (2026-11-06)**.** **X4 (controle do slider sem Pausar/Continuar, pílula translúcida) está no código.**
   **X5 (home com Meditação, seção do meio e Quem somos; ver `/`) está no código; a seção do meio virou a Sustentabilidade no X18.** **X6 (Novidades permanente, curadoria em `/admin/novidades`) está no
   código e o SQL `supabase/migrations/20261106130000_produtos_novidade_ordem.sql` **já foi aplicado (2026-11-06)**
-  (a home cai nos mais recentes enquanto a curadoria estiver vazia).** **X7 (categorias com imagem: foto no admin + desfoque que esmaece no hover) e X10 (sem chips de categoria na vitrine Novidades) estão no código e o SQL `supabase/migrations/20261106140000_categorias_imagem.sql` **já foi aplicado (2026-11-06)**.** **X11 (análise e organização do Storage: buckets por tipo, policies em SQL, limites, órfãos, público/privado) só está registrado no plano, sem implementação.** **X9 (página 404 da marca, `app/not-found.js`) está no código; texto provisório, confirmar com a dona.** **X12 (coleções dentro de categorias, produto ↔ coleção M:N, gestão em `/admin/colecoes`, par de tradução EN de categorias e coleções) está no código e concluído/testado; o SQL `20261106150000_x12_colecoes.sql` **foi aplicado (2026-11-06)**.** **X13 (campos do produto: descrição curta, descrição longa com quebras de linha, ingredientes, tags com CRUD em `/admin/tags` e tradução EN de produto e tag) está no código e concluído/testado; o SQL `20261107120000_x13_campos_produto.sql` **foi aplicado (2026-11-07)**.** **X14 (nova `/loja`: topo só de texto, filtro por categoria e coleção, carrosséis de uma linha por categoria e coleção; sem SQL) está no código, build e testes verdes; falta o dono conferir no navegador.** **Ideias registradas, nada implementado:** **X15** (destaque ou landing de Presentes/Natal), **X16** (busca no site todo, no cabeçalho) e **X17** (política de troca e devolução, dentro do A11); detalhes no plano. **X18 (feedback da dona, rodada 2, 3 fatias):** **fatia 1 feita** (menu Meditação/Sustentabilidade com a rota `/sustentabilidade`, categorias da home sem desfoque, frase "Acesse aqui a meditação guiada" no produto; sem SQL); **fatia 2 feita** (seção Meditação da home sem caixa nem moldura, foto direto no fundo, título "Chocolates para Meditação" e botão "Conheça a Coleção Inspirar" para `/loja?colecao=inspirar`; sem SQL); **fatia 3 feita** (seção Sustentabilidade na home no lugar do placeholder, "Um mundo melhor com simples atitudes", 3 blocos que levam a `/sustentabilidade`; a página agora existe em produção, só com título e aviso de "em breve"; sem SQL) — **X18 concluído**; ajuste pós-X18 (2026-11-07): Quem somos também saiu do cartão (home sem caixa em todas as seções). Próximo: mostrar o preview à dona.
+  (a home cai nos mais recentes enquanto a curadoria estiver vazia).** **X7 (categorias com imagem: foto no admin + desfoque que esmaece no hover) e X10 (sem chips de categoria na vitrine Novidades) estão no código e o SQL `supabase/migrations/20261106140000_categorias_imagem.sql` **já foi aplicado (2026-11-06)**.** **X11 (análise e organização do Storage: buckets por tipo, policies em SQL, limites, órfãos, público/privado) só está registrado no plano, sem implementação.** **X9 (página 404 da marca, `app/not-found.js`) está no código; texto provisório, confirmar com a dona.** **X12 (coleções dentro de categorias, produto ↔ coleção M:N, gestão em `/admin/colecoes`, par de tradução EN de categorias e coleções) está no código e concluído/testado; o SQL `20261106150000_x12_colecoes.sql` **foi aplicado (2026-11-06)**.** **X13 (campos do produto: descrição curta, descrição longa com quebras de linha, ingredientes, tags com CRUD em `/admin/tags` e tradução EN de produto e tag) está no código e concluído/testado; o SQL `20261107120000_x13_campos_produto.sql` **foi aplicado (2026-11-07)**.** **X14 (nova `/loja`: topo só de texto, filtro por categoria e coleção, carrosséis de uma linha por categoria e coleção; sem SQL) está no código, build e testes verdes; falta o dono conferir no navegador.** **Ideias registradas, nada implementado:** **X15** (destaque ou landing de Presentes/Natal), **X16** (busca no site todo, no cabeçalho) e **X17** (política de troca e devolução, dentro do A11); detalhes no plano. **X18 (feedback da dona, rodada 2, 3 fatias):** **fatia 1 feita** (menu Meditação/Sustentabilidade com a rota `/sustentabilidade`, categorias da home sem desfoque, frase "Acesse aqui a meditação guiada" no produto; sem SQL); **fatia 2 feita** (seção Meditação da home sem caixa nem moldura, foto direto no fundo, título "Chocolates para Meditação" e botão "Conheça a Coleção Inspirar" para `/loja?colecao=inspirar`; sem SQL); **fatia 3 feita** (seção Sustentabilidade na home no lugar do placeholder, "Um mundo melhor com simples atitudes", 3 blocos que levam a `/sustentabilidade`; a página agora existe em produção, só com título e aviso de "em breve"; sem SQL) — **X18 concluído**; ajuste pós-X18 (2026-11-07): Quem somos também saiu do cartão (home sem caixa em todas as seções); **ajuste pós-X18 (2026-11-08, sem SQL):** novos slides do hero (Presentes, Floresta, Meditação, Loja, textos e links da dona; ver "Fotos do hero"), frase do manifesto entre o hero e a vitrine, e controles do slider sobre a foto no celular (sem linha própria). Próximo: mostrar o preview à dona.
 - **Decisões vigentes:** checkout como **convidado** (a decisão antiga de login obrigatório
   está superada); vitrine da home com título derivado do critério de ordem — `novidade_ordem` (curadoria da dona,
   reserva `created_at`) = "Novidades",
@@ -189,7 +189,7 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
   estoque)
 - Loja conectada ao Supabase (produtos reais, imagens via Storage, preços, coleções,
   categorias)
-- `/` (home) — hero em carrossel (`HeroCarrossel`, 4 slides: Loja, Bem-estar, Quem somos, Presentes, todos com
+- `/` (home) — hero em carrossel (`HeroCarrossel`, 4 slides, pós-X18 (2026-11-08): Presentes, Floresta, Meditação, Loja, todos com
   foto real; slide sem foto vira placeholder no preview e é omitido em produção) e, logo abaixo, a vitrine de produtos
   em duas colunas (título derivado do critério de ordem — hoje "Novidades" —, botão "Ver toda a loja"
   e carrossel de cards; sem chips de categoria, X10), via `VitrineProdutos`; logo abaixo, a seção de categorias
@@ -221,8 +221,12 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
 - **Home sem caixa e sem borda na foto:** a dona quer as seções da home sem caixa demarcada e sem bordas na foto. **Feito em todas:
   Meditação (X18, fatia 2), Sustentabilidade (fatia 3) e Quem somos (ajuste de 2026-11-07)** (registrado em `docs/plano-v1.md`,
   pendências)
-- **Fotos do hero:** as 4 de `public/home/hero_slide_{1..4}.webp` já estão ligadas aos slides
-  (ordem 1→4 = Loja, Bem-estar, Quem somos, Presentes). Se a dona trocar alguma, **receita de
+- **Fotos do hero (ajuste pós-X18, 2026-11-08):** ordem 1→4 = Presentes (`hero-presentear.webp`, nova), Floresta
+  (`hero_slide_1.webp`, homem abrindo cacau), Meditação (`hero-meditacao.webp`, nova) e Loja (`hero_slide_2.webp`, barra de
+  chocolate). `hero_slide_3/4.webp` saíram do repo. **PROVISÓRIAS: slides 1, 2 e 4** (a dona manda as finais depois). A do slide 1
+  mede 1928×851 (2,27:1, abaixo de 1080 de altura) e traz texto e ícones na coluna direita ("Veganos / Artesanais / Personalize"):
+  `posicao: '0% 50%'` ancora à esquerda e o esconde no desktop; no celular (4:3) o corte mostra o lado esquerdo. A do slide 3 mede
+  1536×864 (16:9, também abaixo de 1920×1080; sem ampliar). Se a dona trocar alguma, **receita de
   otimização**: WebP `quality: 85` (`effort: 6`, `smartSubsample: true`) com `sharp` (já está em
   `node_modules`, vem do Next; comando avulso, sem script no repo), **mesmas dimensões** (16:9,
   mín. 1920×1080, ideal 2400×1350, sem upscale), PSNR ≥ ~38 dB contra o original (a foto 3, com céu,
@@ -278,7 +282,10 @@ social:** pendentes com a dona — o rodapé mostra "Razão social e CNPJ a conf
 
 Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
 - **`/`** (`app/page.js`) — Home: `HeroCarrossel` (array `SLIDES` no próprio arquivo, filtrado
-  por `slidesVisiveis()`; sem slide com foto o hero não renderiza), `VitrineProdutos`,
+  por `slidesVisiveis()`; sem slide com foto o hero não renderiza), **a frase do manifesto** (ajuste pós-X18, 2026-11-08: `<p
+  className={styles.manifesto}>` em `app/page.js`, entre o hero e a vitrine; "Chocolates **plant-based**, feitos com ingredientes da
+  floresta, que **nutrem** corpo e alma, quebra de linha, e **regeneram a Mata Atlântica**." em Fraunces itálico, centralizada, `62ch` (2 linhas no desktop), sem caixa
+  nem borda), `VitrineProdutos`,
   `GradeCategorias` e o **bloco de marca (X5, sem componente próprio: markup em `app/page.js`, estilo em
   `app/home.module.css`)**, na ordem Meditação → Sustentabilidade → Quem somos. (1) **Meditação** (X18 fatia 2) **sem cartão,
   sem moldura e sem cantos arredondados**: foto `/meditacao/hero.png` direto sobre o fundo, colada às bordas da tela (a
@@ -459,13 +466,16 @@ Cada um com `*.module.css` co-locado.
   de M", `aria-current`, foco visível; Tab + Enter/Espaço; fileira rolável no celular, quebra linha ≥700px).
   Sem foto: inicial do nome. Sem setas de teclado, deslize nem lightbox (de propósito)
 - **`BotaoComprar`** (server) — **único** lugar que monta o link de compra: `<a>` pílula para
-  `linkCompra(nome, url)`, `target="_blank"`, `rel="noopener noreferrer"`. **Ponto de extensão do clique:** para
+  `linkCompra(nome, url)`, `target="_blank"`, `rel="noopener noreferrer"`. **Ícone do WhatsApp** (SVG inline,
+  `aria-hidden`) depois do rótulo, para avisar que o botão leva a uma conversa e não ao checkout: surge suavemente no
+  hover/foco e fica sempre visível em tela de toque (`@media (hover: none)`); o texto só para leitor de tela é
+  "Comprar pelo WhatsApp (abre em nova aba)" (`.aviso`). **Ponto de extensão do clique:** para
   registrar no futuro, virar `'use client'` com `onClick` + `navigator.sendBeacon` para uma rota do servidor;
   o link continua direto ao `wa.me` (sem redirecionamento, por causa do navegador interno do Instagram)
 - **`HeroCarrossel`** (`'use client'`) — hero da home. Props `slides` (`{ id, rotulo, titulo,
   texto, cta: { rotulo, href }, imagem?: { src, alt, posicao? } }`; `posicao` = `object-position`
-  para enquadrar a foto quando a tela larga corta o 16:9 em cima e embaixo — slide 3 com
-  `'50% 0%'` para não cortar as cabeças; slide 1 com `'50% 70%'` (cabeça no topo e cacau na base:
+  para enquadrar a foto quando a tela larga corta o 16:9 em cima e embaixo — slide 1 (Presentes) com
+  `'0% 50%'` para o corte cair sobre o texto da foto; slide 2 (Floresta) com `'50% 70%'` (cabeça no topo e cacau na base:
   mostra o rosto com os óculos e o cacau inteiro; em notebook bem baixo o rosto corta na boca)) e `layout` (padrão `sobreposto`: foto em
   largura total, cartão **translúcido** (70% de `--cor-fundo` + blur, cantos de 24px; no celular
   volta a sólido, fora da foto) no canto inferior esquerdo — o teste de paletas lê esse 70% do
@@ -473,8 +483,10 @@ Cada um com `*.module.css` co-locado.
   botão Pausar/Continuar**) numa pílula translúcida (30% de `--cor-fundo` + blur, mais leve que o
   cartão; setas e pontos em `--cor-texto`) **dentro da foto**, embaixo — o contraste dela depende da
   foto por trás e **não tem teste** (conferir a olho ao trocar foto; se fraco, subir o 30%) — centralizada só a partir de 1440px; abaixo disso, no canto direito, para não
-  encostar no cartão (corte a rever se mudar o nº de slides ou o tamanho do cartão); no celular, foto em cima, cartão embaixo e controles
-  abaixo, no fluxo). **O markup é o mesmo para todo layout**; o que muda
+  encostar no cartão (corte a rever se mudar o nº de slides ou o tamanho do cartão); **no celular (≤640px), foto em cima, cartão
+  embaixo e a mesma pílula dentro da foto, centrada na base, sem linha própria** (ajuste pós-X18, 2026-11-08: posicionada por
+  `top: 0` + `margin-top: calc(75% - 60px)`, que depende da foto 4:3 do celular; "controles na linha do botão" não cabia em 320–430px)).
+  **O markup é o mesmo para todo layout**; o que muda
   fica no mapa `LAYOUTS` do componente (`sizes` da imagem e `especFoto`, a **constante única** do
   texto de especificação da foto) e em blocos `.<layout> …` do CSS — um 2º layout (ex.: tela
   dividida) é uma entrada nova no mapa + um bloco de CSS. Rolagem automática de 6 s, pausa por
