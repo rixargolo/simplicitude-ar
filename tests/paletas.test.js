@@ -1,4 +1,5 @@
 import { readdirSync, readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 afterEach(() => vi.unstubAllEnvs());
@@ -79,20 +80,58 @@ describe('contraste', () => {
     }
   });
 
-  it('texto do cartão translúcido do hero cumpre 4,5:1 mesmo com foto preta ou branca por trás', () => {
-    // o percentual vem do próprio CSS: mudar a opacidade lá é conferido aqui
-    // ancorado no bloco do cartão: a pílula dos controles também usa um color-mix translúcido
+  // o percentual vem do próprio CSS: mudar a opacidade lá é conferido aqui
+  // ancorado no bloco do cartão: a pílula dos controles também usa um color-mix translúcido
+  const alfaDoCartao = () => {
     const css = ler('../app/components/HeroCarrossel.module.css');
     const m = css.match(
       /\.sobreposto \.cartao\s*\{[^}]*?color-mix\(in srgb, var\(--cor-fundo\) (\d+)%, transparent\)/,
     );
     expect(m, 'cartão sem color-mix de --cor-fundo').not.toBeNull();
-    const alfa = Number(m[1]) / 100;
+    return Number(m[1]) / 100;
+  };
+
+  it('texto do cartão translúcido do hero cumpre 4,5:1 com foto branca por trás', () => {
     const t = tokens();
-    for (const base of ['#000000', '#ffffff']) {
+    expect(
+      contraste(t['--cor-texto'], mistura(t['--cor-fundo'], '#ffffff', alfaDoCartao())),
+    ).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('texto do cartão do hero cumpre 4,5:1 no ponto mais escuro da área do cartão de cada foto real', async () => {
+    // Foto preta pura não é o critério: com cartão translúcido nenhum percentual razoável passa (a 65% dá 4,3).
+    // Mede as fotos de public/home/hero-*.webp. Área do cartão no desktop, aproximada (o corte real depende da
+    // tela): 3%–28% da largura e 60%–96% da altura; pior ponto = 5º percentil mais escuro.
+    let sharp;
+    try {
+      sharp = (await import('sharp')).default;
+    } catch {
+      return; // shortcut: sem sharp o caso é pulado, reativar se o teste passar a rodar em CI sem ele
+    }
+    const alfa = alfaDoCartao();
+    const t = tokens();
+    const pasta = new URL('../public/home/', import.meta.url);
+    const fotos = readdirSync(pasta).filter((f) => /^hero-.*\.webp$/.test(f));
+    expect(fotos.length, 'nenhuma foto hero-*.webp em public/home').toBeGreaterThanOrEqual(4);
+    for (const foto of fotos) {
+      const { data, info } = await sharp(fileURLToPath(new URL(foto, pasta)))
+        .removeAlpha()
+        .raw()
+        .toBuffer({ resolveWithObject: true });
+      const { width: w, height: h } = info;
+      const amostras = [];
+      for (let y = Math.floor(h * 0.6); y < Math.floor(h * 0.96); y += 3) {
+        for (let x = Math.floor(w * 0.03); x < Math.floor(w * 0.28); x += 3) {
+          const i = (y * w + x) * 3;
+          const hex = '#' + [0, 1, 2].map((k) => data[i + k].toString(16).padStart(2, '0')).join('');
+          amostras.push({ hex, luz: luz(hex) });
+        }
+      }
+      amostras.sort((a, b) => a.luz - b.luz);
+      const pior = amostras[Math.floor(amostras.length * 0.05)].hex;
       expect(
-        contraste(t['--cor-texto'], mistura(t['--cor-fundo'], base, alfa)),
-        `sobre ${base}`,
+        contraste(t['--cor-texto'], mistura(t['--cor-fundo'], pior, alfa)),
+        foto,
       ).toBeGreaterThanOrEqual(4.5);
     }
   });

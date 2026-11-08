@@ -1,0 +1,114 @@
+.pagina {
+  --margem: 20px;
+  padding: 32px 0 72px;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+}
+
+.titulo {
+  margin: 0 var(--margem);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--tam-titulo-pagina);
+  line-height: 1.1;
+  color: var(--cor-texto);
+}
+
+.soLeitor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.form {
+  display: flex;
+  gap: 12px;
+  max-width: 32rem;
+  margin: 20px var(--margem) 0;
+}
+
+.campo {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 4px;
+  border: none;
+  border-bottom: 1px solid var(--cor-texto);
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: var(--tam-texto);
+  color: var(--cor-texto);
+}
+
+.campo::placeholder {
+  color: var(--cor-texto-suave);
+}
+
+.campo:focus-visible,
+.botao:focus-visible,
+.vazioLink:focus-visible {
+  outline: 2px solid var(--cor-destaque);
+  outline-offset: 3px;
+}
+
+.botao {
+  padding: 10px 22px;
+  border: none;
+  border-radius: var(--raio-botao);
+  background: var(--cor-botao);
+  color: var(--cor-botao-texto);
+  font-family: var(--font-body);
+  font-size: var(--tam-pequeno);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.status {
+  margin: 20px var(--margem) 0;
+  font-family: var(--font-body);
+  font-size: var(--tam-pequeno);
+  color: var(--cor-texto-suave);
+}
+
+.vazio {
+  max-width: 32rem;
+  margin: 12px var(--margem) 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--tam-subtitulo);
+  line-height: 1.4;
+  color: var(--cor-texto);
+}
+
+.vazioLink {
+  color: var(--cor-destaque);
+  text-underline-offset: 4px;
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px 16px;
+  margin: 24px var(--margem) 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .pagina {
+    --margem: 24px;
+    padding: 48px 0 96px;
+  }
+
+  .grade {
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: 40px 24px;
+  }
+}

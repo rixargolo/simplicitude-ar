@@ -1,8 +1,10 @@
 -- Produtos de TESTE para ver a /loja populada (X14). NÃO é migration: roda no SQL Editor do Supabase.
 -- Marcador: slug começando com "teste-" (produtos e tags novas). Reexecutável: limpa os de teste e recria.
 -- Fotos: arquivos em public/teste/ (caminho local em produto_imagens.caminho e produtos.imagem_url), nada no Storage.
--- ATENÇÃO: v1 e main leem o mesmo banco; a produção mostra estes produtos (sem foto) até a remoção.
--- Remover: supabase/scripts/teste_remover_produtos.sql e apagar a pasta public/teste/ (item do D2).
+-- ATENÇÃO: as imagens de public/teste/ FORAM REMOVIDAS do repositório (2026-11-08). Antes de reutilizar este script,
+-- gere de novo os WebP 4:5 com os nomes usados abaixo ({slug}-1.webp, {slug}-2.webp) em public/teste/; sem eles os produtos ficam sem foto.
+-- ATENÇÃO: v1 e main leem o mesmo banco; a produção mostra estes produtos até a remoção.
+-- Remover: supabase/scripts/teste_remover_produtos.sql e apagar a pasta public/teste/ (se tiver sido recriada).
 -- Gerado a partir de uma lista só; 22 produtos em Chocolates, Presentes, Empório e Dia-a-Dia, coleções Inspirar e Bombons.
 
 begin;

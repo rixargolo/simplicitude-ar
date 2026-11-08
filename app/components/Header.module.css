@@ -4,6 +4,8 @@
   z-index: 20;
   background: var(--cor-fundo);
   color: var(--cor-texto);
+  /* linha que separa o menu do corpo (mesmo fundo): em todas as páginas e fixa junto com o menu na rolagem */
+  border-bottom: 1px solid var(--cor-borda);
 }
 
 .bar {
@@ -45,6 +47,13 @@
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 8px;
+}
+
+/* lupa (sempre visível) + botão do menu (só no celular); sem position: no celular o campo da busca se ancora no header */
+.acoes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .menuBtn {

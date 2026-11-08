@@ -36,9 +36,14 @@ const amsterdam = localFont({
   preload: false,
 });
 
+// SITE_URL (opcional, ADR 0001): endereço público, base das URLs absolutas de og:image e afins.
+// No go-live = https://simplicitude.com.br; sem ela, o endereço do preview. URL inválida aborta o build.
+// A imagem padrão vem de app/opengraph-image.png; a indexação segue por SITE_INDEXAVEL (next.config.mjs).
 export const metadata = {
+  metadataBase: new URL(process.env.SITE_URL || 'https://simplicitude-ar.netlify.app'),
   title: 'Simplicitude',
   description: 'Chocolate artesanal — Da Floresta à Fábrica',
+  openGraph: { siteName: 'Simplicitude', locale: 'pt_BR', type: 'website' },
 };
 
 export default function RootLayout({ children }) {

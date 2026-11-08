@@ -67,7 +67,7 @@ públicas, `proxy.js`, textos fixos ou no schema de conteúdo** (produtos, categ
   (2026-11-06)**.** **X4 (controle do slider sem Pausar/Continuar, pílula translúcida) está no código.**
   **X5 (home com Meditação, seção do meio e Quem somos; ver `/`) está no código; a seção do meio virou a Sustentabilidade no X18.** **X6 (Novidades permanente, curadoria em `/admin/novidades`) está no
   código e o SQL `supabase/migrations/20261106130000_produtos_novidade_ordem.sql` **já foi aplicado (2026-11-06)**
-  (a home cai nos mais recentes enquanto a curadoria estiver vazia).** **X7 (categorias com imagem: foto no admin + desfoque que esmaece no hover) e X10 (sem chips de categoria na vitrine Novidades) estão no código e o SQL `supabase/migrations/20261106140000_categorias_imagem.sql` **já foi aplicado (2026-11-06)**.** **X11 (análise e organização do Storage: buckets por tipo, policies em SQL, limites, órfãos, público/privado) só está registrado no plano, sem implementação.** **X9 (página 404 da marca, `app/not-found.js`) está no código; texto provisório, confirmar com a dona.** **X12 (coleções dentro de categorias, produto ↔ coleção M:N, gestão em `/admin/colecoes`, par de tradução EN de categorias e coleções) está no código e concluído/testado; o SQL `20261106150000_x12_colecoes.sql` **foi aplicado (2026-11-06)**.** **X13 (campos do produto: descrição curta, descrição longa com quebras de linha, ingredientes, tags com CRUD em `/admin/tags` e tradução EN de produto e tag) está no código e concluído/testado; o SQL `20261107120000_x13_campos_produto.sql` **foi aplicado (2026-11-07)**.** **X14 (nova `/loja`: topo só de texto, filtro por categoria e coleção, carrosséis de uma linha por categoria e coleção; sem SQL) está no código, build e testes verdes; falta o dono conferir no navegador.** **Ideias registradas, nada implementado:** **X15** (destaque ou landing de Presentes/Natal), **X16** (busca no site todo, no cabeçalho) e **X17** (política de troca e devolução, dentro do A11); detalhes no plano. **X18 (feedback da dona, rodada 2, 3 fatias):** **fatia 1 feita** (menu Meditação/Sustentabilidade com a rota `/sustentabilidade`, categorias da home sem desfoque, frase "Acesse aqui a meditação guiada" no produto; sem SQL); **fatia 2 feita** (seção Meditação da home sem caixa nem moldura, foto direto no fundo, título "Chocolates para Meditação" e botão "Conheça a Coleção Inspirar" para `/loja?colecao=inspirar`; sem SQL); **fatia 3 feita** (seção Sustentabilidade na home no lugar do placeholder, "Um mundo melhor com simples atitudes", 3 blocos que levam a `/sustentabilidade`; a página agora existe em produção, só com título e aviso de "em breve"; sem SQL) — **X18 concluído**; ajuste pós-X18 (2026-11-07): Quem somos também saiu do cartão (home sem caixa em todas as seções); **ajuste pós-X18 (2026-11-08, sem SQL):** novos slides do hero (Presentes, Floresta, Meditação, Loja, textos e links da dona; ver "Fotos do hero"), frase do manifesto entre o hero e a vitrine, e controles do slider sobre a foto no celular (sem linha própria). Próximo: mostrar o preview à dona.
+  (a home cai nos mais recentes enquanto a curadoria estiver vazia).** **X7 (categorias com imagem: foto no admin + desfoque que esmaece no hover) e X10 (sem chips de categoria na vitrine Novidades) estão no código e o SQL `supabase/migrations/20261106140000_categorias_imagem.sql` **já foi aplicado (2026-11-06)**.** **X11 (análise e organização do Storage: buckets por tipo, policies em SQL, limites, órfãos, público/privado) só está registrado no plano, sem implementação.** **X9 (página 404 da marca, `app/not-found.js`) está no código; texto provisório, confirmar com a dona.** **X12 (coleções dentro de categorias, produto ↔ coleção M:N, gestão em `/admin/colecoes`, par de tradução EN de categorias e coleções) está no código e concluído/testado; o SQL `20261106150000_x12_colecoes.sql` **foi aplicado (2026-11-06)**.** **X13 (campos do produto: descrição curta, descrição longa com quebras de linha, ingredientes, tags com CRUD em `/admin/tags` e tradução EN de produto e tag) está no código e concluído/testado; o SQL `20261107120000_x13_campos_produto.sql` **foi aplicado (2026-11-07)**.** **X14 (nova `/loja`: topo só de texto, filtro por categoria e coleção, carrosséis de uma linha por categoria e coleção; sem SQL) está no código, build e testes verdes; falta o dono conferir no navegador.** **Ideias registradas, nada implementado:** **X15** (destaque ou landing de Presentes/Natal) e **X17** (política de troca e devolução, dentro do A11); detalhes no plano. **X16 (busca: lupa no `Header` + `/busca?q=`, 2026-11-08, sem SQL) está no código; falta o dono conferir no navegador.** **X18 (feedback da dona, rodada 2, 3 fatias):** **fatia 1 feita** (menu Meditação/Sustentabilidade com a rota `/sustentabilidade`, categorias da home sem desfoque, frase "Acesse aqui a meditação guiada" no produto; sem SQL); **fatia 2 feita** (seção Meditação da home sem caixa nem moldura, foto direto no fundo, título "Chocolates para Meditação" e botão "Conheça a Coleção Inspirar" para `/loja?colecao=inspirar`; sem SQL); **fatia 3 feita** (seção Sustentabilidade na home no lugar do placeholder, "Um mundo melhor com simples atitudes", 3 blocos que levam a `/sustentabilidade`; a página agora existe em produção, só com título e aviso de "em breve"; sem SQL) — **X18 concluído**; ajuste pós-X18 (2026-11-07): Quem somos também saiu do cartão (home sem caixa em todas as seções); **ajuste pós-X18 (2026-11-08, sem SQL):** novos slides do hero (Presentes, Floresta, Meditação, Loja, textos e links da dona; ver "Fotos do hero"), frase do manifesto entre o hero e a vitrine, e controles do slider sobre a foto no celular (sem linha própria). **X19 (2026-11-08, sem SQL):** link de `/meditacao` para a coleção; **revisado no mesmo dia**: a pílula do topo saiu e cada produto da lista de meditações ganhou "Ver na loja" para `/loja/[slug]`; **topo de `/meditacao` refeito** (faixa de 3 fotos + duas colunas com título/botão e o texto da dona, ver Rotas); falta o dono conferir no navegador. **X20 (2026-11-08):** campo "Título da meditação" no cadastro do produto (aparece com "Possui meditação guiada"; par EN na `TraducaoEn`), usado como título em `/meditacao` no lugar do nome (vazio = nome); **SQL `20261108120000_x20_titulo_meditacao.sql` já foi aplicado (2026-11-08)**; falta o dono conferir no navegador. Próximo: mostrar o preview à dona.
 - **Decisões vigentes:** checkout como **convidado** (a decisão antiga de login obrigatório
   está superada); vitrine da home com título derivado do critério de ordem — `novidade_ordem` (curadoria da dona,
   reserva `created_at`) = "Novidades",
@@ -93,7 +93,7 @@ públicas, `proxy.js`, textos fixos ou no schema de conteúdo** (produtos, categ
   carrinho/checkout vêm depois — ver a lista priorizada no plano.
 - **Ordem do front:** A1 (preview) → A2 (tokens, header/footer) → A3/A4/A5 (home) → A6 → **X1 (fotos)** →
   **X2 (paleta verde)** → **X3 (tipografia)** → A7 (produto, Comprar → WhatsApp) → **X8 (slug)** → **X4 → X5 → X6 → X7 → X10 → X9 (404)** →
-  mostrar o preview à dona → A11 → go-live (D); o contrato de dados
+  mostrar o preview à dona → A11 (**no código, 2026-11-08; textos sem marcas `[CONFIRMAR]` (0); pendências pós-go-live P1 a P3 no plano**) → go-live (D); o contrato de dados
   (A0) e carrinho/checkout/pedido (A8–A10, bloco C) ficam para depois do go-live.
 
 ---
@@ -121,8 +121,8 @@ admin); decisão de manter o 72% do suave. O
 > `--border`, `--cream`, `--cream-name` seguem existindo em `globals.css` só como aliases dos
 > papéis (as páginas ainda não refeitas já pegam a paleta nova); `--gold` é o único hex antigo
 > (só o admin usa). Cada item do plano (A4–A7, A12) troca pelos papéis nos arquivos que
-> reescreve; o bloco some quando ninguém usar. Hex soltos remanescentes: admin e os scrims
-> pretos de `/quem-somos` e de `/meditacao`. O hero da home (A3) e o bloco de marca (X5, `app/home.module.css`) já
+> reescreve; o bloco some quando ninguém usar. Hex soltos remanescentes: só o admin
+> (os scrims pretos de `/quem-somos` saíram com o redesign da página, 2026-11-08). O hero da home (A3) e o bloco de marca (X5, `app/home.module.css`) já
 > usam só papéis.
 
 **Tipografia da marca (X3, 2026-11-06):** três famílias por papel, em tokens de `app/globals.css` sobre as
@@ -221,12 +221,16 @@ licenças em `app/fonts/LEIA-ME.md`). Nenhum CSS cita as famílias direto.
 - **Home sem caixa e sem borda na foto:** a dona quer as seções da home sem caixa demarcada e sem bordas na foto. **Feito em todas:
   Meditação (X18, fatia 2), Sustentabilidade (fatia 3) e Quem somos (ajuste de 2026-11-07)** (registrado em `docs/plano-v1.md`,
   pendências)
-- **Fotos do hero (ajuste pós-X18, 2026-11-08):** ordem 1→4 = Presentes (`hero-presentear.webp`, nova), Floresta
-  (`hero_slide_1.webp`, homem abrindo cacau), Meditação (`hero-meditacao.webp`, nova) e Loja (`hero_slide_2.webp`, barra de
-  chocolate). `hero_slide_3/4.webp` saíram do repo. **PROVISÓRIAS: slides 1, 2 e 4** (a dona manda as finais depois). A do slide 1
+- **Fotos do hero (ajuste pós-X18, 2026-11-08):** ordem 1→4 = Presentes (`hero-presentear.webp`), Floresta
+  (`hero-floresta.webp`, casal nas raízes de uma árvore, foto final), Meditação (`hero-meditacao.webp`) e Loja (`hero-veganos.webp`, lascas de
+  chocolate branco, foto final). `hero_slide_1..4.webp` saíram do repo. **PROVISÓRIA: só o slide 1** (a dona manda a final depois). A do slide 1
   mede 1928×851 (2,27:1, abaixo de 1080 de altura) e traz texto e ícones na coluna direita ("Veganos / Artesanais / Personalize"):
   `posicao: '0% 50%'` ancora à esquerda e o esconde no desktop; no celular (4:3) o corte mostra o lado esquerdo. A do slide 3 mede
-  1536×864 (16:9, também abaixo de 1920×1080; sem ampliar). Se a dona trocar alguma, **receita de
+  1536×864 (16:9, também abaixo de 1920×1080; sem ampliar). A do slide 2 mede 1928×851 e a do slide 4, **2560×1440 (16:9, atende a receita; 3ª versão, de 2026-11-08)** e **com texto
+  na imagem embaixo à direita** ("deliciosamente VEGANO! / Coleção Jandê / …", de 66% a 77% da largura e de 53% a 84% da altura; `posicao: '75% 70%'`: x mantém o texto inteiro no celular, y evita que ele encoste na borda de baixo em tela larga e baixa, ~1920×760; o alt reproduz o
+  texto; o cartão do slide fica embaixo à esquerda e não o cobre; PSNR 42,8). Na do slide 2 o canto inferior direito é mata escura: conferir o contraste da pílula de
+  controles (30%). A do slide 2 ficou em q90 (**35 dB, não chega a 38**: com folhagem densa o WebP com perda não passa de ~35,8 mesmo em q95);
+  as demais passam de 38 dB (a de Presentear, atualizada em 2026-11-08, dá 38,8). Se a dona trocar alguma, **receita de
   otimização**: WebP `quality: 85` (`effort: 6`, `smartSubsample: true`) com `sharp` (já está em
   `node_modules`, vem do Next; comando avulso, sem script no repo), **mesmas dimensões** (16:9,
   mín. 1920×1080, ideal 2400×1350, sem upscale), PSNR ≥ ~38 dB contra o original (a foto 3, com céu,
@@ -234,8 +238,10 @@ licenças em `app/fonts/LEIA-ME.md`). Nenhum CSS cita as famílias direto.
   check do D2: todo slide do hero com foto real
 - **X1 (várias fotos):** SQL aplicado em produção em 2026-11-05 (`supabase/migrations/20261105181330_produto_imagens.sql`). **Rodar de novo no D2** o script de reconciliação `supabase/scripts/x1_reconciliar_produto_imagens.sql` (a `main` só grava em `produtos`). A galeria em `/loja/[slug]` já usa `produto_imagens` (A7)
 - **Foto de categoria (X7):** código pronto (upload no `CategoriaForm`, `getCategoriasComProdutos()` e `GradeCategorias`); o SQL `20261106140000_categorias_imagem.sql` já foi aplicado (2026-11-06); falta a dona enviar as fotos (cada categoria sem foto segue com o cartão de sempre). O mesmo SQL cria o bucket próprio `categorias` com as policies (ver Storage)
-- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive hero e cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam sem uso até autorização), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `montarLoja`, `lib/foco.js`, `lib/fotos.js`, `lib/whatsapp.js`, `lib/i18n.js`, `lib/texto.js` e os slugs do X8: `slugValido`, `getProdutoBySlug`, `getSlugAtual`). Sem lint nem CI
+- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive o cartão do hero medido nas fotos reais, e os cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam sem uso até autorização), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `montarLoja`, `lib/foco.js`, `lib/fotos.js`, `lib/whatsapp.js`, `lib/busca.js`, `lib/i18n.js`, `lib/texto.js`, os textos legais (`tests/legal.test.js`: só **avisa** quantas `[CONFIRMAR]` restam, nunca falha por elas; para ver o aviso com o reporter padrão, `npx vitest run tests/legal.test.js --silent=false`) e os slugs do X8: `slugValido`, `getProdutoBySlug`, `getSlugAtual`). Sem lint nem CI
 - Admin de pedidos
+- **Créditos do Netlify (D3 no plano):** o site ainda não está publicado e já gasta créditos com requisições e tráfego; investigar o consumo antes do go-live (deploys, banda, funções, `next/image`, páginas dinâmicas e `revalidate`; avaliar CDN ou ajustes de cache). Decisão atual: seguir no plano grátis até o go-live
+- **Build local com EPERM:** `npm run build` falha com EPERM na pasta `.next` por causa do OneDrive (o projeto mora dentro dele); resolver movendo o projeto para fora do OneDrive. Enquanto isso, o build exigido antes do deploy pode falhar por esse motivo, não por erro de código
 - **Coleções (X12):** gestão no admin pronta (`/admin/colecoes`); uso público só na `/loja` (X14: `?colecao=slug`
   e carrossel por coleção; sem página própria de coleção) e excluir coleção (de propósito, fora do X12)
 - **X12 (taxonomia + par EN de categorias e coleções):** concluído e testado; SQL
@@ -302,11 +308,28 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
   `.secaoFoto` da Meditação com a variante `.espelhada` (`order: 2` na foto só ≥768px): foto `cabruca.jpg` **à direita**,
   colada à borda da tela e na altura do bloco, frase em `h2` itálico e pílula "Conheça nossa história →" à esquerda,
   centradas na vertical; no celular, foto em cima e texto embaixo. Não há mais `.cartao`/`.fotoMenor` na home
-- **`/quem-somos`** — institucional
-- **`/meditacao`** (`revalidate = 60`, como a home: sem isso a edição no admin só valeria no próximo build) — hero (faixa de imagem + duotone + listras diagonais + título, no
-  padrão de `/quem-somos`) e bloco de introdução da Coleção Inspirar, seguidos da lista de
-  produtos com `tem_meditacao=true` via `ApresentacaoProduto resumido` + `MeditacaoPlayer` (**só a descrição curta**:
-  sem descrição longa nem ingredientes)
+- **`/quem-somos`** (redesenhada em 2026-11-08, sem SQL; `status: 'real'` e item de menu inalterados; falta o dono conferir no navegador) —
+  **topo no padrão do `/meditacao`**, reaproveitando `meditacao.module.css` (`topoWrap`, `faixa`, `foto`, `topo`, `titulo`, `texto`, `corpo`):
+  faixa de 3 fotos (`public/quem-somos/capa-{1,2,3}.webp`, 587px de altura, recortes de `_DOCS/quem-somos/capa quem somos.png`; array `FOTOS` em
+  `page.js` com a largura real de cada uma, mesma técnica de `flex-grow` + `aspect-ratio`, sem cortar) e, embaixo, **2 colunas** (1 no celular):
+  esquerda `h1` "Quem somos", subtítulo "Nossa origem e nossa missão", frase em itálico "Quatro gerações plantando cacau na Mata Atlântica." (`.lema`; "Mata Atlântica" com maiúsculas, como no resto do texto) e, abaixo, o texto do bloco 1 (3 parágrafos com 4 trechos em
+  `<strong>`, escritos em JSX e não via `TextoFormatado`, como no `/meditacao`); **direita** a foto `quem-somos.webp` (4:3, `.foto`, no topo da linha; celular: depois do texto). **Mexer em `meditacao.module.css` muda o topo desta página também.**
+  **Corpo:** seção "Made in Bahia!" **no mesmo padrão da foto do topo** (`.fabrica`/`.fabricaGrid` em `quem-somos.module.css`): mesmo contêiner de 1200px e mesmas duas colunas do topo, foto `fabrica.webp` **4:3 na largura da coluna esquerda (igual à `quem-somos.webp`, classe `.foto`)** e o texto (`.texto`/`.corpo` do `/meditacao`) centrado na altura da foto, à direita; celular, foto em cima. Sem cartão, sem cantos arredondados e **sem foto de ponta a ponta** (não usa mais o `.secaoFoto` da home: a foto de metade da tela ficava bem maior que a do topo). Sem botão nem link.
+  `hero_agricultores.jpg` e `ingredientes.jpg` foram apagados; `cabruca.jpg` ficou na pasta sem uso (só citado no histórico do plano). Receita
+  das imagens em `public/quem-somos/README.md`
+- **`/meditacao`** (`revalidate = 60`, como a home: sem isso a edição no admin só valeria no próximo build) — **topo (2026-11-08, sem SQL)**, tudo
+  numa coluna de 1200px (`.topoWrap`): **faixa de 3 fotos** lado a lado (`public/meditacao/inspirar-{1,2,3}.webp`, recortadas de
+  `_DOCS/meditação/capa página meditar.png`, 575px de altura, WebP q85, ≥ 39 dB; array `FOTOS` em `page.js` com a largura real de cada uma,
+  que vira `flex-grow` + `aspect-ratio`: as três dividem a largura na mesma altura, **sem cortar nada**; no celular segue **numa linha só**, só com gap menor; **não usar grid
+  aí**: trilha `fr` não encolhe abaixo da largura da imagem e a faixa estourava a tela, com barra de rolagem horizontal). Embaixo, **2 colunas** (1 no celular, título e botão antes do
+  texto): esquerda `h1` "Coleção Inspirar", subtítulo "Chocolates para Meditação", frase itálica e pílula "Acesse as meditações guiadas ↓"
+  (âncora `#meditacoes`, sem JS, **com deslize suave**: `scroll-behavior: smooth` só nesta página, via `:global(html):has(.sectionTitle)` em `meditacao.module.css`, desligado com `prefers-reduced-motion`; no CSS global faria o Next deslizar também ao trocar de página; o `h2` da lista tem `scroll-margin-top` por causa do `Header` sticky); direita o texto da dona (não alterar palavra), com a 1ª linha
+  como `.abertura` (Fraunces 500 em `--cor-destaque`, com quebra de linha antes de "Esse, não.") e o resto em Assistant com 5 trechos em negrito (`<strong>`, peso 600: "harmoniza os benefícios nutricionais", "com práticas de meditação", "momento de presença", "ervas e especiarias", "meditação guiada"). O `hero.png` antigo segue só para a home. Depois, a lista (`h2`
+  "Meditações guiadas") de produtos com `tem_meditacao=true` via `ApresentacaoProduto resumido` + `MeditacaoPlayer` (**só a descrição curta**:
+  sem descrição longa nem ingredientes). **X20:** o título de cada bloco é `produto.titulo_meditacao || produto.nome` (prop `titulo`
+  de `ApresentacaoProduto`; `alt` da foto segue com o nome). **X19 (revisado):** a pílula "Ver a Coleção Inspirar na loja" do topo **saiu**;
+  em vez dela, cada produto ganha, depois do player, o link "Ver na loja →" para `/loja/${produto.slug}` (`.lojaLink`, pílula verde cheia como os demais botões (`--cor-botao`), maior que o `.cta` do topo; `getProdutos()` só traz ativos,
+  então sempre resolve; é onde estão Comprar, preço e ingredientes). `COLECAO_MEDITACAO` (`lib/produtos.js`) segue usada só pelo botão da home
 - **`/loja`** (X14; markup em `app/loja/page.js`, sem componente próprio além de `CarrosselProdutos`) — **topo só de texto** (2026-11-07: sem foto,
   sem cartão, sem caixa nem borda, direto sobre `--cor-fundo`; curto, para o 1º carrossel aparecer perto da dobra em 375×667):
   rótulo pequeno (só com coleção ativa: nome da categoria dela), `h1` (coleção ativa, categoria ativa ou "Loja") e frase
@@ -332,8 +355,15 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
   link do WhatsApp com mensagem pronta** (`BotaoComprar`, nova aba, sem carrinho/quantidade). Sem estoque
   (`estoque === 0`): selo "Esgotado" e o mesmo botão com o rótulo "Consultar no WhatsApp" (não perde a
   venda; sem ramo novo). `tem_meditacao` mostra só o link "Acesse aqui a meditação guiada" para `/meditacao` (sem player aqui; frase do X18).
-  `generateMetadata`: `title`, `description` e `openGraph` com título e foto principal; o resto do
-  compartilhamento (imagem 1200x630, `metadataBase`) é o A11
+  `generateMetadata`: `title`, `description` e `openGraph` com título e foto principal (sem foto, vale a imagem OG padrão da raiz;
+  `openGraph` da página substitui o do layout por inteiro, então `siteName`/`locale` não chegam aqui: não conferido, sem banco local)
+- **`/privacidade`, `/entrega`, `/trocas`** (A11, 2026-11-08; `/trocas` cobre o X17) — páginas estáticas (`○`) de `PaginaLegal`, com `title`
+  "… — Simplicitude" e `description` próprios. **Texto em Markdown editável, fora do código: `content/legal/{privacidade,entrega,trocas}.md`**
+  (lido no build por `lib/legal.js`; trocar o texto = novo deploy). Sintaxe de `lib/texto.js` (`##`/`###`, listas, `**`, `*`, links;
+  link `(/trocas)` = interno). O título (`h1`) e "Atualizado em {data}" vêm da página e da constante `DATA_ATUALIZACAO_LEGAL`
+  (`lib/legal.js`, a única data: mudou um texto, muda ali), não do arquivo. **Nenhuma marca `[CONFIRMAR …]` em aberto (0 nos três arquivos, 2026-11-08)**: a entrega foi revisada pela dona (seis seções) e as marcas de privacidade e trocas foram removidas por decisão do dono, virando pendências pós-go-live no plano, **que não bloqueiam a publicação**: **P1** (GA, Meta Pixel, aviso de cookies com consentimento e cookie de idioma, logo depois do go-live: **a Privacidade já os descreve e o site ainda não os tem**), **P2** (nome do processador de pagamento ao ativar o checkout) e **P3** (revisão jurídica de Trocas, que a dona trata por conta própria; restam 3 pontos: lacre exigido no arrependimento, frete de devolução do arrependimento por conta do cliente e reembolso em 7 dias úteis, que o art. 49 do CDC trata como devolução imediata). O texto de Trocas foi reescrito pela dona em 2026-11-08 (defeito em 30 dias, reembolso em 7 dias úteis); o publicado é o dela, sem ressalvas jurídicas. A Privacidade diz que o pagamento hoje é combinado pelo WhatsApp, por Pix ou cartão. O teste continua avisando se alguma marca voltar. O número do WhatsApp
+  está repetido em `wa.me` nos `.md` (a fonte única segue em `lib/whatsapp.js`). Links na coluna "Políticas" do rodapé (`Footer`)
+- **`/busca`** (X16, 2026-11-08, sem SQL) — dinâmica (`ƒ`), `noindex` por `generateMetadata` (vale também depois do go-live). `?q=` passa por `normalizarTermo` (só texto, ≤ 60, ≥ 2 letras; senão mostra a instrução **sem consultar o banco**); `getProdutosBusca()` (consulta fixa, só as colunas do card e dos campos pesquisados) + `buscarProdutos` (`lib/busca.js`) → até 24 `CardProduto` (`Titulo="h2"`), `<p role="status">` com o resultado, "Nada encontrado" com link para `/loja`. Tem o próprio campo (`next/form`, `prefetch={false}`) preenchido. Sem cache de dados: cache só pouparia o Supabase, não a função do Netlify
 - **`/sustentabilidade`** (ex-`/bem-fazer`, renomeada no X18, sem redirect) — **página real, em produção e no menu** (`status: 'real'`):
   só `h1` "Sustentabilidade" e um aviso de que o conteúdo chega em breve (texto provisório), CSS próprio
   (`app/sustentabilidade/page.module.css`, no molde do 404, sem `EmBreve` nem `exigirMockups`). Os 3 blocos da home levam para cá.
@@ -363,7 +393,9 @@ Auth / admin (chrome oculto por `SiteChrome`):
   payload: a `v1` nunca grava `atributos`); entram "Descrição curta" (≤120, contador), "Descrição longa", "Ingredientes",
   checkboxes de **Tags** e a seção `TraducaoEn` (nome, curta, longa, ingredientes → `produto_traducoes`; fica **logo depois do
   campo Ingredientes**, antes de Peso/Preço, para não parecer escondida abaixo das fotos). `salvarVinculos`
-  (coleções e tags) roda depois do update de `produtos`; a lista ganha a coluna "EN"
+  (coleções e tags) roda depois do update de `produtos`; a lista ganha a coluna "EN". **X20:** com "Possui meditação guiada"
+  marcado, aparece "Título da meditação" (acima da URL do áudio; opcional, vazio = nome do produto) e, em "English (opcional)",
+  "Meditation title"; desmarcar grava `null` no `titulo_meditacao` do produto e zera o EN (como o `audio_url`)
 - **`/admin/categorias`**, **`/admin/categorias/nova`**,
   **`/admin/categorias/[id]/editar`** — CRUD de categorias; `nova` e `[id]/editar` têm
   link "← Categorias" acima do formulário. O `CategoriaForm` tem campo "Foto (opcional)" (X7: upload para `{id}/{uuid}.{ext}` no bucket `categorias`, `SeletorFoco` com prévia 16:9, "Remover foto"; só toca nas colunas de foto se há foto antes ou agora). O campo de slug do `CategoriaForm` ganhou normalização, validação
@@ -412,10 +444,12 @@ Cada um com `*.module.css` co-locado.
 - **`SiteChrome`** (`'use client'`) — esconde Header/Footer em `/login` e `/admin/*` via
   `usePathname()`; usado em `app/layout.js` envolvendo `{children}`
 - **`Header`** (`'use client'`) — menu LOJA, MEDITAÇÃO, SUSTENTABILIDADE, QUEM SOMOS, ASSINATURAS
-  (vindo de `itensMenu()`, `lib/navegacao.js`); logo leva à home (sem item "Início"); item ativo
-  via `usePathname()` + `aria-current`; sem linha divisória; abaixo de 960px vira botão de texto
+  (vindo de `itensMenu()`, `lib/navegacao.js`); **lupa de busca (`BuscaHeader`, X16) ao lado do botão Menu**; logo leva à home (sem item "Início"); item ativo
+  via `usePathname()` + `aria-current`; **linha de 1px `--cor-borda` embaixo do `Header` em todas as páginas** (separa menu e corpo, que têm o mesmo fundo; antes só a `/loja` tinha, no `border-top` da página, hoje removido de lá); abaixo de 960px vira botão de texto
   "Menu"/"Fechar". **`Footer`** — campo `--cor-rodape` com logo, lema, contatos (WhatsApp via
-  `linkWhatsApp()` de `lib/whatsapp.js`), links do mesmo `itensMenu()` e linha legal (©, razão social e CNPJ).
+  `linkWhatsApp()` de `lib/whatsapp.js`), links do mesmo `itensMenu()`, **4ª coluna "Políticas" (A11: título em Fraunces itálico e, embaixo, Privacidade, Entrega e Trocas e devoluções no estilo `navLink`; no celular as colunas empilham)** e linha legal (©, razão social e CNPJ).
+- **`PaginaLegal`** (server, A11) — `h1` (prop `titulo`), "Atualizado em {`DATA_ATUALIZACAO_LEGAL`}" e `TextoFormatado` com o texto de
+  `content/legal/{arquivo}.md` (prop `arquivo`); coluna de leitura de 68ch, só papéis. Usado por `/privacidade`, `/entrega` e `/trocas`.
 - **`EmBreve`** — página mockup "Em breve" com botão pílula para `/loja`
 - **`LogoAnimado`** (`'use client'`) — usado dentro do `<Link href="/">` do `Header` no
   lugar do `<Image>` direto da wordmark. Na **1ª carga da Home (`/`) em cada sessão do
@@ -458,9 +492,9 @@ Cada um com `*.module.css` co-locado.
   só vem de `getProdutoBySlug`), `children`, **descrição longa** (via `TextoFormatado`, com formatação; ver "Formatação da descrição longa") e **ingredientes** (`dl`, texto puro); a
   ordem põe preço/Comprar (ou o player, em `/meditacao`) antes do texto longo; `atributos` não aparece mais, X13); usado em
   `/loja/[slug]` e `/meditacao`. Props `produto`, `resumido` (padrão `false`; `/meditacao` o liga: omite descrição longa e
-  ingredientes, fica só a curta), `fotos` (opcional, de `getFotosDoProduto`; sem ela cai na
-  cópia da principal em `produtos.imagem_*` via `fotosDoProduto`, caso de `/meditacao`), `Titulo` (`h2`
-  padrão; a página do produto passa `h1`)
+  ingredientes, fica só a curta, e o nome desce para 90% de `--tam-nome-produto` (`calc`; `--tam-titulo-secao` ficou pequeno demais)), `fotos` (opcional, de `getFotosDoProduto`; sem ela cai na
+  cópia da principal em `produtos.imagem_*` via `fotosDoProduto`, caso de `/meditacao`), `titulo` (opcional, X20: troca só o
+  texto do título; sem ele vale `produto.nome`) e `Titulo` (`h2` padrão; a página do produto passa `h1`)
 - **`GaleriaProduto`** (`'use client'`) — foto principal no quadro do card (`--proporcao-produto`, `cover`,
   `estiloFoto` de cada foto: foco e zoom) e, com 2+ fotos, miniaturas em `<button>` (`aria-label` "Ver foto N
   de M", `aria-current`, foco visível; Tab + Enter/Espaço; fileira rolável no celular, quebra linha ≥700px).
@@ -475,11 +509,12 @@ Cada um com `*.module.css` co-locado.
 - **`HeroCarrossel`** (`'use client'`) — hero da home. Props `slides` (`{ id, rotulo, titulo,
   texto, cta: { rotulo, href }, imagem?: { src, alt, posicao? } }`; `posicao` = `object-position`
   para enquadrar a foto quando a tela larga corta o 16:9 em cima e embaixo — slide 1 (Presentes) com
-  `'0% 50%'` para o corte cair sobre o texto da foto; slide 2 (Floresta) com `'50% 70%'` (cabeça no topo e cacau na base:
-  mostra o rosto com os óculos e o cacau inteiro; em notebook bem baixo o rosto corta na boca)) e `layout` (padrão `sobreposto`: foto em
-  largura total, cartão **translúcido** (70% de `--cor-fundo` + blur, cantos de 24px; no celular
-  volta a sólido, fora da foto) no canto inferior esquerdo — o teste de paletas lê esse 70% do
-  CSS e exige 4,5:1 do texto com foto preta ou branca por trás —, controles (só setas e pontos, **sem
+  `'0% 50%'` para o corte cair sobre o texto da foto; slide 4 (Loja) com `'75% 70%'` (o texto da foto fica embaixo à direita; x o mantém inteiro no celular e y o afasta da borda de baixo em tela larga); os slides 2 e 3 ficam no centro) e `layout` (padrão `sobreposto`: foto em
+  largura total, cartão **translúcido** (65% de `--cor-fundo` + blur, cantos de 24px; no celular
+  volta a sólido, fora da foto) no canto inferior esquerdo — o teste de paletas lê esse 65% do
+  CSS e exige 4,5:1 do texto com foto branca por trás **e no ponto mais escuro (5º percentil) da área do cartão em cada
+  `public/home/hero-*.webp`** (ajuste de 2026-11-08: antes 70%, a pedido da dona de deixar o cartão como a pílula, a 30%; a 30% o texto cai a
+  1,5:1 na Floresta, e 65% é o piso medido, 60% reprova; foto nova mais escura ou percentual menor derruba o teste) —, controles (só setas e pontos, **sem
   botão Pausar/Continuar**) numa pílula translúcida (30% de `--cor-fundo` + blur, mais leve que o
   cartão; setas e pontos em `--cor-texto`) **dentro da foto**, embaixo — o contraste dela depende da
   foto por trás e **não tem teste** (conferir a olho ao trocar foto; se fraco, subir o 30%) — centralizada só a partir de 1440px; abaixo disso, no canto direito, para não
@@ -498,6 +533,7 @@ Cada um com `*.module.css` co-locado.
   pai posicionado; fundo `--cor-destaque` com texto `--cor-fundo`, para contrastar com o cartão
   claro do hero; par já testado a 4,5:1). Usado pelo hero quando o slide não tem `imagem`; quem
   usa decide não renderizá-lo em produção.
+- **`BuscaHeader`** (`'use client'`, X16) — lupa + campo de busca dentro do `Header` (grupo `.acoes`, ao lado do botão Menu). Props `aberta`, `onAbrir`, `onFechar` (o estado mora no `Header`: abrir a busca fecha o menu e vice-versa). Abre com mouse em cima, clique/toque ou foco da lupa; fecha com Esc (limpa e devolve o foco à lupa, `ignorarFoco` impede reabrir) ou ao perder foco/mouse com o campo vazio; enviar limpa e fecha. Desktop: campo abre para a esquerda **por cima** dos links (nada se desloca); <960px: faixa de largura total sob a barra, 16px de texto (sem zoom no iOS). `next/form` com `prefetch={false}`, `required`/`minLength`/`maxLength` do `lib/busca.js`; `form role="search"`, label só para leitor de tela, `aria-expanded` na lupa. O `Header` **não lê `useSearchParams`** (tiraria o estático das páginas)
 - **`CarrosselProdutos`** (`'use client'`, X14; extraído da `VitrineProdutos`) — trilho scroll-snap de `CardProduto` que vai até a borda
   direita da tela (próximo card cortado), setas no desktop e toque no celular (≤900px, `--card` 70vw, sem setas). Props `produtos`,
   `rotulo` (entra no `aria-label` das setas: "{rotulo}: produtos anteriores/seguintes", para distinguir vários na página), `sizes`,
@@ -547,10 +583,10 @@ Cada um com `*.module.css` co-locado.
   `onChange(string)`, `className` (do textarea), `rows`, `lang`. Aplica as edições de `lib/texto.js` com
   `document.execCommand('insertText')` para o Ctrl+Z seguir funcionando (reserva: grava o valor direto). Link usa `window.prompt`
   (texto e endereço) e `alert` se o endereço for inválido
-- **`TextoFormatado`** (server-safe, `components/`) — renderiza a descrição longa (`lib/texto.js`) em `<p>`/`<br>`/`<ul>`/`<ol>`/
-  `<strong>`/`<em>`/`<a target="_blank" rel="noopener noreferrer">`, sempre elementos React (nunca HTML cru). Prop `texto` e
-  `className`. Estilo em `TextoFormatado.module.css` (só papéis; `em` em Fraunces itálico, porque Assistant não tem itálico).
-  Usado por `ApresentacaoProduto` e pela pré-visualização do admin
+- **`TextoFormatado`** (server-safe, `components/`) — renderiza a descrição longa e os textos legais (`lib/texto.js`) em `<p>`/`<br>`/`<h2>`/`<h3>`/`<ul>`/`<ol>`/
+  `<strong>`/`<em>`/`<a target="_blank" rel="noopener noreferrer">` (link interno `/…` vira `next/link`, mesma aba), sempre elementos React
+  (nunca HTML cru). Prop `texto` e `className`. Estilo em `TextoFormatado.module.css` (só papéis; `h2`/`h3` em Fraunces; `em` em Fraunces itálico,
+  porque Assistant não tem itálico). Usado por `ApresentacaoProduto`, `PaginaLegal` e pela pré-visualização do admin
 - **`LogoutButton`** (`'use client'`) — `signOut()` + redirect para `/login`, usado dentro
   de `AdminNav` (`app/admin/AdminNav.js`, ver seção de Rotas — não faz parte de
   `app/components/`, mas segue o mesmo padrão de client component com CSS module)
@@ -617,6 +653,10 @@ com `NEXT_PUBLIC_MOCKUPS=1` e, sem a flag, só os que têm `imagem`. Cobertos em
   (`produtos.slug`, ativos) e `getSlugAtual(slugAntigo)` (`produto_slugs` → slug atual do produto ativo, ou
   `null`). `CardProduto` linka por `produto.slug`. Cobertos em `tests/slug.test.js`
 
+### Busca — `lib/busca.js` (X16)
+
+Pura. `TERMO_MIN` 2, `TERMO_MAX` 60, `MAX_RESULTADOS` 24, `semAcento`, `normalizarTermo(q)` (não-texto, ex. `?q=a&q=b`, ou < 2 letras → `''`) e `buscarProdutos(produtos, termo, limite)` → `{ total, produtos }`: todas as palavras do termo precisam aparecer (E); pesos nome 3, tags e descrição curta 2, ingredientes 1; empate por nome. O termo só é comparado em JS, **nunca entra em filtro de consulta** (sem injeção). `shortcut:` filtra o catálogo ativo em memória; com algumas centenas de produtos, trocar por RPC `unaccent` + `pg_trgm`. `getProdutosBusca()` está em `lib/produtos.js`. Coberto em `tests/busca.test.js`.
+
 ### WhatsApp — `lib/whatsapp.js`
 
 **Único lugar do número** (`WHATSAPP_NUMERO` `5573920026708`, `WHATSAPP_EXIBICAO`): `linkWhatsApp(texto?)` (`wa.me`,
@@ -636,7 +676,12 @@ clique/arrasto na foto (ponteiro, funciona com o dedo), três deslizantes (Horiz
 "Centralizar" (só a posição) e prévia no quadro do card; foto nova volta ao centro e 100%. Cobertos em
 `tests/foco.test.js`.
 
-### Formatação da descrição longa — `lib/texto.js`
+### Formatação da descrição longa e dos textos legais — `lib/texto.js`
+
+**A11:** a mesma sintaxe formata `content/legal/*.md` e ganhou `## ` / `### ` (título de uma linha, blocos `h2`/`h3`; `#`, `####` e `##` sem
+texto seguem texto comum) e caminho interno em `urlSegura` (`/trocas` vale; `//host` e `/\host` não). Vale também para a descrição longa do
+produto (risco aceito: linha começando com `## ` num texto antigo vira título). `lib/legal.js`: `DATA_ATUALIZACAO_LEGAL` e `lerTextoLegal(nome)`
+(`fs`, só servidor).
 
 `produtos.descricao` e `produto_traducoes.descricao` guardam **texto com marcas** (sem migração, coluna segue `text`): `**negrito**`,
 `*itálico*` (**sem `_…_`**: underscore aparece em URL e palavra), linha `- ` (lista), `1. ` (lista numerada), `[texto](endereço)`;
@@ -652,13 +697,12 @@ Cobertos em `tests/texto.test.js`.
 
 ### Fotos do produto (X1) — `lib/fotos.js`
 
-**Produtos de teste (2026-11-07, temporários):** `supabase/scripts/teste_inserir_produtos.sql` cria 22 produtos (slug
-`teste-*`, tags `teste-*`) cobrindo Chocolates, Presentes, Empório e Dia-a-Dia e as coleções Inspirar e Bombons (alguns
-em duas coleções, vários sem coleção, um esgotado, um com estoque `null`); `teste_remover_produtos.sql` os apaga (só por
-SQL, o admin tentaria apagar do Storage). Fotos WebP 4:5 em `public/teste/` (geradas à mão, fora do Storage): o
-`caminho` de `produto_imagens` e `produtos.imagem_url` apontam para `/teste/...`, e `fotosDoProduto` devolve caminho com
-`/` como URL direta. **v1 e `main` leem o mesmo banco: a produção mostra esses produtos (sem foto) até a remoção.**
-Remover no D2 (item no plano): rodar o SQL de remoção e apagar `public/teste/`.
+**Produtos de teste (2026-11-07; removidos em 2026-11-08):** `supabase/scripts/teste_inserir_produtos.sql` cria 22 produtos (slug
+`teste-*`, tags `teste-*`) cobrindo Chocolates, Presentes, Empório e Dia-a-Dia e as coleções Inspirar e Bombons;
+`teste_remover_produtos.sql` os apaga (só por SQL, o admin tentaria apagar do Storage). Os produtos já saíram do banco e a
+pasta `public/teste/` (WebP 4:5) foi **apagada do repo**: os dois scripts ficam para reuso, mas o inserir **depende dessas
+imagens** (`/teste/{slug}-N.webp`) e elas precisam ser geradas de novo antes. `fotosDoProduto` segue devolvendo caminho com `/`
+como URL direta (só o inserir usa isso).
 
 Várias fotos por produto na tabela `produto_imagens`; a primeira por `ordem` é a principal. Funções puras
 (testadas em `tests/fotos.test.js`): `ordenarFotos`, `fotosDoProduto(produto, linhas, urlDe)` (sem linhas cai em
@@ -719,11 +763,14 @@ Cobertos em `tests/i18n.test.js`.
   muda com o nome**; trigger `before insert` preenche com `public.slugify(nome)` se vier vazio — cobre o admin da `main`)
   **X13** (migration `supabase/migrations/20261107120000_x13_campos_produto.sql`, **aplicada em 2026-11-07**): `descricao_curta`
   (text nullable, `check char_length <= 120`) e `ingredientes` (text nullable), seguras para a `main`. **`atributos` segue na
-  tabela só para a `main`**: a `v1` não o exibe nem o grava; `descricao` é a descrição longa (sem renomear)
+  tabela só para a `main`**: a `v1` não o exibe nem o grava; `descricao` é a descrição longa (sem renomear).
+  **X20** (migration `supabase/migrations/20261108120000_x20_titulo_meditacao.sql`, **aplicada em 2026-11-08**):
+  `titulo_meditacao` (text nullable, sem `check`; título da meditação em `/meditacao`, vazio = `nome`; null quando `tem_meditacao`
+  é falso), segura para a `main`
 - **`tags`**, **`produto_tags`**, **`tag_traducoes`**, **`produto_traducoes`** (X13, mesma migration; ADR 0002, opção B) —
   `tags`: `id`, `nome`, `slug` (`unique` + `check` de formato), `created_at`; `anon` lê tudo, `authenticated` escreve.
   `produto_tags`: M:N produto ↔ tag, PK `(produto_id, tag_id)`, cascade, RLS no padrão de `produto_colecoes`. `tag_traducoes`
-  `(tag_id, idioma, nome)`. `produto_traducoes` `(produto_id, idioma, nome, descricao_curta ≤120, descricao, ingredientes)`:
+  `(tag_id, idioma, nome)`. `produto_traducoes` `(produto_id, idioma, nome, descricao_curta ≤120, descricao, ingredientes, titulo_meditacao [X20])`:
   `anon` lê só de produto ativo. `idioma` só `'en'`; campo vazio cai no PT (`lib/i18n.js`). Sem `atributos` nem `audio_url`
   (esse é o I3). Editadas pela seção `TraducaoEn` do admin; nada público usa a tradução ainda
 - **`produto_slugs`** (X8, mesma migration) — `slug` (PK, mesmo `check`), `produto_id` (FK `produtos`, `on delete
@@ -872,7 +919,11 @@ implementado — ver pendência de segurança #3.
   `NEXT_PUBLIC_MOCKUPS=1` (só nos contextos branch-deploy/deploy-preview; liga mockups e o 404
   de `/admin`/`/login` no `proxy.js`) e `SITE_INDEXAVEL=1` (só produção, no go-live; remove o
   `noindex`). **O build aborta se as duas estiverem juntas** (trava em `next.config.mjs`).
-  Sem `SITE_INDEXAVEL=1` toda rota sai com `X-Robots-Tag: noindex, nofollow`.
+  Sem `SITE_INDEXAVEL=1` toda rota sai com `X-Robots-Tag: noindex, nofollow`. **`SITE_URL`** (A11, opcional, só a URL pública sem barra
+  final): base de `metadataBase` em `app/layout.js`; sem ela cai em `https://simplicitude-ar.netlify.app`; URL inválida aborta o build.
+  **No go-live definir `SITE_URL=https://simplicitude.com.br` no Netlify (D2).** Imagem OG padrão: `app/opengraph-image.png` (1200×630,
+  logo verde sobre bege, gerada com `sharp` a partir de `public/marca/logo-simplicitude-677w.png`; refazer só se a marca mudar) +
+  `opengraph-image.alt.txt`. **Não há sitemap nem `robots`** no projeto (item do A11 não aplicado; criar no D se quiserem)
 - `next.config.mjs` — `images.remotePatterns` liberando o host do Storage do Supabase;
   `poweredByHeader: false`; `env.NEXT_PUBLIC_MOCKUPS` **fixado** (`''` se ausente, coberto em
   `tests/paletas.test.js`): sem isso o Next não inlina a env no client e o código de mockup não é

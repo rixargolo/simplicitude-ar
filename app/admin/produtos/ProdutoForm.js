@@ -20,6 +20,7 @@ const CAMPOS_EN = [
   { chave: 'descricao_curta', rotulo: 'Short description', maxLength: LIMITE_DESCRICAO_CURTA },
   { chave: 'descricao', rotulo: 'Long description', multilinha: true, formatado: true },
   { chave: 'ingredientes', rotulo: 'Ingredients', multilinha: true },
+  { chave: 'titulo_meditacao', rotulo: 'Meditation title' }, // só aparece com "Possui meditação" (X20)
 ];
 
 const EXTENSAO = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
@@ -91,6 +92,7 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias, tags 
     produto?.tem_meditacao ?? false,
   );
   const [audioUrl, setAudioUrl] = useState(produto?.audio_url ?? '');
+  const [tituloMeditacao, setTituloMeditacao] = useState(produto?.titulo_meditacao ?? '');
   const [ativo, setAtivo] = useState(produto?.ativo ?? true);
   // fotos: [{ chave, caminho?, arquivo?, url, foco_x, foco_y, zoom, alt }], a primeira é a principal
   const [fotosIniciais] = useState(() =>
@@ -139,6 +141,7 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias, tags 
       mostrar_categoria_no_titulo: mostrarCategoriaNoTitulo,
       tem_meditacao: temMeditacao,
       audio_url: temMeditacao ? audioUrl.trim() || null : null,
+      titulo_meditacao: temMeditacao ? tituloMeditacao.trim() || null : null,
       ativo,
     };
 
@@ -151,7 +154,8 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias, tags 
       // depois do update de produtos: o trigger de colecao_id mexe nos pares, e aqui o conjunto final vence
       await salvarVinculos(supabase, 'produto_colecoes', 'colecao_id', produtoId, idsColecoes, 'as coleções');
       await salvarVinculos(supabase, 'produto_tags', 'tag_id', produtoId, [...tagIds], 'as tags');
-      await salvarTraducao(supabase, 'produto_traducoes', 'produto_id', produtoId, en, existiaEn);
+      const enSalvar = temMeditacao ? en : { ...en, titulo_meditacao: '' };
+      await salvarTraducao(supabase, 'produto_traducoes', 'produto_id', produtoId, enSalvar, existiaEn);
       await salvarFotos(supabase, produtoId, fotos, fotosIniciais, produto);
 
       router.push('/admin/produtos');
@@ -256,7 +260,11 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias, tags 
         />
       </div>
 
-      <TraducaoEn valores={en} onChange={setEn} campos={CAMPOS_EN} />
+      <TraducaoEn
+        valores={en}
+        onChange={setEn}
+        campos={temMeditacao ? CAMPOS_EN : CAMPOS_EN.filter((c) => c.chave !== 'titulo_meditacao')}
+      />
 
       <div className={styles.row}>
         <label className={styles.field}>
@@ -355,16 +363,33 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias, tags 
       </label>
 
       {temMeditacao && (
-        <label className={styles.field}>
-          <span className={styles.label}>URL do áudio</span>
-          <input
-            className={styles.input}
-            type="text"
-            value={audioUrl}
-            onChange={(e) => setAudioUrl(e.target.value)}
-            placeholder="https://.../meditacao/alegria.mp3"
-          />
-        </label>
+        <>
+          <div className={styles.field}>
+            <label htmlFor="produto-titulo-meditacao" className={styles.label}>Título da meditação</label>
+            <input
+              id="produto-titulo-meditacao"
+              className={styles.input}
+              type="text"
+              value={tituloMeditacao}
+              onChange={(e) => setTituloMeditacao(e.target.value)}
+              aria-describedby="titulo-meditacao-ajuda"
+            />
+            <span id="titulo-meditacao-ajuda" className={styles.ajuda}>
+              Aparece em /meditacao no lugar do nome do produto. Vazio = usa o nome do produto.
+            </span>
+          </div>
+
+          <label className={styles.field}>
+            <span className={styles.label}>URL do áudio</span>
+            <input
+              className={styles.input}
+              type="text"
+              value={audioUrl}
+              onChange={(e) => setAudioUrl(e.target.value)}
+              placeholder="https://.../meditacao/alegria.mp3"
+            />
+          </label>
+        </>
       )}
 
       <label className={styles.checkboxField}>

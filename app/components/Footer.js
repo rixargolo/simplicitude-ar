@@ -38,6 +38,15 @@ export default function Footer() {
             </Link>
           ))}
         </nav>
+
+        <div className={styles.column}>
+          <h2 className={styles.titulo}>Políticas</h2>
+          <nav className={styles.nav} aria-label="Políticas">
+            <Link href="/privacidade" className={styles.navLink}>Privacidade</Link>
+            <Link href="/entrega" className={styles.navLink}>Entrega</Link>
+            <Link href="/trocas" className={styles.navLink}>Trocas e devoluções</Link>
+          </nav>
+        </div>
       </div>
 
       <div className={styles.bottom}>

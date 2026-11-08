@@ -18,6 +18,37 @@
   margin-top: 1em;
 }
 
+.texto h2,
+.texto h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--cor-texto);
+}
+
+.texto h2 {
+  font-size: var(--tam-subtitulo);
+}
+
+.texto h3 {
+  font-size: var(--tam-chamada);
+}
+
+/* respiro maior antes de um título do que entre parágrafos */
+.texto > h2:not(:first-child) {
+  margin-top: 2em;
+}
+
+.texto > h3:not(:first-child) {
+  margin-top: 1.5em;
+}
+
+.texto > h2 + *,
+.texto > h3 + * {
+  margin-top: 0.5em;
+}
+
 .texto ul,
 .texto ol {
   padding-left: 1.4em;

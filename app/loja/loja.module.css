@@ -2,8 +2,7 @@
    porque o trilho dos carrosséis vai até a borda direita da tela. Só papéis --cor-*, --font-*, --tam-*. */
 .pagina {
   --margem: 20px;
-  padding: 0 0 72px; /* a foto do hero encosta no cabeçalho */
-  border-top: 1px solid var(--cor-borda);
+  padding: 0 0 72px; /* a foto do hero encosta no cabeçalho (a linha de separação é do Header) */
   background: var(--cor-fundo);
   color: var(--cor-texto);
 }

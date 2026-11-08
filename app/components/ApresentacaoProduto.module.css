@@ -61,6 +61,11 @@
   overflow-wrap: break-word;
 }
 
+/* versão resumida (/meditacao): nome a 90% do tamanho normal (--tam-titulo-secao ficou pequeno demais) */
+.nameResumido {
+  font-size: calc(var(--tam-nome-produto) * 0.9);
+}
+
 /* descrição curta: lead em itálico de leitura (Fraunces) */
 .curta {
   font-family: var(--font-display);

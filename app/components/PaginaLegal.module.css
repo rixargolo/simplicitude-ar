@@ -1,0 +1,21 @@
+/* Coluna de leitura; só papéis e escala da marca. Sem opacity (contraste, tests/paletas.test.js). */
+.main {
+  max-width: 68ch;
+  margin: 0 auto;
+  padding: 64px 24px 96px;
+}
+
+.titulo {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: var(--tam-titulo-pagina);
+  line-height: 1.1;
+  color: var(--cor-texto);
+}
+
+.data {
+  margin: 12px 0 40px;
+  font-size: var(--tam-pequeno);
+  color: var(--cor-texto-suave);
+}
