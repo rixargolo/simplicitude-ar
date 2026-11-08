@@ -13,7 +13,8 @@ import styles from './ApresentacaoProduto.module.css';
 // `fotos` (de getFotosDoProduto) traz todas as fotos; sem ela usa a cópia da principal em
 // produtos.imagem_*. `Titulo` é o nível do nome: h1 na página do produto, h2 em /meditacao.
 // `resumido` (usado em /meditacao) omite a descrição longa e os ingredientes: fica só a curta.
-export default function ApresentacaoProduto({ produto, fotos, Titulo = 'h2', resumido = false, children }) {
+// `titulo` (opcional, X20) troca só o texto do título; foto (alt) e placeholder seguem com o nome do produto.
+export default function ApresentacaoProduto({ produto, fotos, titulo, Titulo = 'h2', resumido = false, children }) {
   const rotulo = rotuloCategoria(produto);
 
   return (
@@ -22,7 +23,7 @@ export default function ApresentacaoProduto({ produto, fotos, Titulo = 'h2', res
 
       <div className={styles.text}>
         {rotulo && <span className={styles.labelScript}>{rotulo}</span>}
-        <Titulo className={styles.nameDisplay}>{produto.nome}</Titulo>
+        <Titulo className={resumido ? `${styles.nameDisplay} ${styles.nameResumido}` : styles.nameDisplay}>{titulo ?? produto.nome}</Titulo>
         {produto.descricao_curta && <p className={styles.curta}>{produto.descricao_curta}</p>}
         {produto.tags?.length > 0 && (
           <ul className={styles.tags} aria-label="Tags">

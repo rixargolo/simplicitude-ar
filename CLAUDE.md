@@ -67,7 +67,7 @@ públicas, `proxy.js`, textos fixos ou no schema de conteúdo** (produtos, categ
   (2026-11-06)**.** **X4 (controle do slider sem Pausar/Continuar, pílula translúcida) está no código.**
   **X5 (home com Meditação, seção do meio e Quem somos; ver `/`) está no código; a seção do meio virou a Sustentabilidade no X18.** **X6 (Novidades permanente, curadoria em `/admin/novidades`) está no
   código e o SQL `supabase/migrations/20261106130000_produtos_novidade_ordem.sql` **já foi aplicado (2026-11-06)**
-  (a home cai nos mais recentes enquanto a curadoria estiver vazia).** **X7 (categorias com imagem: foto no admin + desfoque que esmaece no hover) e X10 (sem chips de categoria na vitrine Novidades) estão no código e o SQL `supabase/migrations/20261106140000_categorias_imagem.sql` **já foi aplicado (2026-11-06)**.** **X11 (análise e organização do Storage: buckets por tipo, policies em SQL, limites, órfãos, público/privado) só está registrado no plano, sem implementação.** **X9 (página 404 da marca, `app/not-found.js`) está no código; texto provisório, confirmar com a dona.** **X12 (coleções dentro de categorias, produto ↔ coleção M:N, gestão em `/admin/colecoes`, par de tradução EN de categorias e coleções) está no código e concluído/testado; o SQL `20261106150000_x12_colecoes.sql` **foi aplicado (2026-11-06)**.** **X13 (campos do produto: descrição curta, descrição longa com quebras de linha, ingredientes, tags com CRUD em `/admin/tags` e tradução EN de produto e tag) está no código e concluído/testado; o SQL `20261107120000_x13_campos_produto.sql` **foi aplicado (2026-11-07)**.** **X14 (nova `/loja`: topo só de texto, filtro por categoria e coleção, carrosséis de uma linha por categoria e coleção; sem SQL) está no código, build e testes verdes; falta o dono conferir no navegador.** **Ideias registradas, nada implementado:** **X15** (destaque ou landing de Presentes/Natal), **X16** (busca no site todo, no cabeçalho) e **X17** (política de troca e devolução, dentro do A11); detalhes no plano. **X18 (feedback da dona, rodada 2, 3 fatias):** **fatia 1 feita** (menu Meditação/Sustentabilidade com a rota `/sustentabilidade`, categorias da home sem desfoque, frase "Acesse aqui a meditação guiada" no produto; sem SQL); **fatia 2 feita** (seção Meditação da home sem caixa nem moldura, foto direto no fundo, título "Chocolates para Meditação" e botão "Conheça a Coleção Inspirar" para `/loja?colecao=inspirar`; sem SQL); **fatia 3 feita** (seção Sustentabilidade na home no lugar do placeholder, "Um mundo melhor com simples atitudes", 3 blocos que levam a `/sustentabilidade`; a página agora existe em produção, só com título e aviso de "em breve"; sem SQL) — **X18 concluído**; ajuste pós-X18 (2026-11-07): Quem somos também saiu do cartão (home sem caixa em todas as seções); **ajuste pós-X18 (2026-11-08, sem SQL):** novos slides do hero (Presentes, Floresta, Meditação, Loja, textos e links da dona; ver "Fotos do hero"), frase do manifesto entre o hero e a vitrine, e controles do slider sobre a foto no celular (sem linha própria). **X19 (2026-11-08, sem SQL):** link de `/meditacao` para `/loja?colecao=inspirar` (some se a coleção não tem produto ativo); falta o dono conferir no navegador. Próximo: mostrar o preview à dona.
+  (a home cai nos mais recentes enquanto a curadoria estiver vazia).** **X7 (categorias com imagem: foto no admin + desfoque que esmaece no hover) e X10 (sem chips de categoria na vitrine Novidades) estão no código e o SQL `supabase/migrations/20261106140000_categorias_imagem.sql` **já foi aplicado (2026-11-06)**.** **X11 (análise e organização do Storage: buckets por tipo, policies em SQL, limites, órfãos, público/privado) só está registrado no plano, sem implementação.** **X9 (página 404 da marca, `app/not-found.js`) está no código; texto provisório, confirmar com a dona.** **X12 (coleções dentro de categorias, produto ↔ coleção M:N, gestão em `/admin/colecoes`, par de tradução EN de categorias e coleções) está no código e concluído/testado; o SQL `20261106150000_x12_colecoes.sql` **foi aplicado (2026-11-06)**.** **X13 (campos do produto: descrição curta, descrição longa com quebras de linha, ingredientes, tags com CRUD em `/admin/tags` e tradução EN de produto e tag) está no código e concluído/testado; o SQL `20261107120000_x13_campos_produto.sql` **foi aplicado (2026-11-07)**.** **X14 (nova `/loja`: topo só de texto, filtro por categoria e coleção, carrosséis de uma linha por categoria e coleção; sem SQL) está no código, build e testes verdes; falta o dono conferir no navegador.** **Ideias registradas, nada implementado:** **X15** (destaque ou landing de Presentes/Natal), **X16** (busca no site todo, no cabeçalho) e **X17** (política de troca e devolução, dentro do A11); detalhes no plano. **X18 (feedback da dona, rodada 2, 3 fatias):** **fatia 1 feita** (menu Meditação/Sustentabilidade com a rota `/sustentabilidade`, categorias da home sem desfoque, frase "Acesse aqui a meditação guiada" no produto; sem SQL); **fatia 2 feita** (seção Meditação da home sem caixa nem moldura, foto direto no fundo, título "Chocolates para Meditação" e botão "Conheça a Coleção Inspirar" para `/loja?colecao=inspirar`; sem SQL); **fatia 3 feita** (seção Sustentabilidade na home no lugar do placeholder, "Um mundo melhor com simples atitudes", 3 blocos que levam a `/sustentabilidade`; a página agora existe em produção, só com título e aviso de "em breve"; sem SQL) — **X18 concluído**; ajuste pós-X18 (2026-11-07): Quem somos também saiu do cartão (home sem caixa em todas as seções); **ajuste pós-X18 (2026-11-08, sem SQL):** novos slides do hero (Presentes, Floresta, Meditação, Loja, textos e links da dona; ver "Fotos do hero"), frase do manifesto entre o hero e a vitrine, e controles do slider sobre a foto no celular (sem linha própria). **X19 (2026-11-08, sem SQL):** link de `/meditacao` para a coleção; **revisado no mesmo dia**: a pílula do topo saiu e cada produto da lista de meditações ganhou "Ver na loja" para `/loja/[slug]`; **topo de `/meditacao` refeito** (faixa de 3 fotos + duas colunas com título/botão e o texto da dona, ver Rotas); falta o dono conferir no navegador. **X20 (2026-11-08):** campo "Título da meditação" no cadastro do produto (aparece com "Possui meditação guiada"; par EN na `TraducaoEn`), usado como título em `/meditacao` no lugar do nome (vazio = nome); **SQL `20261108120000_x20_titulo_meditacao.sql` ainda a aplicar no SQL Editor antes do push**; falta o dono conferir no navegador. Próximo: mostrar o preview à dona.
 - **Decisões vigentes:** checkout como **convidado** (a decisão antiga de login obrigatório
   está superada); vitrine da home com título derivado do critério de ordem — `novidade_ordem` (curadoria da dona,
   reserva `created_at`) = "Novidades",
@@ -122,7 +122,7 @@ admin); decisão de manter o 72% do suave. O
 > papéis (as páginas ainda não refeitas já pegam a paleta nova); `--gold` é o único hex antigo
 > (só o admin usa). Cada item do plano (A4–A7, A12) troca pelos papéis nos arquivos que
 > reescreve; o bloco some quando ninguém usar. Hex soltos remanescentes: admin e os scrims
-> pretos de `/quem-somos` e de `/meditacao`. O hero da home (A3) e o bloco de marca (X5, `app/home.module.css`) já
+> pretos de `/quem-somos`. O hero da home (A3) e o bloco de marca (X5, `app/home.module.css`) já
 > usam só papéis.
 
 **Tipografia da marca (X3, 2026-11-06):** três famílias por papel, em tokens de `app/globals.css` sobre as
@@ -307,13 +307,19 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
   colada à borda da tela e na altura do bloco, frase em `h2` itálico e pílula "Conheça nossa história →" à esquerda,
   centradas na vertical; no celular, foto em cima e texto embaixo. Não há mais `.cartao`/`.fotoMenor` na home
 - **`/quem-somos`** — institucional
-- **`/meditacao`** (`revalidate = 60`, como a home: sem isso a edição no admin só valeria no próximo build) — hero (faixa de imagem + duotone + listras diagonais + título, no
-  padrão de `/quem-somos`) e bloco de introdução da Coleção Inspirar, seguidos da lista de
-  produtos com `tem_meditacao=true` via `ApresentacaoProduto resumido` + `MeditacaoPlayer` (**só a descrição curta**:
-  sem descrição longa nem ingredientes). **X19:** no fim da introdução, pílula "Ver a Coleção Inspirar na loja →" para
-  `/loja?colecao=${COLECAO_MEDITACAO}` (`lib/produtos.js`, `'inspirar'`, também usada no botão da home); só aparece se
-  `montarLoja(...).colecao` não é `null` (coleção existe e tem produto ativo, mesma regra da `/loja`); `.cta` próprio em
-  `meditacao.module.css` (cópia da `.cta` da home)
+- **`/meditacao`** (`revalidate = 60`, como a home: sem isso a edição no admin só valeria no próximo build) — **topo (2026-11-08, sem SQL)**, tudo
+  numa coluna de 1200px (`.topoWrap`): **faixa de 3 fotos** lado a lado (`public/meditacao/inspirar-{1,2,3}.webp`, recortadas de
+  `_DOCS/meditação/capa página meditar.png`, 575px de altura, WebP q85, ≥ 39 dB; array `FOTOS` em `page.js` com a largura real de cada uma,
+  que vira `flex-grow` + `aspect-ratio`: as três dividem a largura na mesma altura, **sem cortar nada**; no celular, grid com a foto 1 na linha
+  toda e as 2 e 3 embaixo — os `739fr 1189fr` do CSS repetem as larguras de `FOTOS`, mudou foto, mudar nos dois). Embaixo, **2 colunas** (1 no celular, título e botão antes do
+  texto): esquerda `h1` "Coleção Inspirar", subtítulo "Chocolates para Meditação", frase itálica e pílula "Acesse as meditações guiadas ↓"
+  (âncora `#meditacoes`, sem JS; o `h2` da lista tem `scroll-margin-top` por causa do `Header` sticky); direita o texto da dona (não alterar palavra), com a 1ª linha
+  como `.abertura` (Fraunces 500 em `--cor-destaque`, com quebra de linha antes de "Esse, não.") e o resto em Assistant com 5 trechos em negrito (`<strong>`, peso 600: "harmoniza os benefícios nutricionais", "com práticas de meditação", "momento de presença", "ervas e especiarias", "meditação guiada"). O `hero.png` antigo segue só para a home. Depois, a lista (`h2`
+  "Meditações guiadas") de produtos com `tem_meditacao=true` via `ApresentacaoProduto resumido` + `MeditacaoPlayer` (**só a descrição curta**:
+  sem descrição longa nem ingredientes). **X20:** o título de cada bloco é `produto.titulo_meditacao || produto.nome` (prop `titulo`
+  de `ApresentacaoProduto`; `alt` da foto segue com o nome). **X19 (revisado):** a pílula "Ver a Coleção Inspirar na loja" do topo **saiu**;
+  em vez dela, cada produto ganha, depois do player, o link "Ver na loja →" para `/loja/${produto.slug}` (`.lojaLink`, pílula verde cheia como os demais botões (`--cor-botao`), maior que o `.cta` do topo; `getProdutos()` só traz ativos,
+  então sempre resolve; é onde estão Comprar, preço e ingredientes). `COLECAO_MEDITACAO` (`lib/produtos.js`) segue usada só pelo botão da home
 - **`/loja`** (X14; markup em `app/loja/page.js`, sem componente próprio além de `CarrosselProdutos`) — **topo só de texto** (2026-11-07: sem foto,
   sem cartão, sem caixa nem borda, direto sobre `--cor-fundo`; curto, para o 1º carrossel aparecer perto da dobra em 375×667):
   rótulo pequeno (só com coleção ativa: nome da categoria dela), `h1` (coleção ativa, categoria ativa ou "Loja") e frase
@@ -378,7 +384,9 @@ Auth / admin (chrome oculto por `SiteChrome`):
   payload: a `v1` nunca grava `atributos`); entram "Descrição curta" (≤120, contador), "Descrição longa", "Ingredientes",
   checkboxes de **Tags** e a seção `TraducaoEn` (nome, curta, longa, ingredientes → `produto_traducoes`; fica **logo depois do
   campo Ingredientes**, antes de Peso/Preço, para não parecer escondida abaixo das fotos). `salvarVinculos`
-  (coleções e tags) roda depois do update de `produtos`; a lista ganha a coluna "EN"
+  (coleções e tags) roda depois do update de `produtos`; a lista ganha a coluna "EN". **X20:** com "Possui meditação guiada"
+  marcado, aparece "Título da meditação" (acima da URL do áudio; opcional, vazio = nome do produto) e, em "English (opcional)",
+  "Meditation title"; desmarcar grava `null` no `titulo_meditacao` do produto e zera o EN (como o `audio_url`)
 - **`/admin/categorias`**, **`/admin/categorias/nova`**,
   **`/admin/categorias/[id]/editar`** — CRUD de categorias; `nova` e `[id]/editar` têm
   link "← Categorias" acima do formulário. O `CategoriaForm` tem campo "Foto (opcional)" (X7: upload para `{id}/{uuid}.{ext}` no bucket `categorias`, `SeletorFoco` com prévia 16:9, "Remover foto"; só toca nas colunas de foto se há foto antes ou agora). O campo de slug do `CategoriaForm` ganhou normalização, validação
@@ -475,9 +483,9 @@ Cada um com `*.module.css` co-locado.
   só vem de `getProdutoBySlug`), `children`, **descrição longa** (via `TextoFormatado`, com formatação; ver "Formatação da descrição longa") e **ingredientes** (`dl`, texto puro); a
   ordem põe preço/Comprar (ou o player, em `/meditacao`) antes do texto longo; `atributos` não aparece mais, X13); usado em
   `/loja/[slug]` e `/meditacao`. Props `produto`, `resumido` (padrão `false`; `/meditacao` o liga: omite descrição longa e
-  ingredientes, fica só a curta), `fotos` (opcional, de `getFotosDoProduto`; sem ela cai na
-  cópia da principal em `produtos.imagem_*` via `fotosDoProduto`, caso de `/meditacao`), `Titulo` (`h2`
-  padrão; a página do produto passa `h1`)
+  ingredientes, fica só a curta, e o nome desce para 90% de `--tam-nome-produto` (`calc`; `--tam-titulo-secao` ficou pequeno demais)), `fotos` (opcional, de `getFotosDoProduto`; sem ela cai na
+  cópia da principal em `produtos.imagem_*` via `fotosDoProduto`, caso de `/meditacao`), `titulo` (opcional, X20: troca só o
+  texto do título; sem ele vale `produto.nome`) e `Titulo` (`h2` padrão; a página do produto passa `h1`)
 - **`GaleriaProduto`** (`'use client'`) — foto principal no quadro do card (`--proporcao-produto`, `cover`,
   `estiloFoto` de cada foto: foco e zoom) e, com 2+ fotos, miniaturas em `<button>` (`aria-label` "Ver foto N
   de M", `aria-current`, foco visível; Tab + Enter/Espaço; fileira rolável no celular, quebra linha ≥700px).
@@ -740,11 +748,14 @@ Cobertos em `tests/i18n.test.js`.
   muda com o nome**; trigger `before insert` preenche com `public.slugify(nome)` se vier vazio — cobre o admin da `main`)
   **X13** (migration `supabase/migrations/20261107120000_x13_campos_produto.sql`, **aplicada em 2026-11-07**): `descricao_curta`
   (text nullable, `check char_length <= 120`) e `ingredientes` (text nullable), seguras para a `main`. **`atributos` segue na
-  tabela só para a `main`**: a `v1` não o exibe nem o grava; `descricao` é a descrição longa (sem renomear)
+  tabela só para a `main`**: a `v1` não o exibe nem o grava; `descricao` é a descrição longa (sem renomear).
+  **X20** (migration `supabase/migrations/20261108120000_x20_titulo_meditacao.sql`, **a aplicar no SQL Editor antes do push**):
+  `titulo_meditacao` (text nullable, sem `check`; título da meditação em `/meditacao`, vazio = `nome`; null quando `tem_meditacao`
+  é falso), segura para a `main`
 - **`tags`**, **`produto_tags`**, **`tag_traducoes`**, **`produto_traducoes`** (X13, mesma migration; ADR 0002, opção B) —
   `tags`: `id`, `nome`, `slug` (`unique` + `check` de formato), `created_at`; `anon` lê tudo, `authenticated` escreve.
   `produto_tags`: M:N produto ↔ tag, PK `(produto_id, tag_id)`, cascade, RLS no padrão de `produto_colecoes`. `tag_traducoes`
-  `(tag_id, idioma, nome)`. `produto_traducoes` `(produto_id, idioma, nome, descricao_curta ≤120, descricao, ingredientes)`:
+  `(tag_id, idioma, nome)`. `produto_traducoes` `(produto_id, idioma, nome, descricao_curta ≤120, descricao, ingredientes, titulo_meditacao [X20])`:
   `anon` lê só de produto ativo. `idioma` só `'en'`; campo vazio cai no PT (`lib/i18n.js`). Sem `atributos` nem `audio_url`
   (esse é o I3). Editadas pela seção `TraducaoEn` do admin; nada público usa a tradução ainda
 - **`produto_slugs`** (X8, mesma migration) — `slug` (PK, mesmo `check`), `produto_id` (FK `produtos`, `on delete
