@@ -301,12 +301,15 @@ ou compressão no navegador; HEIC; apagar a cópia em `produtos.imagem_*`; limit
 
 ### Pós-go-live (ordem sugerida)
 **Pendências dos textos legais (A11; eram as marcas `[CONFIRMAR]` de `privacidade.md` e `trocas.md`, removidas em 2026-11-08):**
-- **P1, logo depois do go-live:** implementar Google Analytics e Meta Pixel com aviso de cookies e consentimento (as tags só
-  disparam após o aceite) e o cookie de idioma, porque a Política de Privacidade já os descreve. **Enquanto não existirem, o texto
-  está adiantado em relação ao site.**
+- **P1, feito em 2026-11-09 (código):** GTM `GTM-K9T83L53` com aviso de cookies do tipo "aviso" (carrega desde a 1ª visita; o visitante
+  desativa em "Personalizar" ou em "Preferências de cookies" no rodapé; escolha de 6 meses; nunca em `/admin` nem `/login`; `page_view`
+  virtual a cada rota). `NEXT_PUBLIC_GTM_ID` só em produção no Netlify (vazio = nada carrega); CSP libera Google/Meta só com a env.
+  **Falta o dono configurar as tags GA4 e Meta Pixel no GTM** (acionador "Evento personalizado" `page_view`; desligar o page_view
+  automático do GA4). Privacidade atualizada (seção 2, cookies; data 09/11/2026). O **cookie de idioma** não existe e vai para o I2.
 - **P2, ao ativar o checkout automático:** atualizar a Política de Privacidade com o nome do processador de pagamento e o
   tratamento de dados de pagamento (hoje o texto diz que o site não coleta dados de cartão e que o pagamento é combinado pelo WhatsApp, por Pix ou cartão, pela instituição financeira ou operadora usada na venda).
 - **P3, pós-go-live (não bloqueia a publicação): revisão jurídica da Política de Trocas e Devoluções pela dona, com contadora/advogado.**
+  **Incluir também o aviso de cookies (P1):** o modelo é opt-out (GA e Meta Pixel ativos desde a 1ª visita) e o guia de cookies da ANPD trata cookie de publicidade como dependente de consentimento prévio.
   Eram as marcas `[CONFIRMAR]` de `trocas.md`, removidas em 2026-11-08. **Texto de Trocas reescrito pela dona na mesma data**
   (defeito passou a 30 dias, reembolso a 7 dias úteis, frete de defeito/derretimento por conta da loja): dos 5 pontos originais
   restam 3. **A dona vai tratá-los por conta própria; não bloqueia a publicação.**

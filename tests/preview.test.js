@@ -8,6 +8,7 @@ async function carregarConfig(env) {
   vi.resetModules();
   vi.stubEnv('NEXT_PUBLIC_MOCKUPS', env.mockups ?? '');
   vi.stubEnv('SITE_INDEXAVEL', env.indexavel ?? '');
+  vi.stubEnv('NEXT_PUBLIC_GTM_ID', env.gtm ?? '');
   return (await import('../next.config.mjs')).default;
 }
 
@@ -53,6 +54,28 @@ describe('CSP', () => {
         "object-src 'none'",
       ].join('; '),
     );
+  });
+
+  it('com NEXT_PUBLIC_GTM_ID libera GTM, Preview do Tag Assistant, GA4 e Meta, sem Signals/Ads', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    const [{ headers }] = await (await carregarConfig({ gtm: 'GTM-K9T83L53' })).headers();
+    const valor = headers.find((h) => h.key === 'Content-Security-Policy').value;
+    expect(valor).toBe(
+      [
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://tagmanager.google.com https://connect.facebook.net",
+        "style-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://tagmanager.google.com https://fonts.googleapis.com",
+        "img-src 'self' data: blob: https://jlvpfwyixftybtwnuvxl.supabase.co https://www.googletagmanager.com https://*.google-analytics.com https://ssl.gstatic.com https://www.gstatic.com https://www.facebook.com",
+        "media-src 'self' https://jlvpfwyixftybtwnuvxl.supabase.co",
+        "font-src 'self' data: https://fonts.gstatic.com",
+        "connect-src 'self' https://jlvpfwyixftybtwnuvxl.supabase.co https://www.googletagmanager.com https://*.google-analytics.com https://*.google.com https://www.facebook.com https://connect.facebook.net",
+        "frame-ancestors 'none'",
+        "base-uri 'self'",
+        "form-action 'self'",
+        "object-src 'none'",
+      ].join('; '),
+    );
+    expect(valor).not.toMatch(/doubleclick|googlesyndication|frame-src/);
   });
 
   it('desenvolvimento libera unsafe-eval em script-src', async () => {
