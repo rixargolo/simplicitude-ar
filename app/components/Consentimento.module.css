@@ -1,0 +1,113 @@
+/* Aviso de cookies: fixo no rodapé da tela, só papéis de cor/tipografia (pares já testados). */
+.aviso {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 1000;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  border-top: 1px solid var(--cor-borda);
+  padding: 10px 16px;
+  font-family: var(--font-body);
+  font-size: var(--tam-pequeno);
+  line-height: 1.4;
+  max-height: 90dvh;
+  overflow-y: auto;
+}
+
+.corpo,
+.painel {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.texto {
+  margin: 0;
+}
+
+.link {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.botoes {
+  display: flex;
+  gap: 10px;
+}
+
+.botao {
+  flex: 1;
+  min-height: 34px;
+  padding: 0 20px;
+  border: 1px solid var(--cor-botao);
+  border-radius: var(--raio-botao);
+  background: var(--cor-botao);
+  color: var(--cor-botao-texto);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.contorno {
+  background: transparent;
+  color: var(--cor-texto);
+}
+
+.titulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--tam-subtitulo);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.titulo:focus {
+  outline: none;
+}
+
+.opcao {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  cursor: pointer;
+}
+
+.opcao input {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 2px;
+  accent-color: var(--cor-botao);
+}
+
+.opcao span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ajuda {
+  color: var(--cor-texto-suave);
+}
+
+@media (min-width: 760px) {
+  .aviso {
+    padding: 10px 32px;
+  }
+
+  .corpo {
+    flex-direction: row;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .botoes {
+    flex: none;
+  }
+
+  .botao {
+    flex: none;
+  }
+}

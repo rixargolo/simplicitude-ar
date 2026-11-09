@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import styles from './Footer.module.css';
 import { itensMenu } from '@/lib/navegacao';
+import { BotaoPreferenciasCookies } from './Consentimento';
 import { WHATSAPP_EXIBICAO, linkWhatsApp } from '@/lib/whatsapp';
 
 export default function Footer() {
@@ -45,6 +46,7 @@ export default function Footer() {
             <Link href="/privacidade" className={styles.navLink}>Privacidade</Link>
             <Link href="/entrega" className={styles.navLink}>Entrega</Link>
             <Link href="/trocas" className={styles.navLink}>Trocas e devoluções</Link>
+            <BotaoPreferenciasCookies className={`${styles.navLink} ${styles.botaoLink}`} />
           </nav>
         </div>
       </div>

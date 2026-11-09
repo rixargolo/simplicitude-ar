@@ -45,6 +45,14 @@ describe('menu', () => {
   });
 });
 
+describe('areaInterna', () => {
+  it('login e admin ficam de fora (sem Header, Footer nem GTM)', async () => {
+    const { areaInterna } = await carregar('');
+    for (const p of ['/login', '/admin', '/admin/produtos/1/editar']) expect(areaInterna(p), p).toBe(true);
+    for (const p of ['/', '/loja', '/privacidade']) expect(areaInterna(p), p).toBe(false);
+  });
+});
+
 describe('exigirMockups', () => {
   it('dá 404 sem a flag', async () => {
     const { exigirMockups } = await carregar('');

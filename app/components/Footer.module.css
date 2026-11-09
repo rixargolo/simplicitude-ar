@@ -87,6 +87,15 @@
   text-transform: uppercase;
 }
 
+/* "Preferências de cookies" é <button>, mas parece os links vizinhos */
+.botaoLink {
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
 .bottom {
   max-width: 1000px;
   margin: 0 auto;
