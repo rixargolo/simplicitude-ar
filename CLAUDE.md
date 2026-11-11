@@ -372,8 +372,9 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
   Estática (`○`), **sem Header e sem Footer** (`semChrome`, `lib/navegacao.js`), mas **com** o aviso de cookies e o `page_view` do GTM
   (`SiteChrome` usa `areaInterna` só para o `Consentimento`). Fora do menu. Símbolo `public/marca/s_estilizado.png` + wordmark (ambos
   `mask` com `currentColor`), mote "Salvar o mundo comendo chocolate" e 6 botões fixos no array `LINKS` de `app/link-na-bio/page.js` (sem
-  admin): Presentes de Natal (preenchido, `/loja?categoria=presentes`), Loja, Meditação, WhatsApp (`linkWhatsApp('Olá! Vim pelo link da bio')`),
-  e-mail e "Acesse o site". Botão "Preferências de cookies" no fim (some sem `NEXT_PUBLIC_GTM_ID`)
+  admin): Presentes para o Natal (preenchido, `/loja?categoria=presentes`), Loja, Meditação, WhatsApp (`linkWhatsApp('Olá! Vim pelo link da bio')`),
+  E-mail e "Acesse o site"; rótulos curtos e **ícone SVG inline à esquerda de cada um** (mapa `ICONES` no próprio arquivo, sem biblioteca,
+  `currentColor`, `aria-hidden`; o do WhatsApp é o mesmo do `BotaoComprar`). Botão "Preferências de cookies" no fim (some sem `NEXT_PUBLIC_GTM_ID`)
 - **`/assinaturas`** — mockup "Em breve" (`EmBreve`); só existe com
   `NEXT_PUBLIC_MOCKUPS=1` (`exigirMockups()` → 404 em produção, e sai do menu)
 - `/contato` foi **removida** (contato vive no rodapé)

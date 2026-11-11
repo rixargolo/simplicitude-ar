@@ -61,6 +61,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 10px;
   min-height: 52px;
   padding: 12px 20px;
   border: 1.5px solid var(--cor-texto);
@@ -72,6 +73,12 @@
   text-align: center;
   text-decoration: none;
   overflow-wrap: anywhere;
+}
+
+.icone {
+  flex: none;
+  width: 20px;
+  height: 20px;
 }
 
 .botao:hover {
