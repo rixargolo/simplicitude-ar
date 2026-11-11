@@ -368,6 +368,12 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
   só `h1` "Sustentabilidade" e um aviso de que o conteúdo chega em breve (texto provisório), CSS próprio
   (`app/sustentabilidade/page.module.css`, no molde do 404, sem `EmBreve` nem `exigirMockups`). Os 3 blocos da home levam para cá.
   **Antes do go-live (D2): confirmar o conteúdo ou remover o item do menu e os links da home**
+- **`/link-na-bio`** (2026-11-11, sem SQL; falta o dono conferir no celular) — página estilo linktree para a bio do Instagram (rota do site antigo).
+  Estática (`○`), **sem Header e sem Footer** (`semChrome`, `lib/navegacao.js`), mas **com** o aviso de cookies e o `page_view` do GTM
+  (`SiteChrome` usa `areaInterna` só para o `Consentimento`). Fora do menu. Símbolo `public/marca/s_estilizado.png` + wordmark (ambos
+  `mask` com `currentColor`), mote "Salvar o mundo comendo chocolate" e 6 botões fixos no array `LINKS` de `app/link-na-bio/page.js` (sem
+  admin): Presentes de Natal (preenchido, `/loja?categoria=presentes`), Loja, Meditação, WhatsApp (`linkWhatsApp('Olá! Vim pelo link da bio')`),
+  e-mail e "Acesse o site". Botão "Preferências de cookies" no fim (some sem `NEXT_PUBLIC_GTM_ID`)
 - **`/assinaturas`** — mockup "Em breve" (`EmBreve`); só existe com
   `NEXT_PUBLIC_MOCKUPS=1` (`exigirMockups()` → 404 em produção, e sai do menu)
 - `/contato` foi **removida** (contato vive no rodapé)
@@ -616,7 +622,7 @@ Pura. `CHAVE` `simplicitude:cookies` (`localStorage`, `{ escolha, em }`), `VALID
 ### Navegação — `lib/navegacao.js`
 
 Fonte única do menu (Header e Footer): array com `href`, `rotulo` e `status` (`real` ou
-`mockup`). `itensMenu()` filtra: `mockup` só com `NEXT_PUBLIC_MOCKUPS=1`. `areaInterna(pathname)` (`/login` e `/admin*`) decide onde o `SiteChrome` some e o `Consentimento` não roda. `exigirMockups()`
+`mockup`). `itensMenu()` filtra: `mockup` só com `NEXT_PUBLIC_MOCKUPS=1`. `areaInterna(pathname)` (`/login` e `/admin*`) decide onde o `Consentimento` não roda; `semChrome(pathname)` (= `areaInterna` + `/link-na-bio`) decide onde o `SiteChrome` tira Header/Footer. `exigirMockups()`
 (`notFound()` sem a flag) vai no topo de toda página mockup. Item novo = uma linha no array.
 
 ### Carrossel do hero — `lib/carrossel.js`

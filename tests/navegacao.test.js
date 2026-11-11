@@ -53,6 +53,16 @@ describe('areaInterna', () => {
   });
 });
 
+describe('semChrome', () => {
+  it('/link-na-bio some com Header/Footer mas mantém o GTM; admin e login somem de tudo', async () => {
+    const { semChrome, areaInterna } = await carregar('');
+    expect(semChrome('/link-na-bio')).toBe(true);
+    expect(areaInterna('/link-na-bio')).toBe(false);
+    for (const p of ['/login', '/admin', '/admin/produtos']) expect(semChrome(p), p).toBe(true);
+    for (const p of ['/', '/loja']) expect(semChrome(p), p).toBe(false);
+  });
+});
+
 describe('exigirMockups', () => {
   it('dá 404 sem a flag', async () => {
     const { exigirMockups } = await carregar('');

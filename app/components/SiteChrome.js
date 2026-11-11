@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { areaInterna } from '@/lib/navegacao';
+import { areaInterna, semChrome } from '@/lib/navegacao';
 import Consentimento from './Consentimento';
 
 // Oculta o Header e o Footer institucionais em /login e /admin, onde a
@@ -9,14 +9,14 @@ import Consentimento from './Consentimento';
 // próprio do admin). O aviso de cookies/GTM também fica de fora dessas rotas.
 export default function SiteChrome({ header, footer, children }) {
   const pathname = usePathname();
-  const hideChrome = areaInterna(pathname);
+  const hideChrome = semChrome(pathname);
 
   return (
     <>
       {!hideChrome && header}
       {children}
       {!hideChrome && footer}
-      {!hideChrome && <Consentimento />}
+      {!areaInterna(pathname) && <Consentimento />}
     </>
   );
 }
