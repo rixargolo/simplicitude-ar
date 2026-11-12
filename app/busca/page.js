@@ -2,10 +2,10 @@ import Form from 'next/form';
 import Link from 'next/link';
 import { getProdutosBusca } from '@/lib/produtos';
 import { buscarProdutos, normalizarTermo, TERMO_MAX, TERMO_MIN } from '@/lib/busca';
+import { SIZES_CARD_GRADE } from '@/lib/fotos';
 import CardProduto from '../components/CardProduto';
 import styles from './busca.module.css';
 
-const SIZES_GRADE = '(max-width: 640px) 50vw, (max-width: 1100px) 33vw, 18rem';
 
 // Resultados de busca não entram no Google, nem depois do go-live (quando o X-Robots-Tag global sair).
 export async function generateMetadata({ searchParams }) {
@@ -71,7 +71,7 @@ export default async function BuscaPage({ searchParams }) {
         <ul className={styles.grade}>
           {produtos.map((produto) => (
             <li key={produto.id}>
-              <CardProduto produto={produto} Titulo="h2" sizes={SIZES_GRADE} />
+              <CardProduto produto={produto} Titulo="h2" sizes={SIZES_CARD_GRADE} />
             </li>
           ))}
         </ul>

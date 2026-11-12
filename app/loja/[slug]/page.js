@@ -3,6 +3,7 @@ import { headers } from 'next/headers';
 import Link from 'next/link';
 import { getProdutoBySlug, getSlugAtual, getFotosDoProduto } from '@/lib/produtos';
 import { textoSimples } from '@/lib/texto';
+import { OG, urlOg } from '@/lib/fotos';
 import ApresentacaoProduto from '../../components/ApresentacaoProduto';
 import BotaoComprar from '../../components/BotaoComprar';
 import styles from './produto.module.css';
@@ -21,12 +22,18 @@ export async function generateMetadata({ params }) {
     return { title: 'Produto não encontrado — Simplicitude' };
   }
 
+  const descricao = produto.descricao_curta || textoSimples(produto.descricao) || undefined;
+  // Prévia de link (WhatsApp etc.): só a versão própria de 1200×630 (JPEG leve, URL absoluta do Storage).
+  // Foto ainda não otimizada = sem imagem aqui, vale a OG padrão da raiz; nunca o original pesado.
+  const og = urlOg(produto.imagem_url);
+
   return {
     title: `${produto.nome} — Simplicitude`,
-    description: produto.descricao_curta || textoSimples(produto.descricao) || undefined,
+    description: descricao,
     openGraph: {
       title: produto.nome,
-      ...(produto.imagem_url && { images: [produto.imagem_url] }),
+      description: descricao,
+      ...(og && { images: [{ url: og, width: OG.largura, height: OG.altura, type: 'image/jpeg', alt: produto.nome }] }),
     },
   };
 }

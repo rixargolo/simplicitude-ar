@@ -62,6 +62,34 @@
   background: var(--bg);
 }
 
+.input[readonly] {
+  background: var(--cor-superficie);
+  cursor: default;
+}
+
+.slugCabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.linkSlug {
+  font-family: var(--font-body);
+  font-size: var(--tam-pequeno);
+  color: var(--cor-texto-suave);
+  background: none;
+  border: none;
+  padding: 0;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.linkSlug:hover,
+.linkSlug:focus-visible {
+  color: var(--cor-texto);
+}
+
 .ajuda {
   font-family: var(--font-body);
   font-size: var(--tam-pequeno);

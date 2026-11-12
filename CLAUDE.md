@@ -67,7 +67,7 @@ públicas, `proxy.js`, textos fixos ou no schema de conteúdo** (produtos, categ
   (2026-11-06)**.** **X4 (controle do slider sem Pausar/Continuar, pílula translúcida) está no código.**
   **X5 (home com Meditação, seção do meio e Quem somos; ver `/`) está no código; a seção do meio virou a Sustentabilidade no X18.** **X6 (Novidades permanente, curadoria em `/admin/novidades`) está no
   código e o SQL `supabase/migrations/20261106130000_produtos_novidade_ordem.sql` **já foi aplicado (2026-11-06)**
-  (a home cai nos mais recentes enquanto a curadoria estiver vazia).** **X7 (categorias com imagem: foto no admin + desfoque que esmaece no hover) e X10 (sem chips de categoria na vitrine Novidades) estão no código e o SQL `supabase/migrations/20261106140000_categorias_imagem.sql` **já foi aplicado (2026-11-06)**.** **X11 (análise e organização do Storage: buckets por tipo, policies em SQL, limites, órfãos, público/privado) só está registrado no plano, sem implementação.** **X9 (página 404 da marca, `app/not-found.js`) está no código; texto provisório, confirmar com a dona.** **X12 (coleções dentro de categorias, produto ↔ coleção M:N, gestão em `/admin/colecoes`, par de tradução EN de categorias e coleções) está no código e concluído/testado; o SQL `20261106150000_x12_colecoes.sql` **foi aplicado (2026-11-06)**.** **X13 (campos do produto: descrição curta, descrição longa com quebras de linha, ingredientes, tags com CRUD em `/admin/tags` e tradução EN de produto e tag) está no código e concluído/testado; o SQL `20261107120000_x13_campos_produto.sql` **foi aplicado (2026-11-07)**.** **X14 (nova `/loja`: topo só de texto, filtro por categoria e coleção, carrosséis de uma linha por categoria e coleção; sem SQL) está no código, build e testes verdes; falta o dono conferir no navegador.** **Ideias registradas, nada implementado:** **X15** (destaque ou landing de Presentes/Natal) e **X17** (política de troca e devolução, dentro do A11); detalhes no plano. **X16 (busca: lupa no `Header` + `/busca?q=`, 2026-11-08, sem SQL) está no código; falta o dono conferir no navegador.** **X18 (feedback da dona, rodada 2, 3 fatias):** **fatia 1 feita** (menu Meditação/Sustentabilidade com a rota `/sustentabilidade`, categorias da home sem desfoque, frase "Acesse aqui a meditação guiada" no produto; sem SQL); **fatia 2 feita** (seção Meditação da home sem caixa nem moldura, foto direto no fundo, título "Chocolates para Meditação" e botão "Conheça a Coleção Inspirar" para `/loja?colecao=inspirar`; sem SQL); **fatia 3 feita** (seção Sustentabilidade na home no lugar do placeholder, "Um mundo melhor com simples atitudes", 3 blocos que levam a `/sustentabilidade`; a página agora existe em produção, só com título e aviso de "em breve"; sem SQL) — **X18 concluído**; ajuste pós-X18 (2026-11-07): Quem somos também saiu do cartão (home sem caixa em todas as seções); **ajuste pós-X18 (2026-11-08, sem SQL):** novos slides do hero (Presentes, Floresta, Meditação, Loja, textos e links da dona; ver "Fotos do hero"), frase do manifesto entre o hero e a vitrine, e controles do slider sobre a foto no celular (sem linha própria). **X19 (2026-11-08, sem SQL):** link de `/meditacao` para a coleção; **revisado no mesmo dia**: a pílula do topo saiu e cada produto da lista de meditações ganhou "Ver na loja" para `/loja/[slug]`; **topo de `/meditacao` refeito** (faixa de 3 fotos + duas colunas com título/botão e o texto da dona, ver Rotas); falta o dono conferir no navegador. **X20 (2026-11-08):** campo "Título da meditação" no cadastro do produto (aparece com "Possui meditação guiada"; par EN na `TraducaoEn`), usado como título em `/meditacao` no lugar do nome (vazio = nome); **SQL `20261108120000_x20_titulo_meditacao.sql` já foi aplicado (2026-11-08)**; falta o dono conferir no navegador. Próximo: mostrar o preview à dona.
+  (a home cai nos mais recentes enquanto a curadoria estiver vazia).** **X7 (categorias com imagem: foto no admin + desfoque que esmaece no hover) e X10 (sem chips de categoria na vitrine Novidades) estão no código e o SQL `supabase/migrations/20261106140000_categorias_imagem.sql` **já foi aplicado (2026-11-06)**.** **X11 (análise e organização do Storage: buckets por tipo, policies em SQL, limites, órfãos, público/privado) só está registrado no plano, sem implementação.** **X9 (página 404 da marca, `app/not-found.js`) está no código; texto provisório, confirmar com a dona.** **X12 (coleções dentro de categorias, produto ↔ coleção M:N, gestão em `/admin/colecoes`, par de tradução EN de categorias e coleções) está no código e concluído/testado; o SQL `20261106150000_x12_colecoes.sql` **foi aplicado (2026-11-06)**.** **X13 (campos do produto: descrição curta, descrição longa com quebras de linha, ingredientes, tags com CRUD em `/admin/tags` e tradução EN de produto e tag) está no código e concluído/testado; o SQL `20261107120000_x13_campos_produto.sql` **foi aplicado (2026-11-07)**.** **X14 (nova `/loja`: topo só de texto, filtro por categoria e coleção, carrosséis de uma linha por categoria e coleção; sem SQL) está no código, build e testes verdes; falta o dono conferir no navegador.** **Ideias registradas, nada implementado:** **X15** (destaque ou landing de Presentes/Natal) e **X17** (política de troca e devolução, dentro do A11); detalhes no plano. **X16 (busca: lupa no `Header` + `/busca?q=`, 2026-11-08, sem SQL) está no código; falta o dono conferir no navegador.** **X18 (feedback da dona, rodada 2, 3 fatias):** **fatia 1 feita** (menu Meditação/Sustentabilidade com a rota `/sustentabilidade`, categorias da home sem desfoque, frase "Acesse aqui a meditação guiada" no produto; sem SQL); **fatia 2 feita** (seção Meditação da home sem caixa nem moldura, foto direto no fundo, título "Chocolates para Meditação" e botão "Conheça a Coleção Inspirar" para `/loja?colecao=inspirar`; sem SQL); **fatia 3 feita** (seção Sustentabilidade na home no lugar do placeholder, "Um mundo melhor com simples atitudes", 3 blocos que levam a `/sustentabilidade`; a página agora existe em produção, só com título e aviso de "em breve"; sem SQL) — **X18 concluído**; ajuste pós-X18 (2026-11-07): Quem somos também saiu do cartão (home sem caixa em todas as seções); **ajuste pós-X18 (2026-11-08, sem SQL):** novos slides do hero (Presentes, Floresta, Meditação, Loja, textos e links da dona; ver "Fotos do hero"), frase do manifesto entre o hero e a vitrine, e controles do slider sobre a foto no celular (sem linha própria). **X19 (2026-11-08, sem SQL):** link de `/meditacao` para a coleção; **revisado no mesmo dia**: a pílula do topo saiu e cada produto da lista de meditações ganhou "Ver na loja" para `/loja/[slug]`; **topo de `/meditacao` refeito** (faixa de 3 fotos + duas colunas com título/botão e o texto da dona, ver Rotas); falta o dono conferir no navegador. **X20 (2026-11-08):** campo "Título da meditação" no cadastro do produto (aparece com "Possui meditação guiada"; par EN na `TraducaoEn`), usado como título em `/meditacao` no lugar do nome (vazio = nome); **SQL `20261108120000_x20_titulo_meditacao.sql` já foi aplicado (2026-11-08)**; falta o dono conferir no navegador. **X21 (2026-11-11, fotos de produto otimizadas: 5 versões geradas no navegador do admin, `FotoProduto` com `srcset` direto do Storage, `og:image` 1200×630 JPEG; ver "Fotos do produto"):** código pronto, build e testes verdes; **falta aplicar `20261111120000_fotos_otimizadas.sql`, rodar `scripts/otimizar-fotos-produtos.mjs` e validar** (envio testado no localhost, não no preview). Próximo: mostrar o preview à dona.
 - **Decisões vigentes:** checkout como **convidado** (a decisão antiga de login obrigatório
   está superada); vitrine da home com título derivado do critério de ordem — `novidade_ordem` (curadoria da dona,
   reserva `created_at`) = "Novidades",
@@ -355,7 +355,7 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
   link do WhatsApp com mensagem pronta** (`BotaoComprar`, nova aba, sem carrinho/quantidade). Sem estoque
   (`estoque === 0`): selo "Esgotado" e o mesmo botão com o rótulo "Consultar no WhatsApp" (não perde a
   venda; sem ramo novo). `tem_meditacao` mostra só o link "Acesse aqui a meditação guiada" para `/meditacao` (sem player aqui; frase do X18).
-  `generateMetadata`: `title`, `description` e `openGraph` com título e foto principal (sem foto, vale a imagem OG padrão da raiz;
+  `generateMetadata`: `title`, `description` e `openGraph` com título, descrição e a prévia `-og.jpg` 1200×630 da foto principal (X21; sem foto otimizada, vale a imagem OG padrão da raiz;
   `openGraph` da página substitui o do layout por inteiro, então `siteName`/`locale` não chegam aqui: não conferido, sem banco local)
 - **`/privacidade`, `/entrega`, `/trocas`** (A11, 2026-11-08; `/trocas` cobre o X17) — páginas estáticas (`○`) de `PaginaLegal`, com `title`
   "… — Simplicitude" e `description` próprios. **Texto em Markdown editável, fora do código: `content/legal/{privacidade,entrega,trocas}.md`**
@@ -392,15 +392,18 @@ Auth / admin (chrome oculto por `SiteChrome`):
   CRUD de produtos (toggle ativo/inativo, upload de imagem); **coleções (X12): checkboxes agrupados por categoria**
   (produto em várias; a 1ª marcada na ordem do admin vira `produtos.colecao_id`; `salvarColecoes` roda **depois** do
   update de `produtos` e deixa em `produto_colecoes` exatamente as marcadas; a lista mostra todas); `novo` e `[id]/editar` têm
-  link "← Produtos" acima do formulário, voltando para a listagem. **Campo "Endereço na loja" (X8)** no
-  `ProdutoForm`: sugerido do nome só na criação (até ser editado à mão), nunca acompanha o nome na edição;
-  normalizado com `slugify` ao sair do campo, validado com `slugValido`, mostra `{origem}/loja/{slug}`, e na
+  link "← Produtos" acima do formulário, voltando para a listagem. **Campo "Final do endereço (slug)" (X8, rótulo e ajuda
+  refeitos em 2026-11-11 após 6 produtos serem cadastrados com o link colado)** no
+  `ProdutoForm`, via `CampoSlug` (ver Componentes; o mesmo campo está em categoria, coleção e tag): sugerido do nome só na criação (até ser editado à mão), nunca acompanha o nome na edição;
+  normalizado com `slugDoEndereco(slug, 'produto')` ao sair do campo **e no envio** (o Enter não passa pelo blur; link colado vira só o
+  slug), validado com `slugValido`, mostra `{origem}/loja/{slug}`, e na
   edição avisa que mudar afeta links compartilhados (o antigo redireciona, mas não é reaproveitável). Unicidade
   é do banco: erro `23505` vira "já é (ou já foi) de outro produto". **X13:** "Atributos" saiu do formulário (e do
   payload: a `v1` nunca grava `atributos`); entram "Descrição curta" (≤120, contador), "Descrição longa", "Ingredientes",
   checkboxes de **Tags** e a seção `TraducaoEn` (nome, curta, longa, ingredientes → `produto_traducoes`; fica **logo depois do
   campo Ingredientes**, antes de Peso/Preço, para não parecer escondida abaixo das fotos). `salvarVinculos`
   (coleções e tags) roda depois do update de `produtos`; a lista ganha a coluna "EN". **X20:** com "Possui meditação guiada"
+  **Falha depois da criação (X21):** se o produto novo foi criado mas uma etapa seguinte falhou (foto, coleções, tags), o `ProdutoForm` guarda o produto em `criado` e passa a **editar** esse produto (título "Editar — …", próximo Salvar faz update, sem `23505`); erro de envio de foto mostra "O produto foi salvo, mas não foi possível enviar a foto: … Clique em Salvar para tentar de novo". Não há mais prop `mode`: produto vindo da página de edição = `produto`, senão é novo.
   marcado, aparece "Título da meditação" (acima da URL do áudio; opcional, vazio = nome do produto) e, em "English (opcional)",
   "Meditation title"; desmarcar grava `null` no `titulo_meditacao` do produto e zera o EN (como o `audio_url`)
 - **`/admin/categorias`**, **`/admin/categorias/nova`**,
@@ -503,6 +506,7 @@ Cada um com `*.module.css` co-locado.
   ingredientes, fica só a curta, e o nome desce para 90% de `--tam-nome-produto` (`calc`; `--tam-titulo-secao` ficou pequeno demais)), `fotos` (opcional, de `getFotosDoProduto`; sem ela cai na
   cópia da principal em `produtos.imagem_*` via `fotosDoProduto`, caso de `/meditacao`), `titulo` (opcional, X20: troca só o
   texto do título; sem ele vale `produto.nome`) e `Titulo` (`h2` padrão; a página do produto passa `h1`)
+- **`FotoProduto`** (server-safe, X21) — foto de produto que preenche o pai (como `<Image fill>`); ver "Fotos do produto". Props `src`, `alt`, `sizes`, `className`, `style`, `preload`
 - **`GaleriaProduto`** (`'use client'`) — foto principal no quadro do card (`--proporcao-produto`, `cover`,
   `estiloFoto` de cada foto: foco e zoom) e, com 2+ fotos, miniaturas em `<button>` (`aria-label` "Ver foto N
   de M", `aria-current`, foco visível; Tab + Enter/Espaço; fileira rolável no celular, quebra linha ≥700px).
@@ -577,6 +581,16 @@ Cada um com `*.module.css` co-locado.
   contraste não muda). **Sem desfoque (X18, 2026-11-07):** a foto é sempre nítida, sem efeito de
   hover (o `.foto::after` com `backdrop-filter` foi removido a pedido da dona; ficam o levantar do cartão e a seta). Foto decorativa (`alt=""`)
 - **`MeditacaoPlayer`** (`'use client'`) — player de áudio da meditação guiada
+- **`CampoSlug`** (`'use client'`, `app/admin/CampoSlug.js`, não em `components/`) — campo "Final do endereço (slug)" dos formulários de
+  produto, categoria, coleção e tag. **Nasce travado** (`readOnly`, mostra `value || sugestao`, fundo `--cor-superficie`) e o link discreto
+  "Editar endereço" ao lado do rótulo destrava (foco no campo; se `value` está vazio parte de `sugestao`); não há como travar de novo.
+  Props `id`, `tipo` (`produto|categoria|colecao|tag`), `value`, `onChange(slug)`, `sugestao` (slug
+  do nome, vira placeholder e prévia), `required`, `avisoEdicao` (texto mostrado **ao destravar**, só em registro existente: produto
+  diz que o endereço antigo continua redirecionando (308) mas não é reaproveitável; categoria e coleção dizem que o link antigo mostra a
+  loja inteira, sem redirecionamento; tag sem aviso), `children` (informação fixa do formulário). Ajuda (só destravado) e prévia por tipo
+  (`{origem}/loja/…`, `/loja?categoria=…`, `/loja?colecao=…`; tag sem prévia, não tem página); no blur aplica `slugDoEndereco` e,
+  se havia link, avisa "Você colou um link…" ou que o link não tem o endereço daquele tipo. Cada formulário aplica `slugDoEndereco`
+  de novo no envio. Usa `categorias/CategoriaForm.module.css`, como o `TraducaoEn`
 - **`TraducaoEn`** (`'use client'`, mora em `app/admin/TraducaoEn.js`, não em `components/`) — seção recolhível "English
   (opcional)" dos formulários de categoria, coleção, produto e tag; aberta só se já há tradução. A prop `campos`
   (`[{ chave, rotulo, multilinha?, maxLength?, formatado? }]`, padrão nome + descrição) define os campos; `formatado: true` troca o
@@ -661,7 +675,9 @@ com `NEXT_PUBLIC_MOCKUPS=1` e, sem a flag, só os que têm `imagem`. Cobertos em
   fallback fixo)
 - `getProdutoBySlug(slug)` embute também `tags(nome)` (N:N por `produto_tags`, ordenadas por nome, X13)
 - `slugify(nome)` (só para **sugerir** slug nos formulários do admin e normalizar a digitação; não resolve
-  mais rota), `slugValido(slug)` (regex + ≤ 80, a mesma regra do `check` no banco), `getProdutoBySlug(slug)`
+  mais rota), `slugDoEndereco(texto, tipo)` (campo de slug do admin: texto comum = `slugify`; link colado de qualquer domínio
+  fica só com o slug do `tipo`: `produto` = depois de `/loja/`, `categoria` = `?categoria=`, `colecao` = `?colecao=`; link de outro
+  tipo, de `tag` (sem endereço público) ou sem o endereço = `''`; coberto em `tests/slug.test.js`), `slugValido(slug)` (regex + ≤ 80, a mesma regra do `check` no banco), `getProdutoBySlug(slug)`
   (`produtos.slug`, ativos) e `getSlugAtual(slugAntigo)` (`produto_slugs` → slug atual do produto ativo, ou
   `null`). `CardProduto` linka por `produto.slug`. Cobertos em `tests/slug.test.js`
 
@@ -708,6 +724,8 @@ só produz dados; `TextoFormatado` monta elementos React, sem `dangerouslySetInn
 Cobertos em `tests/texto.test.js`.
 
 ### Fotos do produto (X1) — `lib/fotos.js`
+
+**Otimização (X21, 2026-11-11; sem o SQL aplicado e sem fotos reprocessadas até o dono confirmar):** foto nova de produto é reduzida **no navegador** (`app/admin/produtos/processarFoto.js`, canvas, passos de metade, EXIF aplicado e metadados descartados) e sobe em 5 arquivos `{produto_id}/{uuid}-{320|640|1080|1600}.webp` (JPEG se o navegador não gera WebP, ex. Safari) + `{uuid}-og.jpg` (1200×630, foto inteira sobre `#f6f3ea`, JPEG). Largura nunca amplia (original menor repete o mesmo tamanho nos nomes maiores). `produto_imagens.caminho` e a cópia `produtos.imagem_url` apontam para a **`-1600`**. Funções puras em `lib/fotos.js`: `LARGURAS`, `OG`, `fotoOtimizada` (convenção de nome `-1600.(webp|jpg)`), `urlLargura`, `srcsetFoto`, `urlOg`, `arquivosDaFoto` (todas as versões, usada ao excluir), `dimensoesLimitadas`, `retanguloContido`, e os `sizes` dos cards `SIZES_CARD_CARROSSEL`/`SIZES_CARD_GRADE` (medidos pelo CSS: se o CSS do card mudar, mudar lá). **`FotoProduto`** (`components/`, server-safe) é o único jeito de mostrar foto de produto: otimizada vira `<img srcset>` direto do Storage (nada passa pelo Image CDN do Netlify), antiga cai no `next/image`; usado por `CardProduto`, `GaleriaProduto` e a lista do admin. Entrada no admin até 20 MB (`TAMANHO_MAX_ENTRADA`); `TAMANHO_MAX` (5 MB) segue valendo para foto de categoria, que **não** é processada. Excluir foto remove as 5 versões, **nunca** o original de uma foto reprocessada. **`produto_imagens.caminho_original`** (migration `20261111120000_fotos_otimizadas.sql`, **ainda não aplicada**): guarda o original de uma foto reprocessada por `scripts/otimizar-fotos-produtos.mjs` (`--simular`; idempotente; **nunca apaga do Storage**; reversão em `supabase/scripts/fotos_otimizadas_reverter.sql`). **Pendente:** apagar os originais depois da validação do dono. Metadata de `/loja/[slug]`: `og:image` = `urlOg(imagem_url)` com width/height/type; sem foto otimizada não declara imagem (vale a OG padrão da raiz).
 
 **Produtos de teste (2026-11-07; removidos em 2026-11-08):** `supabase/scripts/teste_inserir_produtos.sql` cria 22 produtos (slug
 `teste-*`, tags `teste-*`) cobrindo Chocolates, Presentes, Empório e Dia-a-Dia e as coleções Inspirar e Bombons;
@@ -793,7 +811,7 @@ Cobertos em `tests/i18n.test.js`.
 - **`produto_imagens`** (X1; migration `supabase/migrations/20261105181330_produto_imagens.sql`) — `id` (uuid), `produto_id` (FK
   `produtos`, `on delete cascade`), `caminho` (no bucket `produtos`, `unique (produto_id, caminho)`), `ordem`
   (menor = antes; a primeira é a principal), `foco_x`/`foco_y` (0–100, default 50), `zoom` (100–200, default
-  100), `alt` (opcional), `created_at`. RLS: leitura pública (`anon`) só de produto ativo; escrita para
+  100), `alt` (opcional), `created_at`, **`caminho_original`** (X21, text nullable; original de uma foto reprocessada, migration `20261111120000_fotos_otimizadas.sql`, ainda não aplicada). RLS: leitura pública (`anon`) só de produto ativo; escrita para
   `authenticated` (mesmo modelo das demais, ver pendência de segurança #1). `produtos.imagem_*` é a cópia da principal
 - **`categorias`** — `id`, `nome`, `slug`, `descricao` — tipo do produto, usado como
   rótulo de exibição (ex.: "Chocolate", "Combo"). **X7** (migration `supabase/migrations/20261106140000_categorias_imagem.sql`,
@@ -861,7 +879,8 @@ checkout):**
   como isso deve ser escrito quando o checkout existir.
 
 - **Storage**: bucket `produtos` (limite de 5 MB e só JPEG/PNG/WebP, definido no SQL do X1), caminho
-  `{produto_id}/{uuid}.{ext}` nas fotos novas (nome único, sem cache-buster); fotos antigas ficam em
+  `{produto_id}/{uuid}-{largura}.{ext}` + `{uuid}-og.jpg` nas fotos novas (X21, nome único, sem cache-buster, `cacheControl` de 1 ano; ver Fotos do produto);
+  fotos de antes do X21 em `{produto_id}/{uuid}.{ext}`; fotos antigas ficam em
   `{produto_id}/principal.{ext}` (com `?v=` em `imagem_url`). Fotos de categoria (X7): bucket **próprio `categorias`**
   (público, 5 MB, JPEG/PNG/WebP, criado com a policy `authenticated` de escrita no SQL de
   `20261106140000_categorias_imagem.sql`, aplicado em 2026-11-06), caminho `{categoria_id}/{uuid}.{ext}`. URL pública
@@ -951,6 +970,7 @@ implementado — ver pendência de segurança #3.
 - `scripts/migrar-imagens-produtos.mjs` — migração one-off e idempotente de imagens no
   Storage para a estrutura `{id}/principal.{ext}`; usa `SUPABASE_ADMIN_EMAIL` /
   `SUPABASE_ADMIN_PASSWORD`
+- `scripts/otimizar-fotos-produtos.mjs` — reprocessa as fotos de produto já no Storage (X21; `--simular`, nunca apaga; `sharp` vem do Next); mesmo padrão de autenticação admin
 - `scripts/vincular-audio-meditacao.mjs` — script one-off e idempotente que vincula os
   áudios de meditação guiada (bucket `meditacao`) aos produtos Esperança/Serenidade,
   preenchendo `audio_url` (já rodado); mesmo padrão de autenticação admin do script acima

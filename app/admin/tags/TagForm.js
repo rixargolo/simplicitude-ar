@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { slugify, slugValido } from '@/lib/produtos';
+import { slugify, slugDoEndereco, slugValido } from '@/lib/produtos';
+import CampoSlug from '../CampoSlug';
 import TraducaoEn, { salvarTraducao, traducaoEnInicial } from '../TraducaoEn';
 import styles from '../categorias/CategoriaForm.module.css';
 
@@ -29,9 +30,9 @@ export default function TagForm({ mode, tag }) {
       setErro('Informe o nome da tag.');
       return;
     }
-    const slugFinal = slug.trim() || slugify(nome);
+    const slugFinal = slug.trim() ? slugDoEndereco(slug, 'tag') : slugify(nome);
     if (!slugValido(slugFinal)) {
-      setErro('Endereço inválido: use só letras minúsculas sem acento, números e hífen (até 80 caracteres).');
+      setErro('Endereço inválido: use só a parte final, com letras minúsculas sem acento, números e hífen (até 80 caracteres).');
       return;
     }
 
@@ -92,20 +93,7 @@ export default function TagForm({ mode, tag }) {
         <input className={styles.input} type="text" value={nome} onChange={(e) => setNome(e.target.value)} required />
       </label>
 
-      <div className={styles.field}>
-        <label htmlFor="tag-slug" className={styles.label}>Endereço (slug)</label>
-        <input
-          id="tag-slug"
-          className={styles.input}
-          type="text"
-          value={slug}
-          onChange={(e) => setSlug(e.target.value)}
-          onBlur={() => setSlug(slugify(slug))}
-          placeholder={nome ? slugify(nome) : 'gerado a partir do nome'}
-          autoCapitalize="none"
-          spellCheck={false}
-        />
-      </div>
+      <CampoSlug id="tag-slug" tipo="tag" value={slug} onChange={setSlug} sugestao={slugify(nome)} />
 
       <TraducaoEn valores={en} onChange={setEn} campos={CAMPOS_EN} />
 

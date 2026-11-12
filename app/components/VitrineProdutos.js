@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { SIZES_CARD_CARROSSEL } from '@/lib/fotos';
 import CarrosselProdutos from './CarrosselProdutos';
 import styles from './VitrineProdutos.module.css';
 
@@ -24,7 +25,7 @@ export default function VitrineProdutos({ titulo, produtos }) {
         produtos={produtos}
         rotulo={titulo}
         className={styles.trilho}
-        sizes="(max-width: 900px) 70vw, 18rem"
+        sizes={SIZES_CARD_CARROSSEL}
       />
     </section>
   );

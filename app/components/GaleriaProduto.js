@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
+import FotoProduto from './FotoProduto';
 import { estiloFoto } from '@/lib/foco';
 import styles from './GaleriaProduto.module.css';
 
@@ -23,12 +23,11 @@ export default function GaleriaProduto({ fotos, nome }) {
   return (
     <div className={styles.galeria}>
       <div className={styles.quadro}>
-        <Image
+        <FotoProduto
           key={foto.url}
           src={foto.url}
           alt={foto.alt ?? nome}
-          fill
-          sizes="(max-width: 700px) 100vw, 500px"
+          sizes="(max-width: 700px) 100vw, 468px"
           className={styles.foto}
           style={estiloFoto(foto.foco_x, foto.foco_y, foto.zoom)}
           preload={atual === 0}
@@ -46,10 +45,9 @@ export default function GaleriaProduto({ fotos, nome }) {
                 aria-label={`Ver foto ${i + 1} de ${fotos.length}`}
                 aria-current={i === atual ? 'true' : undefined}
               >
-                <Image
+                <FotoProduto
                   src={f.url}
                   alt=""
-                  fill
                   sizes="72px"
                   className={styles.foto}
                   style={estiloFoto(f.foco_x, f.foco_y, f.zoom)}

@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { getProdutos, getCategoriasComProdutos, getColecoesPublicas, montarLoja } from '@/lib/produtos';
+import { SIZES_CARD_CARROSSEL, SIZES_CARD_GRADE } from '@/lib/fotos';
 import CardProduto from '../components/CardProduto';
 import CarrosselProdutos from '../components/CarrosselProdutos';
 import BarraDeslizante from './BarraDeslizante';
@@ -12,8 +13,6 @@ export const metadata = {
     'Chocolates artesanais Simplicitude — Da Floresta à Fábrica.',
 };
 
-const SIZES_CARROSSEL = '(max-width: 900px) 70vw, 18rem';
-const SIZES_GRADE = '(max-width: 640px) 50vw, (max-width: 1100px) 33vw, 18rem';
 
 // X14: topo só de texto (sem foto nem cartão), filtro por categoria (?categoria=) e coleção (?colecao=) e, em "Todas", um carrossel
 // por coleção de cada categoria. Tudo no servidor (links), funciona sem JS. Regras em montarLoja (lib/produtos.js).
@@ -132,7 +131,7 @@ export default async function LojaPage({ searchParams }) {
             <ul className={styles.grade}>
               {grade.map((produto) => (
                 <li key={produto.id}>
-                  <CardProduto produto={produto} Titulo={nomeGrade} sizes={SIZES_GRADE} />
+                  <CardProduto produto={produto} Titulo={nomeGrade} sizes={SIZES_CARD_GRADE} />
                 </li>
               ))}
             </ul>
@@ -158,7 +157,7 @@ export default async function LojaPage({ searchParams }) {
                       produtos={l.produtos}
                       rotulo={titulo ?? nome}
                       Titulo="h4"
-                      sizes={SIZES_CARROSSEL}
+                      sizes={SIZES_CARD_CARROSSEL}
                     />
                   </div>
                 );

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { FOCO_PADRAO, ZOOM_PADRAO } from '@/lib/foco';
-import { MAX_FOTOS, TIPOS_ACEITOS, mover, tornarPrincipal, validarArquivos } from '@/lib/fotos';
+import { MAX_FOTOS, TAMANHO_MAX_ENTRADA, TIPOS_ACEITOS, mover, tornarPrincipal, urlLargura, validarArquivos } from '@/lib/fotos';
 import SeletorFoco from './SeletorFoco';
 import styles from './FotosProduto.module.css';
 
@@ -37,7 +37,7 @@ export default function FotosProduto({ fotos, onChange, nomeProduto }) {
   const ajustando = fotos.find((f) => f.chave === ajustandoChave) ?? fotos[0];
 
   function adicionar(event) {
-    const { aceitos, erros: novosErros } = validarArquivos(Array.from(event.target.files ?? []), fotos.length);
+    const { aceitos, erros: novosErros } = validarArquivos(Array.from(event.target.files ?? []), fotos.length, TAMANHO_MAX_ENTRADA);
     event.target.value = ''; // permite escolher o mesmo arquivo de novo
     setErros(novosErros);
     if (aceitos.length === 0) return;
@@ -85,7 +85,7 @@ export default function FotosProduto({ fotos, onChange, nomeProduto }) {
           onChange={adicionar}
           disabled={fotos.length >= MAX_FOTOS}
         />
-        <span className={styles.ajuda}>JPEG, PNG ou WebP, até 5 MB cada. A primeira da lista é a principal (a do card).</span>
+        <span className={styles.ajuda}>JPEG, PNG ou WebP, até 20 MB cada (são reduzidas ao salvar). A primeira da lista é a principal (a do card).</span>
       </label>
 
       {erros.length > 0 && (
@@ -104,7 +104,7 @@ export default function FotosProduto({ fotos, onChange, nomeProduto }) {
               <li key={foto.chave} className={styles.item}>
                 <div className={styles.miniatura}>
                   {/* eslint-disable-next-line @next/next/no-img-element -- pode ser blob: do arquivo ainda não enviado */}
-                  <img src={foto.url} alt="" className={styles.miniaturaFoto} />
+                  <img src={urlLargura(foto.url, 320)} alt="" className={styles.miniaturaFoto} />
                 </div>
 
                 <div className={styles.corpo}>
