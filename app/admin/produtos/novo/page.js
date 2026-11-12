@@ -21,7 +21,7 @@ export default async function NovoProdutoPage() {
       <Link href="/admin/produtos" className={formStyles.voltar}>
         ← Produtos
       </Link>
-      <ProdutoForm mode="create" colecoes={colecoes} categorias={categorias} tags={tags} />
+      <ProdutoForm colecoes={colecoes} categorias={categorias} tags={tags} />
     </div>
   );
 }

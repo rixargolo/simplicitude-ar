@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Image from 'next/image';
+import FotoProduto from '../../components/FotoProduto';
 import { getAllProdutos } from '@/lib/admin/produtos';
 import { getColecoes } from '@/lib/admin/colecoes';
 import ToggleAtivo from './ToggleAtivo';
@@ -55,10 +55,9 @@ export default async function AdminProdutosPage() {
                   <td>
                     {produto.imagem_url ? (
                       <div className={styles.imgWrap}>
-                        <Image
+                        <FotoProduto
                           src={produto.imagem_url}
                           alt={produto.nome}
-                          fill
                           sizes="48px"
                           className={styles.img}
                         />

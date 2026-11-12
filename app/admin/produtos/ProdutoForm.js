@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { slugify, slugValido } from '@/lib/produtos';
-import { caminhoDaUrl, fotosDoProduto } from '@/lib/fotos';
+import { LARGURAS, arquivosDaFoto, caminhoDaUrl, fotosDoProduto, urlLargura, urlOg } from '@/lib/fotos';
+import { processarFoto } from './processarFoto';
 import FotosProduto from './FotosProduto';
 import BarraFormatacao from '../BarraFormatacao';
 import TraducaoEn, { salvarTraducao, traducaoEnInicial } from '../TraducaoEn';
@@ -23,8 +24,6 @@ const CAMPOS_EN = [
   { chave: 'titulo_meditacao', rotulo: 'Meditation title' }, // só aparece com "Possui meditação" (X20)
 ];
 
-const EXTENSAO = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
-
 const urlPublica = (supabase, caminho) =>
   supabase.storage.from(BUCKET).getPublicUrl(caminho).data.publicUrl;
 
@@ -37,8 +36,13 @@ function precoParaCentavos(texto) {
   return Math.round(valor * 100);
 }
 
-export default function ProdutoForm({ mode, produto, colecoes, categorias, tags }) {
+export default function ProdutoForm({ produto, colecoes, categorias, tags }) {
   const router = useRouter();
+
+  // Produto criado por este formulário. Se a criação deu certo mas uma etapa seguinte (ex.: foto) falhou, o
+  // formulário passa a editar esse produto: tentar de novo atualiza em vez de criar outro (e não dá erro de endereço).
+  const [criado, setCriado] = useState(null);
+  const salvo = produto ?? criado; // { id, slug, nome } do produto que existe no banco, ou null se ainda é novo
 
   const [nome, setNome] = useState(produto?.nome ?? '');
   // Endereço (slug): na criação acompanha o nome até ser editado à mão; na edição nunca acompanha (X8).
@@ -58,7 +62,8 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias, tags 
       return novo;
     });
   const [en, setEn] = useState(() => traducaoEnInicial(produto?.produto_traducoes, CAMPOS_EN));
-  const existiaEn = Boolean(produto?.produto_traducoes?.some((t) => t.idioma === 'en'));
+  // criado: a tentativa anterior já pode ter gravado o EN (apagar uma linha que não existe não faz mal)
+  const existiaEn = Boolean(produto?.produto_traducoes?.some((t) => t.idioma === 'en')) || Boolean(criado);
   const [pesoGramas, setPesoGramas] = useState(
     produto?.peso_gramas != null ? String(produto.peso_gramas) : '',
   );
@@ -104,6 +109,7 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias, tags 
   const [fotos, setFotos] = useState(fotosIniciais);
   const [erro, setErro] = useState('');
   const [salvando, setSalvando] = useState(false);
+  const [otimizando, setOtimizando] = useState(false);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -146,17 +152,17 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias, tags 
     };
 
     try {
-      const produtoId =
-        mode === 'create'
-          ? await criarProduto(supabase, payload)
-          : await atualizarProduto(supabase, produto.id, payload);
+      const produtoId = salvo
+        ? await atualizarProduto(supabase, salvo.id, payload)
+        : await criarProduto(supabase, payload);
+      if (!produto) setCriado({ id: produtoId, slug: payload.slug, nome: payload.nome });
 
       // depois do update de produtos: o trigger de colecao_id mexe nos pares, e aqui o conjunto final vence
       await salvarVinculos(supabase, 'produto_colecoes', 'colecao_id', produtoId, idsColecoes, 'as coleções');
       await salvarVinculos(supabase, 'produto_tags', 'tag_id', produtoId, [...tagIds], 'as tags');
       const enSalvar = temMeditacao ? en : { ...en, titulo_meditacao: '' };
       await salvarTraducao(supabase, 'produto_traducoes', 'produto_id', produtoId, enSalvar, existiaEn);
-      await salvarFotos(supabase, produtoId, fotos, fotosIniciais, produto);
+      await salvarFotos(supabase, produtoId, fotos, fotosIniciais, produto, setOtimizando);
 
       router.push('/admin/produtos');
       router.refresh();
@@ -165,10 +171,13 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias, tags 
       setErro(
         err.code === '23505'
           ? 'Esse endereço já é (ou já foi) de outro produto. Escolha outro.'
-          : err.exibir
+          : err.reenviar
+            ? `O produto foi salvo, mas não foi possível enviar a foto: ${err.message} Clique em Salvar para tentar de novo: só a foto será enviada, o produto não é criado outra vez.`
+            : err.exibir
             ? err.message
             : 'Não foi possível salvar o produto. Tente novamente.',
       );
+      setOtimizando(false);
       setSalvando(false);
     }
   }
@@ -176,7 +185,7 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias, tags 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
       <h1 className={styles.title}>
-        {mode === 'create' ? 'Novo produto' : `Editar — ${produto.nome}`}
+        {salvo ? `Editar — ${salvo.nome}` : 'Novo produto'}
       </h1>
 
       <label className={styles.field}>
@@ -187,7 +196,7 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias, tags 
           value={nome}
           onChange={(e) => {
             setNome(e.target.value);
-            if (mode === 'create' && !slugTocado) setSlug(slugify(e.target.value));
+            if (!salvo && !slugTocado) setSlug(slugify(e.target.value));
           }}
           required
         />
@@ -213,15 +222,15 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias, tags 
         <span id="slug-ajuda" className={styles.ajuda}>
           {origem}/loja/<strong>{slug || '…'}</strong>
         </span>
-        {mode === 'edit' && (
+        {salvo && (
           <span className={styles.ajuda}>
             Mudar o nome do produto não muda o endereço.
           </span>
         )}
-        {mode === 'edit' && slug !== produto.slug && (
+        {salvo && slug !== salvo.slug && (
           <span className={styles.aviso} role="status">
             Atenção: mudar o endereço pode afetar links já compartilhados (Instagram, QR codes,
-            WhatsApp). O endereço antigo, /loja/{produto.slug}, continua funcionando e leva ao novo,
+            WhatsApp). O endereço antigo, /loja/{salvo.slug}, continua funcionando e leva ao novo,
             mas não poderá ser usado por outro produto.
           </span>
         )}
@@ -407,7 +416,7 @@ export default function ProdutoForm({ mode, produto, colecoes, categorias, tags 
 
       <div className={styles.actions}>
         <button className={styles.cta} type="submit" disabled={salvando}>
-          {salvando ? 'Salvando...' : 'Salvar'}
+          {otimizando ? 'Otimizando fotos...' : salvando ? 'Salvando...' : 'Salvar'}
         </button>
       </div>
     </form>
@@ -453,13 +462,17 @@ async function salvarVinculos(supabase, tabela, coluna, produtoId, ids, rotulo) 
 }
 
 // Grava as fotos do produto, em ordem segura (nunca apontar para arquivo apagado):
-// 1) envia os arquivos novos para {id}/{uuid}.{ext}; 2) grava/ordena as linhas de produto_imagens e
+// 1) reduz cada foto nova no navegador (processarFoto) e envia as versões para {id}/{uuid}-{largura}.{ext}
+// e {id}/{uuid}-og.jpg; `caminho` = a maior (-1600); 2) grava/ordena as linhas de produto_imagens e
 // apaga as das fotos excluídas; 3) atualiza a cópia da principal em produtos (imagem_url e foco/zoom,
 // que o card da home/loja e a branch main leem); 4) só então remove do Storage os arquivos excluídos
 // (se falhar, sobra um arquivo órfão, nunca um card quebrado).
 // shortcut: se o passo 3 falhar, as linhas já gravadas ficam e um novo "Salvar" reenvia as fotos novas
 // (sobram linhas/arquivos extras); upgrade: RPC transacional se isso incomodar.
-async function salvarFotos(supabase, produtoId, fotos, fotosIniciais, produtoAtual) {
+// Erro da etapa de envio: já foi desfeito (rollback abaixo), então tentar de novo é seguro; vira mensagem própria no formulário.
+const reenviavel = (mensagem) => Object.assign(new Error(mensagem), { exibir: true, reenviar: true });
+
+async function salvarFotos(supabase, produtoId, fotos, fotosIniciais, produtoAtual, setOtimizando) {
   const enviados = [];
   let prontas;
   try {
@@ -469,12 +482,29 @@ async function salvarFotos(supabase, produtoId, fotos, fotosIniciais, produtoAtu
         prontas.push(foto);
         continue;
       }
-      const caminho = `${produtoId}/${crypto.randomUUID()}.${EXTENSAO[foto.arquivo.type]}`;
-      const { error } = await supabase.storage
-        .from(BUCKET)
-        .upload(caminho, foto.arquivo, { cacheControl: '31536000' }); // nome único: cache longo é seguro
-      if (error) throw new Error(`Produto salvo, mas o envio de uma foto falhou: ${error.message}`);
-      enviados.push(caminho);
+      setOtimizando(true);
+      let processada;
+      try {
+        processada = await processarFoto(foto.arquivo);
+      } catch (e) {
+        console.error(e);
+        throw reenviavel(`a foto "${foto.arquivo.name}" não pôde ser preparada (se continuar, tente outro arquivo).`);
+      }
+      setOtimizando(false);
+
+      const caminho = `${produtoId}/${crypto.randomUUID()}-${LARGURAS[LARGURAS.length - 1]}.${processada.ext}`;
+      const tipo = processada.ext === 'webp' ? 'image/webp' : 'image/jpeg';
+      const arquivos = [
+        ...LARGURAS.map((l) => [urlLargura(caminho, l), processada.larguras[l], tipo]),
+        [urlOg(caminho), processada.og, 'image/jpeg'],
+      ];
+      enviados.push(...arquivos.map(([c]) => c)); // antes de enviar: se uma falhar, o rollback limpa as que subiram
+      for (const [c, blob, contentType] of arquivos) {
+        const { error } = await supabase.storage
+          .from(BUCKET)
+          .upload(c, blob, { cacheControl: '31536000', contentType }); // nome único: cache longo é seguro
+        if (error) throw reenviavel(`o envio falhou (${error.message}).`);
+      }
       prontas.push({ ...foto, caminho, url: urlPublica(supabase, caminho) });
     }
 
@@ -493,7 +523,7 @@ async function salvarFotos(supabase, produtoId, fotos, fotosIniciais, produtoAtu
       const { error } = await supabase
         .from('produto_imagens')
         .upsert(linhas, { onConflict: 'produto_id,caminho' });
-      if (error) throw new Error(`Produto salvo, mas não foi possível gravar as fotos: ${error.message}`);
+      if (error) throw reenviavel(`não foi possível gravar as fotos (${error.message}).`);
     }
   } catch (err) {
     if (enviados.length > 0) await supabase.storage.from(BUCKET).remove(enviados);
@@ -502,6 +532,7 @@ async function salvarFotos(supabase, produtoId, fotos, fotosIniciais, produtoAtu
 
   const mantidos = new Set(prontas.map((f) => f.caminho).filter(Boolean));
   const removidos = fotosIniciais.map((f) => f.caminho).filter((c) => c && !mantidos.has(c));
+  // (as linhas saem pelo caminho da foto; do Storage saem todas as versões dela, nunca o original de uma reprocessada)
 
   if (removidos.length > 0) {
     const { error } = await supabase
@@ -528,7 +559,7 @@ async function salvarFotos(supabase, produtoId, fotos, fotosIniciais, produtoAtu
   }
 
   if (removidos.length > 0) {
-    const { error } = await supabase.storage.from(BUCKET).remove(removidos);
+    const { error } = await supabase.storage.from(BUCKET).remove(removidos.flatMap(arquivosDaFoto));
     if (error) console.error('Fotos excluídas continuam no Storage:', error.message);
   }
 }

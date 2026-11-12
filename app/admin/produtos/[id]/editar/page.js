@@ -30,7 +30,6 @@ export default async function EditarProdutoPage({ params }) {
         ← Produtos
       </Link>
       <ProdutoForm
-        mode="edit"
         produto={produto}
         colecoes={colecoes}
         categorias={categorias}

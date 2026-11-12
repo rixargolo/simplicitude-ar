@@ -1,8 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import {
+  LARGURAS,
   MAX_FOTOS,
   TAMANHO_MAX,
+  TAMANHO_MAX_ENTRADA,
+  arquivosDaFoto,
   caminhoDaUrl,
+  dimensoesLimitadas,
+  fotoOtimizada,
+  retanguloContido,
+  srcsetFoto,
+  urlLargura,
+  urlOg,
   fotosDoProduto,
   mover,
   ordenarFotos,
@@ -145,5 +154,72 @@ describe('validarArquivos', () => {
     const { aceitos, erros } = validarArquivos([arq('a.jpg')], MAX_FOTOS);
     expect(aceitos).toEqual([]);
     expect(erros).toHaveLength(1);
+  });
+});
+
+describe('fotos otimizadas', () => {
+  const grande = `${BASE}p1/abc-1600.webp`;
+  const grandeJpg = `${BASE}p1/abc-1600.jpg`;
+
+  it('reconhece só a versão maior pela convenção de nome', () => {
+    expect(fotoOtimizada(grande)).toBe(true);
+    expect(fotoOtimizada(grandeJpg)).toBe(true);
+    expect(fotoOtimizada('p1/abc-1600.webp')).toBe(true);
+    expect(fotoOtimizada(`${BASE}p1/principal.jpg?v=1`)).toBe(false);
+    expect(fotoOtimizada(`${BASE}p1/abc-640.webp`)).toBe(false);
+    expect(fotoOtimizada('/teste/x-1.webp')).toBe(false);
+    expect(fotoOtimizada(null)).toBe(false);
+  });
+
+  it('urlLargura escolhe a menor versão que cobre a largura pedida', () => {
+    expect(urlLargura(grande, 100)).toBe(`${BASE}p1/abc-320.webp`);
+    expect(urlLargura(grande, 320)).toBe(`${BASE}p1/abc-320.webp`);
+    expect(urlLargura(grande, 321)).toBe(`${BASE}p1/abc-640.webp`);
+    expect(urlLargura(grande, 1080)).toBe(`${BASE}p1/abc-1080.webp`);
+    expect(urlLargura(grande, 3840)).toBe(grande);
+    expect(urlLargura(grandeJpg, 640)).toBe(`${BASE}p1/abc-640.jpg`);
+  });
+
+  it('foto não otimizada passa sem mexer', () => {
+    const antiga = `${BASE}p1/principal.png?v=2`;
+    expect(urlLargura(antiga, 320)).toBe(antiga);
+    expect(srcsetFoto(antiga)).toBe('');
+    expect(urlOg(antiga)).toBeNull();
+    expect(arquivosDaFoto('p1/principal.png')).toEqual(['p1/principal.png']);
+  });
+
+  it('srcset lista as 4 larguras reais', () => {
+    expect(srcsetFoto(grande).split(', ')).toEqual(LARGURAS.map((l) => `${BASE}p1/abc-${l}.webp ${l}w`));
+  });
+
+  it('urlOg troca para -og.jpg e descarta a query', () => {
+    expect(urlOg(`${grande}?v=3`)).toBe(`${BASE}p1/abc-og.jpg`);
+  });
+
+  it('arquivosDaFoto devolve as 4 larguras e a prévia', () => {
+    expect(arquivosDaFoto('p1/abc-1600.webp')).toEqual([
+      'p1/abc-320.webp',
+      'p1/abc-640.webp',
+      'p1/abc-1080.webp',
+      'p1/abc-1600.webp',
+      'p1/abc-og.jpg',
+    ]);
+  });
+
+  it('dimensoesLimitadas mantém a proporção e nunca amplia', () => {
+    expect(dimensoesLimitadas(4000, 3000, 1600)).toEqual({ largura: 1600, altura: 1200 });
+    expect(dimensoesLimitadas(900, 1125, 1600)).toEqual({ largura: 900, altura: 1125 });
+  });
+
+  it('retanguloContido centraliza a foto inteira, sem ampliar', () => {
+    expect(retanguloContido(800, 1000, 1200, 630)).toEqual({ x: 348, y: 0, largura: 504, altura: 630 });
+    expect(retanguloContido(300, 200, 1200, 630)).toEqual({ x: 450, y: 215, largura: 300, altura: 200 });
+    expect(retanguloContido(2400, 630, 1200, 630)).toEqual({ x: 0, y: 158, largura: 1200, altura: 315 });
+  });
+
+  it('validarArquivos aceita o limite maior de entrada só quando pedido', () => {
+    const f = arq('celular.jpg', 'image/jpeg', 12 * 1024 * 1024);
+    expect(validarArquivos([f]).erros).toHaveLength(1);
+    expect(validarArquivos([f], 0, TAMANHO_MAX_ENTRADA).aceitos).toHaveLength(1);
   });
 });

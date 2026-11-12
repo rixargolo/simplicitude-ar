@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Image from 'next/image';
+import FotoProduto from './FotoProduto';
 import { estiloFoto } from '@/lib/foco';
 import { textoSimples } from '@/lib/texto';
 import styles from './CardProduto.module.css';
@@ -24,10 +24,9 @@ export default function CardProduto({ produto, sizes, className = '', Titulo = '
     >
       <div className={styles.imgWrap}>
         {produto.imagem_url ? (
-          <Image
+          <FotoProduto
             src={produto.imagem_url}
             alt={produto.nome}
-            fill
             sizes={sizes}
             className={styles.img}
             style={estiloFoto(produto.imagem_foco_x, produto.imagem_foco_y, produto.imagem_zoom)}
