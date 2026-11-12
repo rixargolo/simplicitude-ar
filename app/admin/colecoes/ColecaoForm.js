@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { slugify, slugValido } from '@/lib/produtos';
+import { slugify, slugDoEndereco, slugValido } from '@/lib/produtos';
+import CampoSlug from '../CampoSlug';
 import TraducaoEn, { salvarTraducao, traducaoEnInicial } from '../TraducaoEn';
 import styles from '../categorias/CategoriaForm.module.css';
 
@@ -34,9 +35,9 @@ export default function ColecaoForm({ mode, colecao, categorias }) {
       setErro('Escolha a categoria da coleção.');
       return;
     }
-    const slugFinal = slug.trim() || slugify(nome);
+    const slugFinal = slug.trim() ? slugDoEndereco(slug, 'colecao') : slugify(nome);
     if (!slugValido(slugFinal)) {
-      setErro('Endereço inválido: use só letras minúsculas sem acento, números e hífen (até 80 caracteres).');
+      setErro('Endereço inválido: use só a parte final, com letras minúsculas sem acento, números e hífen (até 80 caracteres).');
       return;
     }
 
@@ -87,20 +88,17 @@ export default function ColecaoForm({ mode, colecao, categorias }) {
         <input className={styles.input} type="text" value={nome} onChange={(e) => setNome(e.target.value)} required />
       </label>
 
-      <div className={styles.field}>
-        <label htmlFor="colecao-slug" className={styles.label}>Endereço (slug)</label>
-        <input
-          id="colecao-slug"
-          className={styles.input}
-          type="text"
-          value={slug}
-          onChange={(e) => setSlug(e.target.value)}
-          onBlur={() => setSlug(slugify(slug))}
-          placeholder={nome ? slugify(nome) : 'gerado a partir do nome'}
-          autoCapitalize="none"
-          spellCheck={false}
-        />
-      </div>
+      <CampoSlug
+        id="colecao-slug"
+        tipo="colecao"
+        value={slug}
+        onChange={setSlug}
+        sugestao={slugify(nome)}
+        avisoEdicao={
+          mode === 'edit' &&
+          `Atenção: mudar o endereço faz os links antigos (?colecao=${colecao.slug}) mostrarem a loja inteira em vez desta coleção. Não há redirecionamento.`
+        }
+      />
 
       <label className={styles.field}>
         <span className={styles.label}>Categoria</span>

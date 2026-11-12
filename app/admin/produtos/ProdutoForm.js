@@ -1,13 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { slugify, slugValido } from '@/lib/produtos';
+import { slugify, slugDoEndereco, slugValido } from '@/lib/produtos';
 import { LARGURAS, arquivosDaFoto, caminhoDaUrl, fotosDoProduto, urlLargura, urlOg } from '@/lib/fotos';
 import { processarFoto } from './processarFoto';
 import FotosProduto from './FotosProduto';
 import BarraFormatacao from '../BarraFormatacao';
+import CampoSlug from '../CampoSlug';
 import TraducaoEn, { salvarTraducao, traducaoEnInicial } from '../TraducaoEn';
 import styles from './ProdutoForm.module.css';
 
@@ -48,8 +49,6 @@ export default function ProdutoForm({ produto, colecoes, categorias, tags }) {
   // Endereço (slug): na criação acompanha o nome até ser editado à mão; na edição nunca acompanha (X8).
   const [slug, setSlug] = useState(produto?.slug ?? '');
   const [slugTocado, setSlugTocado] = useState(false);
-  const [origem, setOrigem] = useState('');
-  useEffect(() => setOrigem(window.location.origin), []);
   const [descricao, setDescricao] = useState(produto?.descricao ?? '');
   // `atributos` (coluna antiga) não é editado aqui: a main ainda o usa e a v1 não o grava (X13)
   const [descricaoCurta, setDescricaoCurta] = useState(produto?.descricao_curta ?? '');
@@ -120,8 +119,10 @@ export default function ProdutoForm({ produto, colecoes, categorias, tags }) {
       setErro('Informe o nome do produto.');
       return;
     }
-    if (!slugValido(slug)) {
-      setErro('Endereço inválido: use só letras minúsculas sem acento, números e hífen (até 80 caracteres).');
+    // o Enter no campo envia sem passar pelo blur: aqui também tira o link colado
+    const slugFinal = slugDoEndereco(slug, 'produto');
+    if (!slugValido(slugFinal)) {
+      setErro('Endereço inválido: use só a parte final, com letras minúsculas sem acento, números e hífen (até 80 caracteres).');
       return;
     }
     if (Number.isNaN(centavos) || centavos <= 0) {
@@ -136,7 +137,7 @@ export default function ProdutoForm({ produto, colecoes, categorias, tags }) {
 
     const payload = {
       nome: nome.trim(),
-      slug,
+      slug: slugFinal,
       descricao: descricao.trim() || null,
       descricao_curta: descricaoCurta.trim() || null,
       ingredientes: ingredientes.trim() || null,
@@ -202,39 +203,26 @@ export default function ProdutoForm({ produto, colecoes, categorias, tags }) {
         />
       </label>
 
-      <div className={styles.field}>
-        <label htmlFor="produto-slug" className={styles.label}>Endereço na loja</label>
-        <input
-          id="produto-slug"
-          className={styles.input}
-          type="text"
-          value={slug}
-          onChange={(e) => {
-            setSlug(e.target.value);
-            setSlugTocado(true);
-          }}
-          onBlur={() => setSlug(slugify(slug))}
-          aria-describedby="slug-ajuda"
-          autoCapitalize="none"
-          spellCheck={false}
-          required
-        />
-        <span id="slug-ajuda" className={styles.ajuda}>
-          {origem}/loja/<strong>{slug || '…'}</strong>
-        </span>
+      <CampoSlug
+        id="produto-slug"
+        tipo="produto"
+        value={slug}
+        onChange={(v) => {
+          setSlug(v);
+          setSlugTocado(true);
+        }}
+        required
+        avisoEdicao={
+          salvo &&
+          `Atenção: mudar o endereço pode afetar links já compartilhados (Instagram, QR codes, WhatsApp). O endereço antigo, /loja/${salvo.slug}, continua funcionando e leva ao novo, mas não poderá ser usado por outro produto.`
+        }
+      >
         {salvo && (
           <span className={styles.ajuda}>
             Mudar o nome do produto não muda o endereço.
           </span>
         )}
-        {salvo && slug !== salvo.slug && (
-          <span className={styles.aviso} role="status">
-            Atenção: mudar o endereço pode afetar links já compartilhados (Instagram, QR codes,
-            WhatsApp). O endereço antigo, /loja/{salvo.slug}, continua funcionando e leva ao novo,
-            mas não poderá ser usado por outro produto.
-          </span>
-        )}
-      </div>
+      </CampoSlug>
 
       <div className={styles.field}>
         <label htmlFor="produto-descricao-curta" className={styles.label}>Descrição curta</label>

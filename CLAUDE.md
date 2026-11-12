@@ -392,9 +392,11 @@ Auth / admin (chrome oculto por `SiteChrome`):
   CRUD de produtos (toggle ativo/inativo, upload de imagem); **coleções (X12): checkboxes agrupados por categoria**
   (produto em várias; a 1ª marcada na ordem do admin vira `produtos.colecao_id`; `salvarColecoes` roda **depois** do
   update de `produtos` e deixa em `produto_colecoes` exatamente as marcadas; a lista mostra todas); `novo` e `[id]/editar` têm
-  link "← Produtos" acima do formulário, voltando para a listagem. **Campo "Endereço na loja" (X8)** no
-  `ProdutoForm`: sugerido do nome só na criação (até ser editado à mão), nunca acompanha o nome na edição;
-  normalizado com `slugify` ao sair do campo, validado com `slugValido`, mostra `{origem}/loja/{slug}`, e na
+  link "← Produtos" acima do formulário, voltando para a listagem. **Campo "Final do endereço (slug)" (X8, rótulo e ajuda
+  refeitos em 2026-11-11 após 6 produtos serem cadastrados com o link colado)** no
+  `ProdutoForm`, via `CampoSlug` (ver Componentes; o mesmo campo está em categoria, coleção e tag): sugerido do nome só na criação (até ser editado à mão), nunca acompanha o nome na edição;
+  normalizado com `slugDoEndereco(slug, 'produto')` ao sair do campo **e no envio** (o Enter não passa pelo blur; link colado vira só o
+  slug), validado com `slugValido`, mostra `{origem}/loja/{slug}`, e na
   edição avisa que mudar afeta links compartilhados (o antigo redireciona, mas não é reaproveitável). Unicidade
   é do banco: erro `23505` vira "já é (ou já foi) de outro produto". **X13:** "Atributos" saiu do formulário (e do
   payload: a `v1` nunca grava `atributos`); entram "Descrição curta" (≤120, contador), "Descrição longa", "Ingredientes",
@@ -579,6 +581,16 @@ Cada um com `*.module.css` co-locado.
   contraste não muda). **Sem desfoque (X18, 2026-11-07):** a foto é sempre nítida, sem efeito de
   hover (o `.foto::after` com `backdrop-filter` foi removido a pedido da dona; ficam o levantar do cartão e a seta). Foto decorativa (`alt=""`)
 - **`MeditacaoPlayer`** (`'use client'`) — player de áudio da meditação guiada
+- **`CampoSlug`** (`'use client'`, `app/admin/CampoSlug.js`, não em `components/`) — campo "Final do endereço (slug)" dos formulários de
+  produto, categoria, coleção e tag. **Nasce travado** (`readOnly`, mostra `value || sugestao`, fundo `--cor-superficie`) e o link discreto
+  "Editar endereço" ao lado do rótulo destrava (foco no campo; se `value` está vazio parte de `sugestao`); não há como travar de novo.
+  Props `id`, `tipo` (`produto|categoria|colecao|tag`), `value`, `onChange(slug)`, `sugestao` (slug
+  do nome, vira placeholder e prévia), `required`, `avisoEdicao` (texto mostrado **ao destravar**, só em registro existente: produto
+  diz que o endereço antigo continua redirecionando (308) mas não é reaproveitável; categoria e coleção dizem que o link antigo mostra a
+  loja inteira, sem redirecionamento; tag sem aviso), `children` (informação fixa do formulário). Ajuda (só destravado) e prévia por tipo
+  (`{origem}/loja/…`, `/loja?categoria=…`, `/loja?colecao=…`; tag sem prévia, não tem página); no blur aplica `slugDoEndereco` e,
+  se havia link, avisa "Você colou um link…" ou que o link não tem o endereço daquele tipo. Cada formulário aplica `slugDoEndereco`
+  de novo no envio. Usa `categorias/CategoriaForm.module.css`, como o `TraducaoEn`
 - **`TraducaoEn`** (`'use client'`, mora em `app/admin/TraducaoEn.js`, não em `components/`) — seção recolhível "English
   (opcional)" dos formulários de categoria, coleção, produto e tag; aberta só se já há tradução. A prop `campos`
   (`[{ chave, rotulo, multilinha?, maxLength?, formatado? }]`, padrão nome + descrição) define os campos; `formatado: true` troca o
@@ -663,7 +675,9 @@ com `NEXT_PUBLIC_MOCKUPS=1` e, sem a flag, só os que têm `imagem`. Cobertos em
   fallback fixo)
 - `getProdutoBySlug(slug)` embute também `tags(nome)` (N:N por `produto_tags`, ordenadas por nome, X13)
 - `slugify(nome)` (só para **sugerir** slug nos formulários do admin e normalizar a digitação; não resolve
-  mais rota), `slugValido(slug)` (regex + ≤ 80, a mesma regra do `check` no banco), `getProdutoBySlug(slug)`
+  mais rota), `slugDoEndereco(texto, tipo)` (campo de slug do admin: texto comum = `slugify`; link colado de qualquer domínio
+  fica só com o slug do `tipo`: `produto` = depois de `/loja/`, `categoria` = `?categoria=`, `colecao` = `?colecao=`; link de outro
+  tipo, de `tag` (sem endereço público) ou sem o endereço = `''`; coberto em `tests/slug.test.js`), `slugValido(slug)` (regex + ≤ 80, a mesma regra do `check` no banco), `getProdutoBySlug(slug)`
   (`produtos.slug`, ativos) e `getSlugAtual(slugAntigo)` (`produto_slugs` → slug atual do produto ativo, ou
   `null`). `CardProduto` linka por `produto.slug`. Cobertos em `tests/slug.test.js`
 

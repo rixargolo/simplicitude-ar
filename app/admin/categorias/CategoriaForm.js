@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { slugify, slugValido } from '@/lib/produtos';
+import { slugify, slugDoEndereco, slugValido } from '@/lib/produtos';
+import CampoSlug from '../CampoSlug';
 import { caminhoDaUrl, validarArquivos } from '@/lib/fotos';
 import { FOCO_PADRAO, ZOOM_PADRAO } from '@/lib/foco';
 import SeletorFoco from '../produtos/SeletorFoco';
@@ -64,9 +65,9 @@ export default function CategoriaForm({ mode, categoria }) {
       return;
     }
 
-    const slugFinal = slug.trim() || slugify(nome);
+    const slugFinal = slug.trim() ? slugDoEndereco(slug, 'categoria') : slugify(nome);
     if (!slugValido(slugFinal)) {
-      setErro('Endereço inválido: use só letras minúsculas sem acento, números e hífen (até 80 caracteres).');
+      setErro('Endereço inválido: use só a parte final, com letras minúsculas sem acento, números e hífen (até 80 caracteres).');
       return;
     }
 
@@ -123,30 +124,17 @@ export default function CategoriaForm({ mode, categoria }) {
         />
       </label>
 
-      <div className={styles.field}>
-        <label htmlFor="categoria-slug" className={styles.label}>Endereço (slug)</label>
-        <input
-          id="categoria-slug"
-          className={styles.input}
-          type="text"
-          value={slug}
-          onChange={(e) => setSlug(e.target.value)}
-          onBlur={() => setSlug(slugify(slug))}
-          placeholder={nome ? slugify(nome) : 'gerado a partir do nome'}
-          aria-describedby="categoria-slug-ajuda"
-          autoCapitalize="none"
-          spellCheck={false}
-        />
-        <span id="categoria-slug-ajuda" className={styles.ajuda}>
-          /loja?categoria=<strong>{slug || (nome ? slugify(nome) : '…')}</strong>
-        </span>
-        {mode === 'edit' && slug.trim() !== categoria.slug && (
-          <span className={styles.aviso} role="status">
-            Atenção: mudar o endereço faz os links antigos (?categoria={categoria.slug}) mostrarem a
-            loja inteira em vez desta categoria.
-          </span>
-        )}
-      </div>
+      <CampoSlug
+        id="categoria-slug"
+        tipo="categoria"
+        value={slug}
+        onChange={setSlug}
+        sugestao={slugify(nome)}
+        avisoEdicao={
+          mode === 'edit' &&
+          `Atenção: mudar o endereço faz os links antigos (?categoria=${categoria.slug}) mostrarem a loja inteira em vez desta categoria. Não há redirecionamento.`
+        }
+      />
 
       <label className={styles.field}>
         <span className={styles.label}>Descrição</span>

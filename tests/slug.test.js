@@ -12,7 +12,36 @@ vi.mock('../lib/supabase.js', () => {
   return { supabase: { from: (t) => ((estado.tabela = t), (estado.filtros = []), cadeia) } };
 });
 
-import { getProdutoBySlug, getSlugAtual, slugify, slugValido } from '../lib/produtos.js';
+import { getProdutoBySlug, getSlugAtual, slugDoEndereco, slugify, slugValido } from '../lib/produtos.js';
+
+describe('slugDoEndereco', () => {
+  it.each([
+    ['https://simplicitude-ar.netlify.app/loja/bombons', 'bombons'], // o caso real
+    ['https://simplicitude.com.br/loja/bombons/?x=1#topo', 'bombons'],
+    ['simplicitude.com.br/loja/Bombons Sortidos', 'bombons-sortidos'],
+    ['/loja/bombons', 'bombons'],
+  ])('produto: %s → %s', (texto, esperado) => {
+    expect(slugDoEndereco(texto, 'produto')).toBe(esperado);
+  });
+
+  it('categoria e coleção pegam o parâmetro certo', () => {
+    expect(slugDoEndereco('https://x.com/loja?categoria=chocolates', 'categoria')).toBe('chocolates');
+    expect(slugDoEndereco('/loja?colecao=inspirar&categoria=x', 'colecao')).toBe('inspirar');
+    expect(slugDoEndereco('/loja?colecao=inspirar&categoria=x', 'categoria')).toBe('x');
+  });
+
+  it('link de outro tipo, ou de tag, não vira slug', () => {
+    expect(slugDoEndereco('https://x.com/loja/bombons', 'categoria')).toBe('');
+    expect(slugDoEndereco('https://x.com/loja?categoria=a', 'produto')).toBe('');
+    expect(slugDoEndereco('https://x.com/loja?categoria=a', 'tag')).toBe('');
+    expect(slugDoEndereco('https://simplicitude.com.br/', 'produto')).toBe('');
+  });
+
+  it('texto comum se comporta como slugify', () => {
+    expect(slugDoEndereco('  Esperança Barra ', 'tag')).toBe('esperanca-barra');
+    expect(slugDoEndereco('', 'produto')).toBe('');
+  });
+});
 
 describe('slugValido', () => {
   it.each(['alegria', 'barra-70', 'a', 'a'.repeat(80)])('aceita %s', (s) => {
