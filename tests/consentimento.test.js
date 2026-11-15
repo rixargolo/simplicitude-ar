@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   CHAVE,
+  CHAVE_INTERNO,
+  SCRIPT_TRAFEGO_INTERNO,
   cookiesParaApagar,
   deveCarregarGtm,
   gravarEscolha,
@@ -87,6 +89,62 @@ describe('decisão de carregar o GTM e mostrar o banner', () => {
     expect(mostrarBanner(ID, null)).toBe(true);
     expect(mostrarBanner(ID, 'aceito')).toBe(false);
     expect(mostrarBanner(ID, 'recusado')).toBe(false);
+  });
+});
+
+describe('SCRIPT_TRAFEGO_INTERNO', () => {
+  function rodar(url, dados = {}, bloqueado = false) {
+    const store = { ...dados };
+    const w = {
+      location: { href: `https://x.com${url}` },
+      localStorage: bloqueado
+        ? quebrado
+        : {
+            getItem: (k) => store[k] ?? null,
+            setItem: (k, v) => {
+              store[k] = v;
+            },
+            removeItem: (k) => {
+              delete store[k];
+            },
+          },
+      history: { state: null, urls: [], replaceState(_s, _t, u) { this.urls.push(u); } },
+    };
+    new Function('window', SCRIPT_TRAFEGO_INTERNO)(w);
+    return { w, store };
+  }
+  const MARCA = { [CHAVE_INTERNO]: '1' };
+
+  it('?interno=1 grava, limpa a URL (mantém o resto) e envia traffic_type', () => {
+    const { w, store } = rodar('/p?x=2&interno=1#a');
+    expect(store[CHAVE_INTERNO]).toBe('1');
+    expect(w.history.urls).toEqual(['/p?x=2#a']);
+    expect(w.dataLayer).toEqual([{ traffic_type: 'internal' }]);
+  });
+
+  it('marca existente sem parâmetro: envia, sem mexer na URL', () => {
+    const { w } = rodar('/p', MARCA);
+    expect(w.history.urls).toEqual([]);
+    expect(w.dataLayer).toEqual([{ traffic_type: 'internal' }]);
+  });
+
+  it('?interno=0 apaga a marca, limpa a URL e não envia', () => {
+    const { w, store } = rodar('/?interno=0', MARCA);
+    expect(store[CHAVE_INTERNO]).toBeUndefined();
+    expect(w.history.urls).toEqual(['/']);
+    expect(w.dataLayer).toBeUndefined();
+  });
+
+  it('sem marca e sem parâmetro: nada acontece', () => {
+    const { w } = rodar('/p');
+    expect(w.history.urls).toEqual([]);
+    expect(w.dataLayer).toBeUndefined();
+  });
+
+  it('armazenamento bloqueado: limpa a URL, não envia e não lança', () => {
+    const { w } = rodar('/?interno=1', {}, true);
+    expect(w.history.urls).toEqual(['/']);
+    expect(w.dataLayer).toBeUndefined();
   });
 });
 

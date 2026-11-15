@@ -3,6 +3,7 @@ import './globals.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import SiteChrome from './components/SiteChrome';
+import { SCRIPT_TRAFEGO_INTERNO } from '@/lib/consentimento';
 
 // Fontes hospedadas no projeto (app/fonts, subconjunto latin): o build não depende do
 // Google Fonts, que já derrubou o build no Netlify. Ver app/fonts/LEIA-ME.md.
@@ -70,6 +71,8 @@ export default function RootLayout({ children }) {
             }catch(e){}})();`,
           }}
         />
+        {/* Marca de tráfego interno (?interno=1/0): inline para rodar antes do GTM e antes de o Next ler a URL. */}
+        <script dangerouslySetInnerHTML={{ __html: SCRIPT_TRAFEGO_INTERNO }} />
         <SiteChrome header={<Header />} footer={<Footer />}>
           {children}
         </SiteChrome>
