@@ -1,6 +1,10 @@
+import { urlCanonica } from '@/lib/site';
 import styles from './page.module.css';
 
-export const metadata = { title: 'Sustentabilidade — Simplicitude' };
+export const metadata = {
+  title: 'Sustentabilidade — Simplicitude',
+  alternates: { canonical: urlCanonica('/sustentabilidade') },
+};
 
 // Conteúdo ainda não existe (X18 fatia 3); texto provisório, confirmar com a dona.
 export default function SustentabilidadePage() {

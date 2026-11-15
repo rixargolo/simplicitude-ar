@@ -1,6 +1,8 @@
 import PaginaLegal from '../components/PaginaLegal';
+import { urlCanonica } from '@/lib/site';
 
 export const metadata = {
+  alternates: { canonical: urlCanonica('/trocas') },
   title: 'Trocas e Devoluções — Simplicitude',
   description: 'Como pedir troca, devolução ou reembolso: arrependimento, defeito, produto derretido, frete e prazos.',
 };

@@ -5,10 +5,12 @@ import { slidesVisiveis } from '@/lib/carrossel';
 import HeroCarrossel from './components/HeroCarrossel';
 import VitrineProdutos from './components/VitrineProdutos';
 import GradeCategorias from './components/GradeCategorias';
+import { urlCanonica } from '@/lib/site';
 import styles from './home.module.css';
 
 export const metadata = {
-  title: 'Simplicitude — Da Floresta à Fábrica',
+  alternates: { canonical: urlCanonica('/') },
+  title:'Simplicitude — Da Floresta à Fábrica',
   description:
     'Chocolate artesanal e alimentos plant-based com ingredientes agroflorestais do Sul da Bahia.',
 };

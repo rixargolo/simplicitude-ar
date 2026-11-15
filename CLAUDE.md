@@ -28,8 +28,9 @@ A experiência original de realidade aumentada em Three.js/WebXR foi **arquivada
 componentes `ApresentacaoProduto` e `MeditacaoPlayer` do site atual são ports do visual
 dessa tela.
 
-Site em produção: **https://simplicitude-ar.netlify.app** (o domínio próprio
-`simplicitude.com.br` entra no go-live da 1ª versão pública)
+Site em produção: **https://simplicitude.com.br** (`www` redireciona para o apex). O endereço antigo
+`simplicitude-ar.netlify.app` responde **301** para o domínio oficial (regra em `netlify.toml`, ver SEO em
+[Env / deploy / scripts](#env--deploy--scripts)); previews (`v1--simplicitude-ar.netlify.app`) seguem no ar, com `noindex`
 Repositório: GitHub pessoal (rixargolo) + deploy via Netlify
 
 ---
@@ -238,7 +239,7 @@ licenças em `app/fonts/LEIA-ME.md`). Nenhum CSS cita as famílias direto.
   check do D2: todo slide do hero com foto real
 - **X1 (várias fotos):** SQL aplicado em produção em 2026-11-05 (`supabase/migrations/20261105181330_produto_imagens.sql`). **Rodar de novo no D2** o script de reconciliação `supabase/scripts/x1_reconciliar_produto_imagens.sql` (a `main` só grava em `produtos`). A galeria em `/loja/[slug]` já usa `produto_imagens` (A7)
 - **Foto de categoria (X7):** código pronto (upload no `CategoriaForm`, `getCategoriasComProdutos()` e `GradeCategorias`); o SQL `20261106140000_categorias_imagem.sql` já foi aplicado (2026-11-06); falta a dona enviar as fotos (cada categoria sem foto segue com o cartão de sempre). O mesmo SQL cria o bucket próprio `categorias` com as policies (ver Storage)
-- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive o cartão do hero medido nas fotos reais, e os cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam sem uso até autorização), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `montarLoja`, `lib/foco.js`, `lib/fotos.js`, `lib/whatsapp.js`, `lib/busca.js`, `lib/i18n.js`, `lib/texto.js`, os textos legais (`tests/legal.test.js`: só **avisa** quantas `[CONFIRMAR]` restam, nunca falha por elas; para ver o aviso com o reporter padrão, `npx vitest run tests/legal.test.js --silent=false`) e os slugs do X8: `slugValido`, `getProdutoBySlug`, `getSlugAtual`). Sem lint nem CI
+- Testes: só Vitest (`npm test`, pasta `tests/`, cobre a infra de preview, o menu/mockups, o contraste da paleta verde lido de `globals.css` (inclusive o cartão do hero medido nas fotos reais, e os cartões de categoria), a tipografia (sem `opacity` no `MeditacaoPlayer`, Amsterdam sem uso até autorização), o carrossel do hero, o critério/título da vitrine, `getCategoriasComProdutos`, `montarLoja`, `lib/foco.js`, `lib/fotos.js`, `lib/whatsapp.js`, `lib/busca.js`, `lib/i18n.js`, `lib/texto.js`, os textos legais (`tests/legal.test.js`: só **avisa** quantas `[CONFIRMAR]` restam, nunca falha por elas; para ver o aviso com o reporter padrão, `npx vitest run tests/legal.test.js --silent=false`) os slugs do X8 e o SEO técnico (`tests/seo.test.js`: canonical, sitemap, robots e o 301 do `netlify.toml`); slugs do X8: `slugValido`, `getProdutoBySlug`, `getSlugAtual`). Sem lint nem CI
 - Admin de pedidos
 - **Créditos do Netlify (D3 no plano):** o site ainda não está publicado e já gasta créditos com requisições e tráfego; investigar o consumo antes do go-live (deploys, banda, funções, `next/image`, páginas dinâmicas e `revalidate`; avaliar CDN ou ajustes de cache). Decisão atual: seguir no plano grátis até o go-live
 - **Build local com EPERM:** `npm run build` falha com EPERM na pasta `.next` por causa do OneDrive (o projeto mora dentro dele); resolver movendo o projeto para fora do OneDrive. Enquanto isso, o build exigido antes do deploy pode falhar por esse motivo, não por erro de código
@@ -955,9 +956,24 @@ implementado — ver pendência de segurança #3.
   `noindex`). **O build aborta se as duas estiverem juntas** (trava em `next.config.mjs`).
   Sem `SITE_INDEXAVEL=1` toda rota sai com `X-Robots-Tag: noindex, nofollow`. **`SITE_URL`** (A11, opcional, só a URL pública sem barra
   final): base de `metadataBase` em `app/layout.js`; sem ela cai em `https://simplicitude-ar.netlify.app`; URL inválida aborta o build.
-  **No go-live definir `SITE_URL=https://simplicitude.com.br` no Netlify (D2).** Imagem OG padrão: `app/opengraph-image.png` (1200×630,
+  Sem `SITE_URL`, `metadataBase` cai em `URL_SITE` (`lib/site.js`, `https://simplicitude.com.br`). Imagem OG padrão: `app/opengraph-image.png` (1200×630,
   logo verde sobre bege, gerada com `sharp` a partir de `public/marca/logo-simplicitude-677w.png`; refazer só se a marca mudar) +
-  `opengraph-image.alt.txt`. **Não há sitemap nem `robots`** no projeto (item do A11 não aplicado; criar no D se quiserem)
+  `opengraph-image.alt.txt`.
+- **SEO técnico (2026-11-15, sem SQL):** `lib/site.js` (puro): `URL_SITE` (domínio oficial, **fixo**, não depende de env),
+  `urlCanonica(caminho)` (domínio + caminho, **sem query nem hash**), `PAGINAS_SITEMAP` e `entradasSitemap(slugs)`.
+  **`app/robots.js`**: `Allow /`, `Disallow /admin` e `/login`, aponta para `/sitemap.xml`; igual em todo ambiente (o preview fica fora
+  do índice pelo `X-Robots-Tag`, e bloqueá-lo no robots impediria o Google de ver o header). **`app/sitemap.js`** (`revalidate` 1 h):
+  home, `/loja`, `/meditacao`, `/quem-somos`, `/privacidade`, `/entrega`, `/trocas` e `/loja/{slug}` de cada produto ativo
+  (`getSlugsProdutosAtivos()`, `lib/produtos.js`); **fora:** `/admin`, `/login`, `/link-na-bio`, `/busca`, `/assinaturas`,
+  `/sustentabilidade` (só aviso "em breve"; entra quando tiver conteúdo) e qualquer URL com `?`; sem `lastModified` (`produtos` não tem `updated_at`).
+  **Canonical** (`alternates.canonical` no `metadata` de cada página, **nunca no `layout.js`**, senão todas apontariam para a home):
+  home, `/loja` (fixo: `?categoria=` e `?colecao=` apontam para `/loja`), `/loja/[slug]` (slug atual), `/meditacao`, `/quem-somos`,
+  `/sustentabilidade`, `/privacidade`, `/entrega`, `/trocas` e `/link-na-bio`; sem canonical: `/busca` (noindex), 404 e `/assinaturas`.
+  **Redirect 301** em `netlify.toml` (`[[redirects]]`, `force = true`): `https://simplicitude-ar.netlify.app/*` →
+  `https://simplicitude.com.br/:splat`, caminho e query preservados; só esse host exato (previews são outros hosts). Só vale na `main`.
+  **Previews com noindex:** já garantido, sem mudança: sem `SITE_INDEXAVEL=1` toda rota sai com `X-Robots-Tag: noindex, nofollow` e o
+  build aborta se `SITE_INDEXAVEL=1` vier junto com `NEXT_PUBLIC_MOCKUPS=1` (verificado: `v1--simplicitude-ar.netlify.app` sai com noindex).
+  Coberto em `tests/seo.test.js` (inclui a leitura do `netlify.toml`). **Pendente (desenvolvedor):** enviar o sitemap no Google Search Console
 - `next.config.mjs` — `images.remotePatterns` liberando o host do Storage do Supabase;
   `poweredByHeader: false`; `env.NEXT_PUBLIC_MOCKUPS` **fixado** (`''` se ausente, coberto em
   `tests/paletas.test.js`): sem isso o Next não inlina a env no client e o código de mockup não é
@@ -968,7 +984,7 @@ implementado — ver pendência de segurança #3.
   o checkout existir
 - `.mcp.json` (Playwright + Context7 MCP) existe só localmente, **não está versionado**
 - `_DOCS/` (auditorias de segurança e de design, assets de marca) está no `.gitignore`
-- `netlify.toml` — build `next build` + `@netlify/plugin-nextjs`
+- `netlify.toml` — build `next build` + `@netlify/plugin-nextjs` + o 301 de `simplicitude-ar.netlify.app` (ver SEO técnico acima)
 - `scripts/migrar-imagens-produtos.mjs` — migração one-off e idempotente de imagens no
   Storage para a estrutura `{id}/principal.{ext}`; usa `SUPABASE_ADMIN_EMAIL` /
   `SUPABASE_ADMIN_PASSWORD`

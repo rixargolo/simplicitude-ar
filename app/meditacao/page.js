@@ -3,9 +3,11 @@ import Link from 'next/link';
 import { getProdutos } from '@/lib/produtos';
 import ApresentacaoProduto from '../components/ApresentacaoProduto';
 import MeditacaoPlayer from '../components/MeditacaoPlayer';
+import { urlCanonica } from '@/lib/site';
 import styles from './meditacao.module.css';
 
 export const metadata = {
+  alternates: { canonical: urlCanonica('/meditacao') },
   title: 'Meditação — Simplicitude',
   description:
     'Coleção Inspirar — chocolates com meditações guiadas na voz de Bruna Santos.',

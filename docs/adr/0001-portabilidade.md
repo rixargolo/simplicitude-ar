@@ -14,7 +14,7 @@ de `lib/`. As regras abaixo valem para todo código novo.
 
 | Ponto | Lock-in hoje | Regra (menor custo) | Custo para migrar |
 |---|---|---|---|
-| Deploy | Baixo (`@netlify/plugin-nextjs`, `netlify.toml` só com o build) | Nada de `netlify/functions`, Edge Functions, Blobs, Forms ou `@netlify/*` no app | `output: 'standalone'` (container) ou OpenNext |
+| Deploy | Baixo (`@netlify/plugin-nextjs`, `netlify.toml` com o build e **uma** exceção: o 301 de `simplicitude-ar.netlify.app` para o domínio oficial; sem lock-in, pois o host é do próprio Netlify e some com ele) | Nada de `netlify/functions`, Edge Functions, Blobs, Forms ou `@netlify/*` no app | `output: 'standalone'` (container) ou OpenNext |
 | Funções serverless | — | Só route handlers do Next (`app/api/**`) | Zero |
 | Tarefas agendadas | — | Tarefa = rota HTTP com segredo; agendador externo (GitHub Actions) | Trocar o agendador |
 | Envs de plataforma | Risco de usar `URL`/`CONTEXT` do Netlify | Envs próprias: `SITE_URL`, `SITE_INDEXAVEL`, `NEXT_PUBLIC_MOCKUPS` | Zero |
