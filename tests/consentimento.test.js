@@ -9,6 +9,7 @@ import {
   gtmIdValido,
   lerEscolha,
   mostrarBanner,
+  origemNaoEncontrado,
 } from '../lib/consentimento.js';
 
 const ID = 'GTM-K9T83L53';
@@ -184,5 +185,35 @@ describe('cookiesParaApagar', () => {
 
   it('sem cookies = nada a escrever', () => {
     expect(cookiesParaApagar('', 'www.simplicitude.com.br')).toEqual([]);
+  });
+});
+
+describe('origemNaoEncontrado', () => {
+  const SITE = 'https://simplicitude.com.br';
+
+  it('navegação interna, rastreio ainda não rodou: a página anterior', () => {
+    const nav = { atual: '/loja', anterior: null };
+    expect(origemNaoEncontrado(nav, '/xyz', 'https://instagram.com/', SITE)).toBe(`${SITE}/loja`);
+  });
+
+  it('rastreio já registrou o 404: usa a anterior', () => {
+    const nav = { atual: '/xyz', anterior: '/loja' };
+    expect(origemNaoEncontrado(nav, '/xyz', 'https://instagram.com/', SITE)).toBe(`${SITE}/loja`);
+  });
+
+  it('1ª carga: referrer sem query nem hash', () => {
+    const nav = { atual: '/xyz', anterior: null };
+    expect(origemNaoEncontrado(nav, '/xyz', 'https://l.instagram.com/a/b?u=1&fbclid=2#x', SITE)).toBe(
+      'https://l.instagram.com/a/b',
+    );
+    expect(origemNaoEncontrado({ atual: null, anterior: null }, '/xyz', 'https://x.com/p?q=1', SITE)).toBe(
+      'https://x.com/p',
+    );
+  });
+
+  it('sem navegação e referrer vazio ou inválido: vazio', () => {
+    const nav = { atual: null, anterior: null };
+    expect(origemNaoEncontrado(nav, '/xyz', '', SITE)).toBe('');
+    expect(origemNaoEncontrado(nav, '/xyz', 'não é url', SITE)).toBe('');
   });
 });

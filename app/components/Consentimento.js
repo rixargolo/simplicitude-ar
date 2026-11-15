@@ -12,6 +12,7 @@ import {
   gtmIdValido,
   lerEscolha,
   mostrarBanner,
+  origemNaoEncontrado,
 } from '@/lib/consentimento';
 import styles from './Consentimento.module.css';
 
@@ -54,11 +55,18 @@ const TEXTOS = {
 
 const SNIPPET_GTM = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer',${JSON.stringify(GTM_ID)});`;
 
+// Caminhos (sem query) das duas últimas páginas vistas, para o evento de 404 saber de onde o visitante veio.
+const navegacao = { atual: null, anterior: null };
+
 // page_view virtual a cada rota (o App Router navega sem recarregar). Sem dados pessoais.
 function RastreioPagina() {
   const pathname = usePathname();
   const busca = useSearchParams().toString();
   useEffect(() => {
+    if (navegacao.atual !== pathname) {
+      navegacao.anterior = navegacao.atual;
+      navegacao.atual = pathname;
+    }
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event: 'page_view',
@@ -193,6 +201,25 @@ export default function Consentimento() {
       )}
     </>
   );
+}
+
+// Evento page_not_found: renderizado pela página 404, uma vez por exibição (o ref barra o StrictMode).
+// Só empurra quando o GTM carregaria (mesma regra do page_view). Sem dados pessoais: caminho sem query.
+export function EventoNaoEncontrado() {
+  const pathname = usePathname();
+  const enviado = useRef(null);
+  useEffect(() => {
+    if (enviado.current === pathname) return;
+    enviado.current = pathname;
+    if (!deveCarregarGtm(GTM_ID, lerEscolha(window.localStorage))) return;
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: 'page_not_found',
+      page_path: pathname,
+      origem_404: origemNaoEncontrado(navegacao, pathname, document.referrer, window.location.origin),
+    });
+  }, [pathname]);
+  return null;
 }
 
 // Link "Preferências de cookies" do rodapé: reabre o painel. Some sem GTM ID (preview/dev).
