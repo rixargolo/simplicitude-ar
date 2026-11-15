@@ -1,8 +1,10 @@
 import Image from 'next/image';
 import topoStyles from '../meditacao/meditacao.module.css';
+import { urlCanonica } from '@/lib/site';
 import styles from './quem-somos.module.css';
 
 export const metadata = {
+  alternates: { canonical: urlCanonica('/quem-somos') },
   title: 'Quem Somos — Simplicitude',
   description:
     'Da Floresta à Fábrica: a história da Simplicitude, chocolate artesanal do Sul da Bahia.',

@@ -3,6 +3,8 @@ import './globals.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import SiteChrome from './components/SiteChrome';
+import { SCRIPT_TRAFEGO_INTERNO } from '@/lib/consentimento';
+import { URL_SITE } from '@/lib/site';
 
 // Fontes hospedadas no projeto (app/fonts, subconjunto latin): o build não depende do
 // Google Fonts, que já derrubou o build no Netlify. Ver app/fonts/LEIA-ME.md.
@@ -37,10 +39,10 @@ const amsterdam = localFont({
 });
 
 // SITE_URL (opcional, ADR 0001): endereço público, base das URLs absolutas de og:image e afins.
-// No go-live = https://simplicitude.com.br; sem ela, o endereço do preview. URL inválida aborta o build.
+// Sem ela vale o domínio oficial (lib/site.js). URL inválida aborta o build.
 // A imagem padrão vem de app/opengraph-image.png; a indexação segue por SITE_INDEXAVEL (next.config.mjs).
 export const metadata = {
-  metadataBase: new URL(process.env.SITE_URL || 'https://simplicitude-ar.netlify.app'),
+  metadataBase: new URL(process.env.SITE_URL || URL_SITE),
   title: 'Simplicitude',
   description: 'Chocolate artesanal — Da Floresta à Fábrica',
   openGraph: { siteName: 'Simplicitude', locale: 'pt_BR', type: 'website' },
@@ -70,6 +72,8 @@ export default function RootLayout({ children }) {
             }catch(e){}})();`,
           }}
         />
+        {/* Marca de tráfego interno (?interno=1/0): inline para rodar antes do GTM e antes de o Next ler a URL. */}
+        <script dangerouslySetInnerHTML={{ __html: SCRIPT_TRAFEGO_INTERNO }} />
         <SiteChrome header={<Header />} footer={<Footer />}>
           {children}
         </SiteChrome>

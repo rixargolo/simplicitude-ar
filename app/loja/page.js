@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { getProdutos, getCategoriasComProdutos, getColecoesPublicas, montarLoja } from '@/lib/produtos';
 import { SIZES_CARD_CARROSSEL, SIZES_CARD_GRADE } from '@/lib/fotos';
+import { urlCanonica } from '@/lib/site';
 import CardProduto from '../components/CardProduto';
 import CarrosselProdutos from '../components/CarrosselProdutos';
 import BarraDeslizante from './BarraDeslizante';
@@ -11,8 +12,9 @@ export const metadata = {
   title: 'Loja — Simplicitude',
   description:
     'Chocolates artesanais Simplicitude — Da Floresta à Fábrica.',
+  // Fixo em /loja: ?categoria= e ?colecao= apontam para cá (categorias ganham URL própria depois).
+  alternates: { canonical: urlCanonica('/loja') },
 };
-
 
 // X14: topo só de texto (sem foto nem cartão), filtro por categoria (?categoria=) e coleção (?colecao=) e, em "Todas", um carrossel
 // por coleção de cada categoria. Tudo no servidor (links), funciona sem JS. Regras em montarLoja (lib/produtos.js).

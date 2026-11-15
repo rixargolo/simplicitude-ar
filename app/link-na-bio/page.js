@@ -2,8 +2,10 @@ import Link from 'next/link';
 import styles from './page.module.css';
 import { BotaoPreferenciasCookies } from '../components/Consentimento';
 import { linkWhatsApp } from '@/lib/whatsapp';
+import { urlCanonica } from '@/lib/site';
 
 export const metadata = {
+  alternates: { canonical: urlCanonica('/link-na-bio') },
   title: 'Links — Simplicitude',
   description: 'Chocolate artesanal da Simplicitude: presentes, loja, meditação e contato.',
 };

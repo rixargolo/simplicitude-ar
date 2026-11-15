@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { getProdutoBySlug, getSlugAtual, getFotosDoProduto } from '@/lib/produtos';
 import { textoSimples } from '@/lib/texto';
 import { OG, urlOg } from '@/lib/fotos';
+import { urlCanonica } from '@/lib/site';
 import ApresentacaoProduto from '../../components/ApresentacaoProduto';
 import BotaoComprar from '../../components/BotaoComprar';
 import styles from './produto.module.css';
@@ -30,6 +31,7 @@ export async function generateMetadata({ params }) {
   return {
     title: `${produto.nome} — Simplicitude`,
     description: descricao,
+    alternates: { canonical: urlCanonica(`/loja/${produto.slug}`) },
     openGraph: {
       title: produto.nome,
       description: descricao,

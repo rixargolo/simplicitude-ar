@@ -3,3 +3,11 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# O endereço antigo do site de produção vira 301 para o domínio oficial, mantendo caminho e query.
+# Vale só para esse host exato: previews (v1--simplicitude-ar.netlify.app, deploy-preview-N--...) são outros hosts.
+[[redirects]]
+  from = "https://simplicitude-ar.netlify.app/*"
+  to = "https://simplicitude.com.br/:splat"
+  status = 301
+  force = true

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { EventoNaoEncontrado } from './components/Consentimento';
 import styles from './not-found.module.css';
 
 export const metadata = { title: 'Página não encontrada · Simplicitude' };
@@ -8,6 +9,7 @@ export const metadata = { title: 'Página não encontrada · Simplicitude' };
 export default function NotFound() {
   return (
     <main className={styles.main}>
+      <EventoNaoEncontrado />
       <p className={styles.rotulo}>Página não encontrada</p>
       <h1 className={styles.titulo}>Este caminho se perdeu na floresta.</h1>
       <p className={styles.texto}>
