@@ -2,32 +2,32 @@
 
 import { useState } from 'react';
 import styles from './MeditacaoPlayer.module.css';
+import pt from '@/lib/i18n/pt';
 
 // Adapta o botão "APENAS MEDITAÇÃO" (.btn-audio) da tela de boas-vindas do
 // antigo app AR: em vez de navegar para outra tela, revela o player HTML5
 // nativo no lugar.
-export default function MeditacaoPlayer({ audioUrl }) {
+// `textos` = dicionário `player` do idioma da página (padrão PT). `avisoPt`: o áudio que vai tocar é o PT numa
+// página EN (sem áudio EN cadastrado); mostra `textos.avisoPt` junto do player (ADR 0002, §4).
+export default function MeditacaoPlayer({ audioUrl, textos = pt.player, avisoPt = false }) {
   const [aberto, setAberto] = useState(false);
 
   if (!audioUrl) {
-    return <p className={styles.emBreve}>Meditação guiada em breve</p>;
-  }
-
-  if (!aberto) {
-    return (
-      <button
-        type="button"
-        className={styles.btnAudio}
-        onClick={() => setAberto(true)}
-      >
-        ♪ &nbsp;Deguste ouvindo a meditação guiada na voz de Bruna Santos
-        <span className={styles.btnSub}>áudio guiado · toque para ouvir</span>
-      </button>
-    );
+    return <p className={styles.emBreve}>{textos.emBreve}</p>;
   }
 
   return (
-    // eslint-disable-next-line jsx-a11y/media-has-caption
-    <audio className={styles.player} src={audioUrl} controls autoPlay />
+    <>
+      {aberto ? (
+        // eslint-disable-next-line jsx-a11y/media-has-caption
+        <audio className={styles.player} src={audioUrl} controls autoPlay />
+      ) : (
+        <button type="button" className={styles.btnAudio} onClick={() => setAberto(true)}>
+          ♪ &nbsp;{textos.botao}
+          <span className={styles.btnSub}>{textos.sub}</span>
+        </button>
+      )}
+      {avisoPt && <p className={styles.emBreve}>{textos.avisoPt}</p>}
+    </>
   );
 }

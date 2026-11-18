@@ -56,6 +56,40 @@
   gap: 8px;
 }
 
+/* seletor de idioma (só nas páginas com versão EN): pílula de contorno fino com globo e o nome do outro idioma */
+.idioma {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--cor-texto);
+  border-radius: var(--raio-botao);
+  font-family: var(--font-body);
+  font-size: var(--tam-pequeno);
+  font-weight: 600;
+  color: var(--cor-texto);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+}
+
+.idioma:hover {
+  border-color: var(--cor-destaque);
+  color: var(--cor-destaque);
+  background: var(--cor-superficie);
+}
+
+.idiomaIcone {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+/* dentro do menu mobile aberto: não estica na largura da coluna */
+.idiomaMenu {
+  align-self: flex-start;
+}
+
 .menuBtn {
   display: none;
   background: none;
@@ -82,5 +116,58 @@
 
   .menuBtn {
     display: block;
+  }
+}
+
+/* Celular: o nome do idioma continua visível a partir de 360px. A logo (218px a 38px de altura) + lupa + menu + a pílula não
+   cabem em 360px, então, só nas páginas com seletor (.comIdioma), a logo baixa para 28px (~161px) e o resto encolhe.
+   Larguras estimadas pelas fontes, não medidas: conferir 360px no navegador. */
+@media (max-width: 480px) {
+  .comIdioma {
+    --altura-logo: 28px;
+  }
+
+  .comIdioma .bar {
+    padding: 14px 16px;
+  }
+
+  .comIdioma .acoes {
+    gap: 4px;
+  }
+
+  .comIdioma .idioma {
+    gap: 4px;
+    padding: 4px 9px;
+    font-size: var(--tam-rotulo);
+  }
+
+  .comIdioma .idiomaMenu {
+    gap: 6px;
+    padding: 6px 14px;
+    font-size: var(--tam-pequeno);
+  }
+
+  .comIdioma .idiomaIcone {
+    width: 14px;
+    height: 14px;
+  }
+
+  .comIdioma .idiomaMenu .idiomaIcone {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* abaixo de 360px não cabe o nome na barra: fica só o globo (o nome segue no menu aberto e no nome acessível) */
+@media (max-width: 359px) {
+  .acoes > .idioma .idiomaNome {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }

@@ -14,12 +14,13 @@ import styles from './ApresentacaoProduto.module.css';
 // produtos.imagem_*. `Titulo` é o nível do nome: h1 na página do produto, h2 em /meditacao.
 // `resumido` (usado em /meditacao) omite a descrição longa e os ingredientes: fica só a curta.
 // `titulo` (opcional, X20) troca só o texto do título; foto (alt) e placeholder seguem com o nome do produto.
-export default function ApresentacaoProduto({ produto, fotos, titulo, Titulo = 'h2', resumido = false, children }) {
+// `verFoto` (opcional) é o rótulo das miniaturas no idioma da página (ver GaleriaProduto).
+export default function ApresentacaoProduto({ produto, fotos, titulo, verFoto, Titulo = 'h2', resumido = false, children }) {
   const rotulo = rotuloCategoria(produto);
 
   return (
     <div className={styles.block}>
-      <GaleriaProduto fotos={fotos ?? fotosDoProduto(produto, [])} nome={produto.nome} />
+      <GaleriaProduto fotos={fotos ?? fotosDoProduto(produto, [])} nome={produto.nome} verFoto={verFoto} />
 
       <div className={styles.text}>
         {rotulo && <span className={styles.labelScript}>{rotulo}</span>}

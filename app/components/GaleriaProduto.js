@@ -8,7 +8,8 @@ import styles from './GaleriaProduto.module.css';
 // Galeria do produto: foto principal no quadro do card (--proporcao-produto) e, com 2+ fotos,
 // miniaturas em botões (teclado: Tab + Enter/Espaço). Cada foto respeita o próprio foco e zoom
 // (lib/foco.js). `fotos` vem de fotosDoProduto(): [{ url, alt, foco_x, foco_y, zoom }].
-export default function GaleriaProduto({ fotos, nome }) {
+// `verFoto` = rótulo dos botões das miniaturas, com {n} e {m} ("Ver foto {n} de {m}"; /en/meditacao passa o EN).
+export default function GaleriaProduto({ fotos, nome, verFoto = 'Ver foto {n} de {m}' }) {
   const [atual, setAtual] = useState(0);
   const foto = fotos[atual] ?? fotos[0];
 
@@ -42,7 +43,7 @@ export default function GaleriaProduto({ fotos, nome }) {
                 type="button"
                 className={styles.miniatura}
                 onClick={() => setAtual(i)}
-                aria-label={`Ver foto ${i + 1} de ${fotos.length}`}
+                aria-label={verFoto.replace('{n}', i + 1).replace('{m}', fotos.length)}
                 aria-current={i === atual ? 'true' : undefined}
               >
                 <FotoProduto

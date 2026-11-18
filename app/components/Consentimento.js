@@ -14,12 +14,13 @@ import {
   mostrarBanner,
   origemNaoEncontrado,
 } from '@/lib/consentimento';
+import { idiomaDoCaminho } from '@/lib/i18n';
 import styles from './Consentimento.module.css';
 
 // Comparação literal: o Next só inlina process.env.NEXT_PUBLIC_* assim (fixada em next.config.mjs).
 const GTM_ID = gtmIdValido(process.env.NEXT_PUBLIC_GTM_ID);
 
-// Sem rotas /en ainda (ADR 0002, I2): o EN já vale quando a rota começar com /en.
+// O EN vale nas rotas /en/... (hoje só /en/meditacao, ADR 0002, I2 enxuta).
 const TEXTOS = {
   pt: {
     aviso:
@@ -78,7 +79,8 @@ function RastreioPagina() {
 }
 
 export default function Consentimento() {
-  const t = TEXTOS[usePathname().startsWith('/en') ? 'en' : 'pt'];
+  // idiomaDoCaminho, não startsWith('/en'): /entrega mostraria o aviso em inglês
+  const t = TEXTOS[idiomaDoCaminho(usePathname())];
   const [pronto, setPronto] = useState(false);
   const [escolha, setEscolha] = useState(null);
   const [painel, setPainel] = useState(false);
