@@ -85,6 +85,7 @@
 
 /* 1ª fileira (categorias) como barra verde de borda a borda: botões retos, sem espaço vertical extra (o chip mantém 44px de toque) */
 .barra {
+  --margem: 20px; /* a barra também aparece fora da .pagina (página do produto) */
   background: color-mix(in srgb, var(--cor-botao) 12%, var(--cor-botao-texto));
 }
 
@@ -322,8 +323,12 @@
 }
 
 @media (min-width: 640px) {
-  .pagina {
+  .pagina,
+  .barra {
     --margem: 24px;
+  }
+
+  .pagina {
     padding: 0 0 96px;
   }
 

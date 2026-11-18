@@ -5,6 +5,7 @@ import { SIZES_CARD_CARROSSEL, SIZES_CARD_GRADE } from '@/lib/fotos';
 import { urlCanonica } from '@/lib/site';
 import CardProduto from '../components/CardProduto';
 import CarrosselProdutos from '../components/CarrosselProdutos';
+import BarraCategorias from './BarraCategorias';
 import BarraDeslizante from './BarraDeslizante';
 import styles from './loja.module.css';
 
@@ -52,32 +53,7 @@ export default async function LojaPage({ searchParams }) {
       </div>
       <h1 className={styles.soLeitor}>Loja</h1>
 
-      {categorias.length > 0 && (
-        <nav aria-label="Categorias" className={`${styles.filtro} ${styles.barra}`}>
-          <BarraDeslizante>
-            <li>
-              <Link
-                href="/loja"
-                className={styles.chip}
-                aria-current={ativa || colecaoAtiva ? undefined : 'page'}
-              >
-                Tudo
-              </Link>
-            </li>
-            {categorias.map((c) => (
-              <li key={c.slug}>
-                <Link
-                  href={`/loja?categoria=${c.slug}`}
-                  className={styles.chip}
-                  aria-current={ativa?.slug === c.slug ? (colecaoAtiva ? 'true' : 'page') : undefined}
-                >
-                  {c.nome}
-                </Link>
-              </li>
-            ))}
-          </BarraDeslizante>
-        </nav>
-      )}
+      <BarraCategorias categorias={categorias} ativa={ativa?.slug} emCategoria={!!colecaoAtiva} />
 
       {/* espaço da subcategoria sempre reservado: o título abaixo fica à mesma distância do menu com ou sem coleções */}
       <div className={styles.subSlot}>

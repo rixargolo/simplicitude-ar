@@ -1,12 +1,13 @@
 import { notFound, permanentRedirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import Link from 'next/link';
-import { getProdutoBySlug, getSlugAtual, getFotosDoProduto } from '@/lib/produtos';
+import { getProdutoBySlug, getSlugAtual, getFotosDoProduto, getCategoriasComProdutos } from '@/lib/produtos';
 import { textoSimples } from '@/lib/texto';
 import { OG, urlOg } from '@/lib/fotos';
 import { urlCanonica } from '@/lib/site';
 import ApresentacaoProduto from '../../components/ApresentacaoProduto';
 import BotaoComprar from '../../components/BotaoComprar';
+import BarraCategorias from '../BarraCategorias';
 import styles from './produto.module.css';
 
 const formatBRL = (centavos) =>
@@ -51,7 +52,7 @@ export default async function ProdutoPage({ params }) {
     notFound();
   }
 
-  const fotos = await getFotosDoProduto(produto);
+  const [fotos, categorias] = await Promise.all([getFotosDoProduto(produto), getCategoriasComProdutos()]);
 
   // Endereço absoluto da página para a mensagem do WhatsApp; vale no preview e no domínio novo.
   const h = await headers();
@@ -61,6 +62,7 @@ export default async function ProdutoPage({ params }) {
 
   return (
     <main>
+      <BarraCategorias categorias={categorias} ativa={produto.categorias?.slug} emCategoria />
       <section className={styles.section}>
         <ApresentacaoProduto produto={produto} fotos={fotos} Titulo="h1">
           <div className={styles.meta}>
