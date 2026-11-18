@@ -56,6 +56,22 @@
   gap: 8px;
 }
 
+/* seletor de idioma (só nas páginas com versão EN): texto curto no estilo dos links do menu */
+.idioma {
+  font-family: var(--font-body);
+  font-size: var(--tam-pequeno);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--cor-texto);
+  text-decoration: none;
+  padding: 8px;
+}
+
+.idioma:hover {
+  color: var(--cor-destaque);
+  text-decoration: underline;
+}
+
 .menuBtn {
   display: none;
   background: none;

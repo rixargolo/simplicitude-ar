@@ -1,6 +1,6 @@
 # ADR 0002 — Multilíngue (PT e EN)
 
-**Status:** proposto (só decisão, nada implementado) · **Data:** 2026-11-06
+**Status:** proposto; **I1 e uma I2 enxuta (só `/en/meditacao`) implementados** · **Data:** 2026-11-06
 
 ## Contexto
 
@@ -153,6 +153,16 @@ Portuguese — English version coming soon" (`traduzir` devolve também o `audio
   **Andamento (X13, 2026-11-07):** `produto_traducoes` e `tag_traducoes` (I1 completo), além de `produtos.descricao_curta`,
   `produtos.ingredientes` e as tabelas `tags`/`produto_tags`. `produto_traducoes` ficou **sem `atributos`** (a descrição curta o
   substitui na `v1`; a coluna antiga fica só para a `main`) e **sem `audio_url`** (I3, aditivo). Faltam só as rotas (I2).
+
+  **Andamento (I2 enxuta + I3 parcial, 2026-11-18):** só a **`/en/meditacao`** (a pedido: QR impresso das embalagens). **Desvio:**
+  sem `app/[lang]`; a página EN é `app/en/meditacao/` e o par vive em `PARES_EN` (`lib/i18n.js`), porque mover todas as páginas
+  para `[lang]` e pôr o `proxy.js` em toda rota não compensa para uma página (a migração para `[lang]` continua possível: é
+  mover pastas e trocar `PARES_EN` por um mapa geral). Feito: dicionários `lib/i18n/{pt,en}.js` (EN preenchido com os textos da dona em 2026-11-18; texto
+  vazio cai no PT), `proxy.js` só em `/meditacao`, seletor no `Header` só onde há par, cookie `idioma` só na escolha explícita,
+  hreflang/canonical/sitemap do par **só com o EN completo** (`traducaoCompleta()`, hoje verdadeiro; se um texto ficar vazio a página EN
+  sai com `noindex`, como manda este ADR) e `produto_traducoes.audio_url` (I3: áudio EN; sem ele toca o PT com o aviso do §4). `/meditation-eng`
+  → `/en/meditacao` com 301 em `next.config.mjs`. Faltam: demais páginas em EN, `generateMetadata` por produto,
+  `linkCompra` em EN e a pergunta abaixo.
 
 ## Pergunta em aberto
 

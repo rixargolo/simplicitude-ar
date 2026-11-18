@@ -142,7 +142,7 @@ reverter). As demais decisões viram uma linha no CLAUDE.md. Critério para um A
 de reverter e cujo motivo não aparece no código.
 
 ### 2.9 Multilíngue (PT e EN)
-Decisão em [ADR 0002](adr/0002-multilingue.md) (proposto, **nada implementado**, pós-go-live). Resumo: PT
+Decisão em [ADR 0002](adr/0002-multilingue.md) (proposto; **I1 feito e uma I2 enxuta, só `/en/meditacao`, feita em 2026-11-18**, ver o ADR). Resumo: PT
 fica nas colunas atuais e EN em tabelas `*_traducoes` com fallback para o PT (a `main` e o banco compartilhado
 não mudam); PT sem prefixo e EN em `/en/...`; slugs e caminhos não se traduzem; idioma por cookie
 `idioma` + `Accept-Language` + país, só no `proxy.js`; áudio EN em `produto_traducoes.audio_url`. Fatias

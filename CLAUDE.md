@@ -82,7 +82,7 @@ públicas, `proxy.js`, textos fixos ou no schema de conteúdo** (produtos, categ
   `Accept-Language` + país no `proxy.js`, sem cabeçalho = PT; áudio EN em `produto_traducoes.audio_url`;
   fatias I1–I4 no plano. **I1 já feito para categorias e coleções no X12** (tabelas, `lib/i18n.js`, seção
   `TraducaoEn` no admin); **produto e tag no X13** (`produto_traducoes`, `tag_traducoes`; ficou sem `atributos` e sem
-  `audio_url`, que é o I3). Faltam só as rotas `/en` (I2).
+  `audio_url`, que é o I3). **I2 enxuta (2026-11-18): só `/en/meditacao`** (ver Rotas); as demais rotas `/en` seguem pendentes.
 - **Fluxo de trabalho da v1:** o redesign mora na branch `v1` (preview no Netlify, `noindex`);
   `main` segue sendo o site atual até o go-live. Mockups de UI ficam atrás de
   `NEXT_PUBLIC_MOCKUPS` e nunca vão para o domínio real. **A1 (infra de preview) está concluído**
@@ -318,7 +318,8 @@ Públicas (envolvidas por `Header`/`Footer` via `SiteChrome`):
   **Corpo:** seção "Made in Bahia!" **no mesmo padrão da foto do topo** (`.fabrica`/`.fabricaGrid` em `quem-somos.module.css`): mesmo contêiner de 1200px e mesmas duas colunas do topo, foto `fabrica.webp` **4:3 na largura da coluna esquerda (igual à `quem-somos.webp`, classe `.foto`)** e o texto (`.texto`/`.corpo` do `/meditacao`) centrado na altura da foto, à direita; celular, foto em cima. Sem cartão, sem cantos arredondados e **sem foto de ponta a ponta** (não usa mais o `.secaoFoto` da home: a foto de metade da tela ficava bem maior que a do topo). Sem botão nem link.
   `hero_agricultores.jpg` e `ingredientes.jpg` foram apagados; `cabruca.jpg` ficou na pasta sem uso (só citado no histórico do plano). Receita
   das imagens em `public/quem-somos/README.md`
-- **`/meditacao`** (`revalidate = 60`, como a home: sem isso a edição no admin só valeria no próximo build) — **topo (2026-11-08, sem SQL)**, tudo
+- **`/en/meditacao`** (I2 enxuta do ADR 0002, 2026-11-18; **única página em EN por enquanto**; falta o desenvolvedor conferir no navegador) — mesmo conteúdo da `/meditacao` em inglês: `app/en/meditacao/page.js` e `app/meditacao/page.js` são só `metadata` + `revalidate = 60` + `<Meditacao idioma>` (`app/meditacao/Meditacao.js`, server, também exporta `metadataMeditacao(idioma)`). **Desvio do ADR: sem `app/[lang]`** (nada se moveu; página EN nova = pasta em `app/en/` + uma linha em `PARES_EN`, `lib/i18n.js`). Textos fixos em `lib/i18n/{pt,en}.js` (ver `lib/i18n.js`); **`en.js` está preenchido (textos da dona, 2026-11-18)**: texto vazio cai no PT, e **se algum texto EN voltar a ficar vazio a página EN sai com `noindex`, sem hreflang e fora do sitemap** (`traducaoCompleta()`); **completo como está, a página EN já é indexável** (canonical, `alternates.languages` pt-BR/en/x-default e as duas entradas no sitemap). O nome, a descrição e o áudio dos produtos em EN dependem do que a dona preencher no admin (cai no PT); o `noindex` não considera isso. Dados por `getProdutosMeditacao(idioma)` → `traduzirProduto` (nome, descrição curta, título da meditação, categoria e áudio EN; campo vazio cai no PT). **Áudio:** `produto_traducoes.audio_url`; sem ele toca o áudio PT e o player mostra o aviso `player.avisoPt` ("Guided meditation in Portuguese — English version coming soon"). "Ver na loja" leva à loja em PT. `<main lang="en">`. **QR impresso:** `/meditation-eng` → `/en/meditacao` com **301** (`redirects()` em `next.config.mjs`, query preservada; `permanent: true` daria 308). **Detecção de idioma** só em `/meditacao` (matcher do `proxy.js`): ver Auth
+- **`/meditacao`** (`revalidate = 60`, como a home: sem isso a edição no admin só valeria no próximo build; **mesmo componente da `/en/meditacao`**, os textos da página saíram do JSX para `lib/i18n/pt.js`) — **topo (2026-11-08, sem SQL)**, tudo
   numa coluna de 1200px (`.topoWrap`): **faixa de 3 fotos** lado a lado (`public/meditacao/inspirar-{1,2,3}.webp`, recortadas de
   `_DOCS/meditação/capa página meditar.png`, 575px de altura, WebP q85, ≥ 39 dB; array `FOTOS` em `page.js` com a largura real de cada uma,
   que vira `flex-grow` + `aspect-ratio`: as três dividem a largura na mesma altura, **sem cortar nada**; no celular segue **numa linha só**, só com gap menor; **não usar grid
@@ -456,7 +457,7 @@ Cada um com `*.module.css` co-locado.
 - **`Consentimento`** (`'use client'`, 2026-11-09, P1) — aviso de cookies + Google Tag Manager, montado no `SiteChrome` (só fora de `areaInterna`: nunca em `/admin` nem `/login`). **Modelo "aviso":** o GTM (`next/script`, `afterInteractive`, snippet padrão) carrega desde a 1ª visita (escolha `null`) ou com `'aceito'`; **nunca com `'recusado'`**. Banner fixo no rodapé da tela (texto curto, "Saiba mais" → `/privacidade`, botões **OK** (grava `'aceito'`) e **Personalizar**; sem "Recusar"); "Personalizar" abre painel com "Essenciais" (sempre ligado) e "Medição e marketing" (interruptor, ligado por padrão) + Salvar: desligar grava `'recusado'`, apaga os cookies `_ga*`/`_gid`/`_fbp`/`_fbc` (`cookiesParaApagar`) e recarrega a página; ligar grava `'aceito'`. `BotaoPreferenciasCookies` (exportado, usado na coluna "Políticas" do `Footer`) dispara `EVENTO_PREFERENCIAS` e reabre o painel. `page_view` virtual no `dataLayer` a cada rota (`RastreioPagina`, dentro de `Suspense`, com `pathname` + query, sem dados pessoais) enquanto o GTM carregar. **`NEXT_PUBLIC_GTM_ID` vazio = nada renderiza** (sem banner, sem botão, sem GTM; é o caso de preview/dev); definir só em produção no Netlify (`GTM-K9T83L53`). Textos PT/EN num objeto (`TEXTOS`); EN vale quando a rota começar com `/en` (ainda não existe). Sem `localStorage` a escolha vale só na sessão. Estilo só com papéis. **`EventoNaoEncontrado`** (exportado, renderizado por `app/not-found.js`; 2026-11-15): empurra `{ event: 'page_not_found', page_path, origem_404 }` no `dataLayer` **uma vez por exibição** (`useRef` com o último caminho barra o StrictMode) e **só se `deveCarregarGtm`** (sem GTM ou com `'recusado'`, nada). `page_path` = caminho pedido, **sem query**. `origem_404` = página anterior do próprio site (módulo `navegacao`, alimentado por `RastreioPagina`, pois no cliente o `document.referrer` fica o da 1ª carga) ou, na 1ª carga, o referrer **sem query nem hash**; vazio se não houver (`origemNaoEncontrado`, `lib/consentimento.js`). Nome `origem_404` de propósito, para não sobrescrever o `page_referrer` automático do GA4. **No painel (desenvolvedor):** GTM com acionador "Evento personalizado" `page_not_found`, variáveis de camada de dados `page_path` e `origem_404` e tag "Evento do GA4" `page_not_found` com esses parâmetros (dimensões personalizadas no GA4 se quiser relatório). Lógica em `lib/consentimento.js`
 - **`SiteChrome`** (`'use client'`) — esconde Header/Footer em `/login` e `/admin/*` via
   `usePathname()`; usado em `app/layout.js` envolvendo `{children}`
-- **`Header`** (`'use client'`) — menu LOJA, MEDITAÇÃO, SUSTENTABILIDADE, QUEM SOMOS, ASSINATURAS
+- **`Header`** (`'use client'`; **textos por idioma da rota, I2 enxuta**: `idiomaDoCaminho(usePathname())` + `textos()`; em `/en/...` o menu usa `t.menu` e leva à versão EN quando existe (`PARES_EN`); **seletor "EN"/"PT"** (`.idioma`, ao lado da lupa) **só em página com par** (`caminhoNoOutroIdioma`): `Link` com `hrefLang` que grava o cookie `idioma` (1 ano) no clique, e só aí; abrir um link `/en` não grava; **`Footer` também é `'use client'` agora**, mesma lógica, sem seletor) — menu LOJA, MEDITAÇÃO, SUSTENTABILIDADE, QUEM SOMOS, ASSINATURAS
   (vindo de `itensMenu()`, `lib/navegacao.js`); **lupa de busca (`BuscaHeader`, X16) ao lado do botão Menu**; logo leva à home (sem item "Início"); item ativo
   via `usePathname()` + `aria-current`; **linha de 1px `--cor-borda` embaixo do `Header` em todas as páginas** (separa menu e corpo, que têm o mesmo fundo; antes só a `/loja` tinha, no `border-top` da página, hoje removido de lá); abaixo de 960px vira botão de texto
   "Menu"/"Fechar". **`Footer`** — campo `--cor-rodape` com logo, lema, contatos (WhatsApp via
@@ -582,7 +583,7 @@ Cada um com `*.module.css` co-locado.
   cartão, enquadrada por `estiloFoto(foco_x, foco_y, zoom)`; o texto fica sempre abaixo da foto (o teste de
   contraste não muda). **Sem desfoque (X18, 2026-11-07):** a foto é sempre nítida, sem efeito de
   hover (o `.foto::after` com `backdrop-filter` foi removido a pedido da dona; ficam o levantar do cartão e a seta). Foto decorativa (`alt=""`)
-- **`MeditacaoPlayer`** (`'use client'`) — player de áudio da meditação guiada
+- **`MeditacaoPlayer`** (`'use client'`) — player de áudio da meditação guiada. Props `audioUrl`, `textos` (dicionário `player`, padrão PT) e `avisoPt` (toca o PT numa página EN: mostra o aviso). `GaleriaProduto`/`ApresentacaoProduto` ganharam `verFoto` (rótulo das miniaturas com `{n}`/`{m}`) e o `BuscaHeader`, `textos`. `SiteChrome` ajusta `<html lang>` (`en`/`pt-BR`) a cada rota
 - **`CampoSlug`** (`'use client'`, `app/admin/CampoSlug.js`, não em `components/`) — campo "Final do endereço (slug)" dos formulários de
   produto, categoria, coleção e tag. **Nasce travado** (`readOnly`, mostra `value || sugestao`, fundo `--cor-superficie`) e o link discreto
   "Editar endereço" ao lado do rótulo destrava (foco no campo; se `value` está vazio parte de `sugestao`); não há como travar de novo.
@@ -755,8 +756,8 @@ então apaga do Storage as excluídas.
 
 `traduzir(registro, traducao, idioma)` — fallback para o PT (pt, sem tradução ou sem registro devolve o registro;
 senão sobrepõe só os campos de texto preenchidos, ignorando `idioma` e `*_id`) e `acaoTraducao(valores, existia)`
-(`'gravar' | 'apagar' | 'nada'`, usada por `salvarTraducao`). **Nada público chama `traduzir` ainda** (sem rotas `/en`).
-Cobertos em `tests/i18n.test.js`.
+(`'gravar' | 'apagar' | 'nada'`, usada por `salvarTraducao`). Cobertos em `tests/i18n.test.js`.
+**I2 enxuta (2026-11-18):** `PARES_EN` (`{ '/meditacao': '/en/meditacao' }`, fonte única do par: proxy, seletor, menu, sitemap, metadados), `idiomaDoCaminho` (**não usar `startsWith('/en')`: casa com `/entrega`**; o aviso de cookies tinha esse erro e foi corrigido), `caminhoNoOutroIdioma`, `COOKIE_IDIOMA`, `paisDaRequisicao(headers)` (`x-country`, `cf-ipcountry`, `cloudfront-viewer-country` e `x-nf-geo` em base64; **o cabeçalho de país do Netlify não foi confirmado em produção**: sem ele vale só o `Accept-Language`, que erra para o lado do PT), `idiomaPreferido({ cookie, acceptLanguage, pais })` (regras do ADR §3; países anglófonos US, GB, IE, CA, AU, NZ), `textos(idioma)` (EN sobre o PT, texto EN vazio cai no PT; `menu` só no EN), `traducaoCompleta()` e `traduzirProduto(produto, idioma)` (devolve `audio_idioma`). Dicionários em `lib/i18n/pt.js` e `en.js` (mesmas chaves, travado em teste; `en.js` completo; `menu` = Shop, Meditation, Sustainability, About us, Subscriptions).
 
 ### Admin — `lib/admin/produtos.js`, `lib/admin/categorias.js`, `lib/admin/colecoes.js`, `lib/admin/estoque.js`
 
@@ -804,7 +805,7 @@ Cobertos em `tests/i18n.test.js`.
 - **`tags`**, **`produto_tags`**, **`tag_traducoes`**, **`produto_traducoes`** (X13, mesma migration; ADR 0002, opção B) —
   `tags`: `id`, `nome`, `slug` (`unique` + `check` de formato), `created_at`; `anon` lê tudo, `authenticated` escreve.
   `produto_tags`: M:N produto ↔ tag, PK `(produto_id, tag_id)`, cascade, RLS no padrão de `produto_colecoes`. `tag_traducoes`
-  `(tag_id, idioma, nome)`. `produto_traducoes` `(produto_id, idioma, nome, descricao_curta ≤120, descricao, ingredientes, titulo_meditacao [X20])`:
+  `(tag_id, idioma, nome)`. `produto_traducoes` `(produto_id, idioma, nome, descricao_curta ≤120, descricao, ingredientes, titulo_meditacao [X20], audio_url [I2 enxuta, migration `20261118120000_i2_audio_en.sql`, **aplicada em 2026-11-18**])`:
   `anon` lê só de produto ativo. `idioma` só `'en'`; campo vazio cai no PT (`lib/i18n.js`). Sem `atributos` nem `audio_url`
   (esse é o I3). Editadas pela seção `TraducaoEn` do admin; nada público usa a tradução ainda
 - **`produto_slugs`** (X8, mesma migration) — `slug` (PK, mesmo `check`), `produto_id` (FK `produtos`, `on delete
@@ -896,9 +897,9 @@ checkout):**
 Login em `app/login/page.js` (`signInWithPassword`, sessão em cookies) → redirect
 `/admin`. Proteção em **duas camadas**:
 1. Middleware **`proxy.js`** (padrão Next 16 — renomeado de `middleware.js`, exporta
-   `proxy()`), `matcher: ['/admin/:path*', '/login']`, delega a
+   `proxy()`), `matcher: ['/admin/:path*', '/login', '/meditacao']`, delega a
    `lib/supabase/middleware.js`. **Com `NEXT_PUBLIC_MOCKUPS=1` (preview) responde 404 a
-   `/admin/*` e `/login` antes de qualquer outra coisa**
+   `/admin/*` e `/login`** — **depois** do ramo de idioma: em `/meditacao` (única página PT com par EN, `PARES_EN`) escolhe o idioma por `idiomaPreferido` (cookie `idioma` > `Accept-Language` > país, ADR 0002 §3); se for EN, **307** para `/en/meditacao` mantendo a query, com `Cache-Control: private, no-store`; senão segue (`NextResponse.next()`, o preview continua servindo a página). `/en/...` nunca redireciona. **Custo:** uma invocação de função/borda a cada visita de `/meditacao` (Netlify, ver D3). Cookie `idioma` descrito em `content/legal/privacidade.md`
 2. Guard defensivo em `app/admin/layout.js` (re-checa `getUser()` no server, redireciona
    se não autenticado)
 
@@ -963,7 +964,7 @@ implementado — ver pendência de segurança #3.
 - **SEO técnico (2026-11-15, sem SQL):** `lib/site.js` (puro): `URL_SITE` (domínio oficial, **fixo**, não depende de env),
   `urlCanonica(caminho)` (domínio + caminho, **sem query nem hash**), `PAGINAS_SITEMAP` e `entradasSitemap(slugs)`.
   **`app/robots.js`**: `Allow /`, `Disallow /admin` e `/login`, aponta para `/sitemap.xml`; igual em todo ambiente (o preview fica fora
-  do índice pelo `X-Robots-Tag`, e bloqueá-lo no robots impediria o Google de ver o header). **`app/sitemap.js`** (`revalidate` 1 h):
+  do índice pelo `X-Robots-Tag`, e bloqueá-lo no robots impediria o Google de ver o header). **`app/sitemap.js`** (`revalidate` 1 h; com `traducaoCompleta()` a `/meditacao` e a `/en/meditacao` entram com hreflang, `entradasSitemap(slugs, { enCompleto })`):
   home, `/loja`, `/meditacao`, `/quem-somos`, `/privacidade`, `/entrega`, `/trocas` e `/loja/{slug}` de cada produto ativo
   (`getSlugsProdutosAtivos()`, `lib/produtos.js`); **fora:** `/admin`, `/login`, `/link-na-bio`, `/busca`, `/assinaturas`,
   `/sustentabilidade` (só aviso "em breve"; entra quando tiver conteúdo) e qualquer URL com `?`; sem `lastModified` (`produtos` não tem `updated_at`).

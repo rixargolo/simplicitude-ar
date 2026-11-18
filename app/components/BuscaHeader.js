@@ -8,7 +8,8 @@ import styles from './BuscaHeader.module.css';
 // Lupa + campo de busca do Header (X16). O estado aberto mora no Header (abrir a busca fecha o menu e vice-versa).
 // Abre com mouse em cima, clique/toque ou foco por teclado; fecha com Esc ou ao perder o foco/mouse com o campo vazio.
 // prefetch={false}: o Header está em todas as páginas, o prefetch padrão chamaria /busca a cada página vista.
-export default function BuscaHeader({ aberta, onAbrir, onFechar }) {
+// `textos` = dicionário `busca` do idioma da página ({ rotulo, abrir, buscar }).
+export default function BuscaHeader({ textos, aberta, onAbrir, onFechar }) {
   const form = useRef(null);
   const campo = useRef(null);
   const lupa = useRef(null);
@@ -57,7 +58,7 @@ export default function BuscaHeader({ aberta, onAbrir, onFechar }) {
       }
     >
       <label htmlFor="busca-topo" className={styles.soLeitor}>
-        Buscar produtos
+        {textos.rotulo}
       </label>
       <input
         ref={campo}
@@ -67,7 +68,7 @@ export default function BuscaHeader({ aberta, onAbrir, onFechar }) {
         required
         minLength={TERMO_MIN}
         maxLength={TERMO_MAX}
-        placeholder="Buscar produtos"
+        placeholder={textos.rotulo}
         autoComplete="off"
         className={styles.campo}
       />
@@ -75,7 +76,7 @@ export default function BuscaHeader({ aberta, onAbrir, onFechar }) {
         ref={lupa}
         type="button"
         className={styles.lupa}
-        aria-label={aberta ? 'Buscar' : 'Abrir busca'}
+        aria-label={aberta ? textos.buscar : textos.abrir}
         aria-expanded={aberta}
         onFocus={() => {
           if (!ignorarFoco.current) onAbrir();

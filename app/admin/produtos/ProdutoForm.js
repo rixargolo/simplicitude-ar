@@ -23,7 +23,10 @@ const CAMPOS_EN = [
   { chave: 'descricao', rotulo: 'Long description', multilinha: true, formatado: true },
   { chave: 'ingredientes', rotulo: 'Ingredients', multilinha: true },
   { chave: 'titulo_meditacao', rotulo: 'Meditation title' }, // só aparece com "Possui meditação" (X20)
+  { chave: 'audio_url', rotulo: 'Meditation audio URL (English)' }, // idem (I2); vazio = toca o PT com aviso
 ];
+// campos do EN que só existem com "Possui meditação guiada": somem do form e são zerados ao desmarcar
+const CHAVES_MEDITACAO_EN = ['titulo_meditacao', 'audio_url'];
 
 const urlPublica = (supabase, caminho) =>
   supabase.storage.from(BUCKET).getPublicUrl(caminho).data.publicUrl;
@@ -161,7 +164,7 @@ export default function ProdutoForm({ produto, colecoes, categorias, tags }) {
       // depois do update de produtos: o trigger de colecao_id mexe nos pares, e aqui o conjunto final vence
       await salvarVinculos(supabase, 'produto_colecoes', 'colecao_id', produtoId, idsColecoes, 'as coleções');
       await salvarVinculos(supabase, 'produto_tags', 'tag_id', produtoId, [...tagIds], 'as tags');
-      const enSalvar = temMeditacao ? en : { ...en, titulo_meditacao: '' };
+      const enSalvar = temMeditacao ? en : { ...en, ...Object.fromEntries(CHAVES_MEDITACAO_EN.map((c) => [c, ''])) };
       await salvarTraducao(supabase, 'produto_traducoes', 'produto_id', produtoId, enSalvar, existiaEn);
       await salvarFotos(supabase, produtoId, fotos, fotosIniciais, produto, setOtimizando);
 
@@ -260,7 +263,7 @@ export default function ProdutoForm({ produto, colecoes, categorias, tags }) {
       <TraducaoEn
         valores={en}
         onChange={setEn}
-        campos={temMeditacao ? CAMPOS_EN : CAMPOS_EN.filter((c) => c.chave !== 'titulo_meditacao')}
+        campos={temMeditacao ? CAMPOS_EN : CAMPOS_EN.filter((c) => !CHAVES_MEDITACAO_EN.includes(c.chave))}
       />
 
       <div className={styles.row}>

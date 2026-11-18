@@ -83,3 +83,30 @@ describe('netlify.toml: 301 do endereço antigo', () => {
     expect(campo('from')?.startsWith('https://simplicitude-ar.netlify.app/')).toBe(true);
   });
 });
+
+describe('par PT ↔ EN da meditação', () => {
+  it('sem o EN completo o sitemap não lista /en/meditacao nem hreflang', () => {
+    const e = entradasSitemap(['a']);
+    expect(e.some((x) => x.url.includes('/en/'))).toBe(false);
+    expect(e.some((x) => x.alternates)).toBe(false);
+  });
+
+  it('com o EN completo lista as duas URLs, cada uma com o par', () => {
+    const e = entradasSitemap(['a'], { enCompleto: true });
+    const pt = e.find((x) => x.url === `${URL_SITE}/meditacao`);
+    const en = e.find((x) => x.url === `${URL_SITE}/en/meditacao`);
+    const languages = { 'pt-BR': `${URL_SITE}/meditacao`, en: `${URL_SITE}/en/meditacao`, 'x-default': `${URL_SITE}/meditacao` };
+    expect(pt.alternates).toEqual({ languages });
+    expect(en.alternates).toEqual({ languages });
+    expect(e.filter((x) => x.alternates)).toHaveLength(2); // só esse par
+  });
+});
+
+describe('QR code impresso: /meditation-eng', () => {
+  it('é 301 (não 308) para /en/meditacao', async () => {
+    const { default: config } = await import('../next.config.mjs');
+    expect(await config.redirects()).toEqual([
+      { source: '/meditation-eng', destination: '/en/meditacao', statusCode: 301 },
+    ]);
+  });
+});

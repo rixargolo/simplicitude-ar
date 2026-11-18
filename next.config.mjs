@@ -77,6 +77,11 @@ const nextConfig = {
       },
     ],
   },
+  // QR code impresso das embalagens: 301 (permanente) para a versão EN. O Next mantém a query string.
+  // Fica aqui e não no netlify.toml por causa do ADR 0001 (portabilidade).
+  async redirects() {
+    return [{ source: '/meditation-eng', destination: '/en/meditacao', statusCode: 301 }];
+  },
   async headers() {
     return [
       {
