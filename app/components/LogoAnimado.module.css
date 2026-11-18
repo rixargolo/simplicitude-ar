@@ -6,7 +6,7 @@
 
 .base {
   display: block;
-  height: 38px;
+  height: var(--altura-logo, 38px);
   aspect-ratio: 677 / 118;
   background: currentColor;
   -webkit-mask: url('/marca/logo-simplicitude-677w.png') center / contain no-repeat;
@@ -28,7 +28,7 @@
 .svg {
   position: absolute;
   inset: 0;
-  height: 38px;
+  height: var(--altura-logo, 38px);
   width: auto;
   opacity: 1;
 }
